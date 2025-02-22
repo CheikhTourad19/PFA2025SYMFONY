@@ -16,6 +16,10 @@ final class HomeController extends AbstractController
 
 
 
+        $user = $this->getUser();
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
         $nom=$this->getUser()->getNom();
 
         return $this->render('home/index.html.twig', ['nom'=>$nom]);
