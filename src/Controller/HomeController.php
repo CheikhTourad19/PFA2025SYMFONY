@@ -20,7 +20,7 @@ final class HomeController extends AbstractController
             dump('Not authenticated');
         }
 
-        return $this->render('home/index.html.twig');
+        return $this->render('home/index.html.twig',['user' => $user]);
     }
 
     #[Route('/pharmacie/', name: 'app_home_pharmacie')]
