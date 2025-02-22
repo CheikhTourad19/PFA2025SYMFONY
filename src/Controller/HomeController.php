@@ -11,14 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(UserRepository $userRepository): Response
+    public function index(): Response
     {
 
-        $user=$userRepository->findOneBy(['email'=>'gheith@test.com']);
 
 
-        return $this->render('home/index.html.twig', [
-            'nom' => $user->getNom(),
-        ]);
+        $nom=$this->getUser()->getNom();
+
+        return $this->render('home/index.html.twig', ['nom'=>$nom]);
     }
 }

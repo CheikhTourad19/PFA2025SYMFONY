@@ -1,78 +1,85 @@
 <?php
-
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Enum\Role;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
-    {
-        #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+
+#[ORM\Entity]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
+{
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 255)]
     private string $nom;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank]
+    #[ORM\Column(length: 255)]
     private string $prenom;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Assert\Email]
+    #[ORM\Column(length: 255, unique: true)]
     private string $email;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $numero = null;
-
-    #[ORM\Column(type: 'string', length: 50)]
-    #[Assert\Choice(choices: ['patient', 'medecin', 'pharmacie', 'infermier', 'admin'], message: 'Choisissez un rôle valide.')]
-    private string $role;
-
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(length: 255)]
     private string $password;
 
-    // Getters and Setters
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $numero = null;
 
-    public function getId(): int
+    #[ORM\Column(type: 'string', enumType: Role::class, options: ['default' => 'patient'])]
+    private Role $role = Role::PATIENT;
+
+    public function getRoles(): array
+    {
+        return [$this->role->value];
+    }
+
+    public function eraseCredentials(): void
+    {}
+    public function getUserIdentifier(): string { return $this->email; }
+    public function getPassword(): string { return $this->password; }
+    public function setPassword(string $password): self { $this->password = $password; return $this; }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNom(): string
+    public function getNom(): ?string
     {
         return $this->nom;
     }
 
-    public function setNom(string $nom): self
+    public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
         return $this;
     }
 
-    public function getPrenom(): string
+    public function getPrenom(): ?string
     {
         return $this->prenom;
     }
 
-    public function setPrenom(string $prenom): self
+    public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
         return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(string $email): static
     {
         $this->email = $email;
+
         return $this;
     }
 
@@ -81,31 +88,21 @@ class User
         return $this->numero;
     }
 
-    public function setNumero(?string $numero): self
+    public function setNumero(?string $numero): static
     {
         $this->numero = $numero;
+
         return $this;
     }
 
-    public function getRole(): string
+    public function getRole(): ?Role
     {
         return $this->role;
     }
 
-    public function setRole(string $role): self
+    public function setRole(Role $role): static
     {
         $this->role = $role;
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
 
         return $this;
     }
