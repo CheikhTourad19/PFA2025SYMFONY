@@ -11,16 +11,16 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(): Response
+    public function home(): Response
     {
-
         $user = $this->getUser();
-        if(!$user){
-            return $this->redirectToRoute('app_login');
+        if ($user) {
+            dump('Authenticated as:', $user->getUserIdentifier(), $user->getRoles());
+        } else {
+            dump('Not authenticated');
         }
-        $nom=$this->getUser()->getNom();
 
-        return $this->render('home/index.html.twig', ['nom'=>$nom]);
+        return $this->render('home/index.html.twig');
     }
 
     #[Route('/pharmacie/', name: 'app_home_pharmacie')]
