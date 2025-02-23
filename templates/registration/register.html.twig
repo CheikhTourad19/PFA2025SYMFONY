@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Register as a Patient
+                </h2>
+            </div>
+            {{ form_start(registrationForm, {'attr': {'class': 'mt-8 space-y-6'}}) }}
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Nom'}}) }}
+                    {{ form_errors(registrationForm.nom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.prenom, 'Prenom', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.prenom, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Prenom'}}) }}
+                    {{ form_errors(registrationForm.prenom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Email'}}) }}
+                    {{ form_errors(registrationForm.email, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.password, 'Password', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.password, {'attr': {
+                        'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm',
+                        'placeholder': 'Password'
+                    }}) }}
+                    {{ form_errors(registrationForm.password, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.numero, 'Numero', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.numero, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Numero'}}) }}
+                    {{ form_errors(registrationForm.numero, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+                <div>
+                    {{ form_label(registrationForm.cin, 'CIN', {'label_attr': {'class': 'sr-only'}}) }}
+                    {{ form_widget(registrationForm.cin, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'CIN'}}) }}
+                    {{ form_errors(registrationForm.cin, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Register
+                </button>
+            </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+{% endblock %}

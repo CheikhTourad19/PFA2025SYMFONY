@@ -2,28 +2,42 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Enum\Role;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 #[ORM\Entity]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
-{
-    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
-    private int $id;
+{ #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+private int $id;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Nom cannot be blank.")]
     private string $nom;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Prenom cannot be blank.")]
     private string $prenom;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: "Email cannot be blank.")]
+    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
     private string $email;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Password cannot be blank.")]
+    #[Assert\Length(
+        min: 8,
+        max: 255,
+        minMessage: "Your password must be at least {{ limit }} characters long.",
+        maxMessage: "Your password cannot be longer than {{ limit }} characters."
+    )]
     private string $password;
 
     #[ORM\Column(length: 255, nullable: true)]
