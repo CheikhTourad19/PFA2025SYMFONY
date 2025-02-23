@@ -8,6 +8,7 @@ use App\Enum\Role;
 
 
 #[ORM\Entity]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]

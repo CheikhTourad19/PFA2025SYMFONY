@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block body %}
+    <div class="flex min-h-screen items-center justify-center bg-cover bg-center" style="background-image: url('assets/img.jpg');">
+        <div class="w-full max-w-md p-8 space-y-6 bg-white bg-opacity-70 shadow-lg rounded-2xl">
+            <h2 class="text-center text-2xl font-bold text-gray-800">Sign in to your account</h2>
+            <form method="post" class="space-y-4"action="{{ path('app_signup') }}">
+                {% if error %}
+                    <div class="text-red-600 text-sm">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <div>
+                    <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+                    <input type="text" name="nom" id="nom" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div>
+                    <label for="prenom" class="block text-sm font-medium text-gray-700">Prenom</label>
+                    <input type="text" name="prenom" id="prenom" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email"  name="email" id="email" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" autocomplete="email" required>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" name="password" id="password" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" autocomplete="current-password" required>
+                </div>
+
+                <div>
+                    <label for="numero" class="block text-sm font-medium text-gray-700">Numéro</label>
+                    <input type="text" name="numero" id="numero" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+                </div>
+
+                <button class="w-full py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-500" type="submit">
+                    S'inscrire
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

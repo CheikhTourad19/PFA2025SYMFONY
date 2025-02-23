@@ -4,7 +4,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Infermier extends User
+class Infermier
 {
     #[ORM\Id]
     #[ORM\OneToOne(targetEntity: 'User')]

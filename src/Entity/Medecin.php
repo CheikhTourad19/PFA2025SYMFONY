@@ -4,15 +4,15 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class Medecin extends User
+class Medecin
 {
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: 'User')]
+    #[ORM\OneToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: 'medecin_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
-    private $user;
+    private User $user;
 
     #[ORM\Column(type: 'string', length: 100)]
-    private $service;
+    private string $service;
 
     // Getters and Setters
 
@@ -20,10 +20,7 @@ class Medecin extends User
     {
         return $this->service;
     }
-    public function getRoles(): array
-    {
-        return ['ROLE_MEDECIN'];
-    }
+
     public function setService(string $service): static
     {
         $this->service = $service;
@@ -36,10 +33,15 @@ class Medecin extends User
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_MEDECIN'];
     }
 }
