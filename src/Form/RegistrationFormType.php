@@ -15,22 +15,43 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+
 class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
-            ->add('nom', TextType::class)
-            ->add('prenom', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('password', PasswordType::class)
-            ->add('numero', TextType::class, ['required' => false])
+            ->add('nom', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Le nom est requis.']),
+                    new Length(['min' => 2, 'minMessage' => 'Le nom doit contenir au moins {{ limit }} caractères.']),
+                ]
+            ])
+            ->add('prenom', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Le prénom est requis.']),
+                ]
+            ])
+            ->add('email', EmailType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'L\'adresse e-mail est requise.']),
+                ]
+            ])
+            ->add('password', PasswordType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Le mot de passe est requis.']),
+                    new Length(['min' => 6, 'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères.']),
+                ]
+            ])
+            ->add('numero', TextType::class, [
+                'required' => false,
+            ])
             ->add('cin', IntegerType::class, [
-                'mapped' => false, // This field is not mapped to the User entity
+                'mapped' => false,
                 'required' => false,
             ]);
     }
+
 
 
     public function configureOptions(OptionsResolver $resolver): void

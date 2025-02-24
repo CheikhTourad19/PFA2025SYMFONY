@@ -44,13 +44,17 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($patient);
             $entityManager->flush();
-
             // Redirect to a success page or login page
             return $this->redirectToRoute('app_login');
+        }
+        $error='';
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $error='Verifier votre formulaire';
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form->createView(),
+            'errors' => $error,
         ]);
     }
 }

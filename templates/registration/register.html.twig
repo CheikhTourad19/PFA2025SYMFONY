@@ -1,57 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Sign in{% endblock %}
 
 {% block body %}
-    <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full space-y-8">
-            <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    Register as a Patient
-                </h2>
-            </div>
-            {{ form_start(registrationForm, {'attr': {'class': 'mt-8 space-y-6'}}) }}
-            <div class="rounded-md shadow-sm -space-y-px">
-                <div>
-                    {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Nom'}}) }}
-                    {{ form_errors(registrationForm.nom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-                <div>
-                    {{ form_label(registrationForm.prenom, 'Prenom', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.prenom, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Prenom'}}) }}
-                    {{ form_errors(registrationForm.prenom, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-                <div>
-                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Email'}}) }}
-                    {{ form_errors(registrationForm.email, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-                <div>
-                    {{ form_label(registrationForm.password, 'Password', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.password, {'attr': {
-                        'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm',
-                        'placeholder': 'Password'
-                    }}) }}
-                    {{ form_errors(registrationForm.password, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-                <div>
-                    {{ form_label(registrationForm.numero, 'Numero', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.numero, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'Numero'}}) }}
-                    {{ form_errors(registrationForm.numero, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-                <div>
-                    {{ form_label(registrationForm.cin, 'CIN', {'label_attr': {'class': 'sr-only'}}) }}
-                    {{ form_widget(registrationForm.cin, {'attr': {'class': 'appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm', 'placeholder': 'CIN'}}) }}
-                    {{ form_errors(registrationForm.cin, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
-                </div>
-            </div>
+    <div class="flex min-h-screen items-center justify-center bg-cover bg-center" style="background-image: url('assets/img.jpg');">
+        <div class="w-full max-w-md p-8 space-y-6 bg-white bg-opacity-70 shadow-lg rounded-2xl">
+            <h2 class="text-center text-2xl font-bold text-gray-800">Sign in to your account</h2>
 
-            <div>
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Register
-                </button>
-            </div>
+            {{ form_start(registrationForm, {'attr': {'class': 'space-y-4'}}) }}
+
+            {% if not registrationForm.vars.valid %}
+                <div class="text-red-600 text-sm">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
+
+            {% for field in registrationForm %}
+                <div>
+                    {{ form_label(field, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                    {{ form_widget(field, {'attr': {'class': 'w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500'}}) }}
+                    <div class="text-red-600 text-sm">{{ form_errors(field) }}</div>
+                </div>
+            {% endfor %}
+            {% if errors %}
+                <div>
+                    <div class="text-red-600 text-sm">{{ errors }}</div>
+                </div>
+            {% endif %}
+
+            <button class="w-full py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-500" type="submit">
+                S'inscrire
+            </button>
+
             {{ form_end(registrationForm) }}
         </div>
     </div>
