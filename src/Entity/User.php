@@ -8,35 +8,33 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use App\Enum\Role;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-
 #[ORM\Entity]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-
+#[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
-{ #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
-private int $id;
+{
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+    private int $id;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Nom cannot be blank.")]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
     private string $nom;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Prenom cannot be blank.")]
+    #[Assert\NotBlank(message: "Le prénom ne peut pas être vide.")]
     private string $prenom;
 
     #[ORM\Column(length: 255, unique: true)]
-    #[Assert\NotBlank(message: "Email cannot be blank.")]
-    #[Assert\Email(message: "The email '{{ value }}' is not a valid email.")]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
+    #[Assert\Email(message: "L'email '{{ value }}' n'est pas un email valide.")]
     private string $email;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Password cannot be blank.")]
+    #[Assert\NotBlank(message: "Le mot de passe ne peut pas être vide.")]
     #[Assert\Length(
         min: 8,
         max: 255,
-        minMessage: "Your password must be at least {{ limit }} characters long.",
-        maxMessage: "Your password cannot be longer than {{ limit }} characters."
+        minMessage: "Votre mot de passe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Votre mot de passe ne peut pas dépasser {{ limit }} caractères."
     )]
     private string $password;
 
@@ -53,9 +51,22 @@ private int $id;
 
     public function eraseCredentials(): void
     {}
-    public function getUserIdentifier(): string { return $this->email; }
-    public function getPassword(): string { return $this->password; }
-    public function setPassword(string $password): self { $this->password = $password; return $this; }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+        return $this;
+    }
 
     public function getId(): ?int
     {
@@ -70,7 +81,6 @@ private int $id;
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -82,7 +92,6 @@ private int $id;
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -94,7 +103,6 @@ private int $id;
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -106,7 +114,6 @@ private int $id;
     public function setNumero(?string $numero): static
     {
         $this->numero = $numero;
-
         return $this;
     }
 
@@ -118,7 +125,6 @@ private int $id;
     public function setRole(Role $role): static
     {
         $this->role = $role;
-
         return $this;
     }
 }
