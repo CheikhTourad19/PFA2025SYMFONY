@@ -23,15 +23,7 @@ final class HomeController extends AbstractController
         return $this->render('home/index.html.twig',['user' => $user]);
     }
 
-    #[Route('/pharmacie/', name: 'app_home_pharmacie')]
-    public function indexPharmacie(): Response{
-        $user = $this->getUser();
-        if(!$user){
-            return $this->redirectToRoute('app_login');
-        }
-        $nom=$this->getUser()->getNom();
-        return $this->render('pharmacie/index.html.twig', ['nom'=>$nom]);
-    }
+
     #[Route('/medecin/', name: 'app_home_medecin')]
     public function indexMedecin(): Response{
         $user = $this->getUser();
