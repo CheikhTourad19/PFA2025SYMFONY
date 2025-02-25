@@ -14,7 +14,7 @@ class Pharmacie
     #[ORM\Column(type: 'string', length: 100)]
     private $cin;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Adresse')]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Adresse',fetch: 'EAGER')]
     #[ORM\JoinColumn(name: 'adresse_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $adresse;
 

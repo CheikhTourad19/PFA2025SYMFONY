@@ -4,32 +4,25 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\AdresseRepository")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'adresse')]
 class Adresse
 {
-    /**
-     * @ORM\Id()
-     * @ORMGeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $rue;
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $rue = null;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $ville;
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $ville = null;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $quartier;
+    #[ORM\Column(type: 'string', length: 50, nullable: true)]
+    private ?string $quartier = null;
+
+    // Getters and Setters
 
     public function getId(): ?int
     {
@@ -44,7 +37,6 @@ class Adresse
     public function setRue(?string $rue): self
     {
         $this->rue = $rue;
-
         return $this;
     }
 
@@ -56,7 +48,6 @@ class Adresse
     public function setVille(?string $ville): self
     {
         $this->ville = $ville;
-
         return $this;
     }
 
@@ -68,7 +59,6 @@ class Adresse
     public function setQuartier(?string $quartier): self
     {
         $this->quartier = $quartier;
-
         return $this;
     }
 }
