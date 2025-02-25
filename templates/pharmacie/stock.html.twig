@@ -1,0 +1,45 @@
+{% extends 'pharmacie/pharmacie.base.html.twig' %}
+
+{% block title %}Stock{% endblock %}
+
+{% block content %}
+    <h1 class="w-full text-2xl font-bold text-center text-gray-800 my-4">
+        Liste des médicaments
+    </h1>
+    <!-- Container with Fixed Height and Scrollable Content -->
+    <div class="h-[500px] w-full max-w-4xl mx-auto overflow-y-auto flex flex-wrap gap-4 border border-gray-600 rounded-lg">
+
+
+    {% for stock in stocks %}
+
+            <div class="w-64 bg-white shadow-lg rounded-lg overflow-hidden">
+                <!-- Medicament Information -->
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2 text-gray-800">{{ stock['nom'] }}</div>
+                    <p class="text-gray-700 text-base">
+                        {{ stock['description'] }}
+                    </p>
+                </div>
+
+                <!-- Price and Quantity -->
+                <div class="px-6 py-4">
+                    <div class="flex justify-between items-center">
+                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
+                            Prix: {{ stock['prix'] }} €
+                        </span>
+                        {% if stock['quantite'] <= 10 %}
+                            <span class="inline-block bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-blue-700">
+        Quantité: {{ stock['quantite'] }}
+    </span>
+                        {% else %}
+                            <span class="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700">
+        Quantité: {{ stock['quantite'] }}
+    </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

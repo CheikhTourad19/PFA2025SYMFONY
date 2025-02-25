@@ -23,12 +23,20 @@ final class PharmaController extends AbstractController
         ]);
     }
     #[Route('/pharmacie/stock',  name: 'app_pharma_stock')]
-    public function Stockindex(): Response
+    public function Stockindex(StockRepository $stockRepository): Response
     {
         $user = $this->getUser();
 
-        return $this->render('pharmacie/index.html.twig', [
-            'user' => $user,
+        $stocks = $stockRepository->createQueryBuilder('s')
+            ->select('s.id', 's.quantite', 'm.nom', 'm.description', 'm.prix')
+            ->join('s.medicament', 'm')
+            ->where('s.pharmacie = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $this->render('pharmacie/stock.html.twig', [
+            'stocks' => $stocks,
         ]);
     }
     #[Route('/pharmacie/ordonnance',  name: 'app_pharma_ordonnance')]
