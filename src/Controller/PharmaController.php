@@ -23,10 +23,9 @@ final class PharmaController extends AbstractController
         ]);
     }
     #[Route('/pharmacie/stock',  name: 'app_pharma_stock')]
-    public function Stockindex(StockRepository $stockRepository): Response
+    public function Stockindex(StockRepository $stockRepository, PharmacieRepository $f): Response
     {
         $user = $this->getUser();
-
         $stocks = $stockRepository->createQueryBuilder('s')
             ->select('s.id', 's.quantite', 'm.nom', 'm.description', 'm.prix')
             ->join('s.medicament', 'm')
