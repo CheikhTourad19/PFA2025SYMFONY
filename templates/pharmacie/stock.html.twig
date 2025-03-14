@@ -6,6 +6,13 @@
     <h1 class="w-full text-2xl font-bold text-center text-gray-800 my-4">
         Liste des médicaments
     </h1>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="p-2 mb-2 bg-{{ label == 'success' ? 'green' : 'red' }}-500 text-white rounded">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <!-- Container with Fixed Height and Scrollable Content -->
     <div class="h-[500px] w-full max-w-4xl mx-auto overflow-y-auto flex flex-wrap gap-4 border border-gray-600 rounded-lg">
 
@@ -39,7 +46,19 @@
 
                     </div>
                 </div>
+                <div class="px-6 py-4">
+                    <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex space-x-2">
+                        <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
+                               class="w-16 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                        <button type="submit"
+                                class="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-md hover:bg-green-600">
+                            Ajouter
+                        </button>
+                    </form>
+                </div>
             </div>
         {% endfor %}
+
     </div>
 {% endblock %}

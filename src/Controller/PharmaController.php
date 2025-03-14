@@ -8,7 +8,10 @@ use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\PatientRepository;
 use App\Repository\PharmacieRepository;
 use App\Repository\StockRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -37,6 +40,23 @@ final class PharmaController extends AbstractController
         return $this->render('pharmacie/stock.html.twig', [
             'stocks' => $stocks,
         ]);
+    }
+    #[Route('/pharmacie/stock/update-stock/{id}',  name: 'app_pharma_update_stock')]
+    public function updatestock( StockRepository $stockRepository, Request $request ,int $id,EntityManagerInterface $em): Response
+    {
+        $addes=$request->request->get('additional_quantity');
+        $stock = $stockRepository->find($id);
+
+        if ($stock && is_numeric($addes) && $addes > 0) {
+            $stock->setQuantite($stock->getQuantite() + $addes);
+            $em->persist($stock);
+            $em->flush();
+            $this->addFlash('success', 'Stock mis à jour avec succès pour  '.$stock->getMedicament()->getNom());
+        } else {
+            $this->addFlash('error', 'Échec de la mise à jour du stock.');
+        }
+        return $this->redirectToRoute('app_pharma_stock');
+
     }
     #[Route('/pharmacie/ordonnance',  name: 'app_pharma_ordonnance')]
     public function Ordonnanceindex(): Response
