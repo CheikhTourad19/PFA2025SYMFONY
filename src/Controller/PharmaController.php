@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Adresse;
 use App\Entity\OrdonnanceMedicament;
 use App\Entity\Patient;
+use App\Entity\User;
+use App\Form\AdresseType;
+use App\Form\UserType;
 use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\PatientRepository;
 use App\Repository\PharmacieRepository;
@@ -13,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class PharmaController extends AbstractController
@@ -67,13 +72,76 @@ final class PharmaController extends AbstractController
             'user' => $user,
         ]);
     }
-    #[Route('/pharmacie/profil',  name: 'app_pharma_profil')]
-    public function profilindex(): Response
-    {
+    #[Route('/pharmacie/profil', name: 'app_pharma_profil')]
+    public function profilindex(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        PharmacieRepository $pharmacieRepository
+    ): Response {
+        // Fetch the current user
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
 
-        return $this->render('pharmacie/index.html.twig', [
-            'user' => $user,
+        // Fetch the user's pharmacy and address
+        $pharmacie = $pharmacieRepository->findOneBy(['user' => $user]);
+        $adresse = $pharmacie ? $pharmacie->getAdresse() : new Adresse();
+
+        // Create the profile form with the current user data
+        $profileForm = $this->createForm(UserType::class, $user);
+        $profileForm->handleRequest($request);
+
+        // Handle profile form submission
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            // Handle password update if provided
+            $currentPassword = $profileForm->get('currentPassword')->getData();
+            $newPassword = $profileForm->get('newPassword')->getData();
+
+            if ($currentPassword && $newPassword) {
+                // Verify the current password
+                if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+                    $this->addFlash('error', 'Le mot de passe actuel est incorrect.');
+                } else {
+                    // Hash and set the new password
+                    $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+                    $user->setPassword($hashedPassword);
+                    $this->addFlash('success', 'Votre mot de passe a été mis à jour avec succès.');
+                }
+            }
+
+            // Save the updated user to the database
+            $entityManager->persist($user); // Ensure the user is persisted
+            $entityManager->flush();
+
+            // Add a flash message for success
+            $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+        }
+
+        // Create the address form with the current address data
+        $addressForm = $this->createForm(AdresseType::class, $adresse);
+        $addressForm->handleRequest($request);
+
+        // Handle address form submission
+        if ($addressForm->isSubmitted() && $addressForm->isValid()) {
+            // Associate the address with the pharmacy if not already associated
+            if ($pharmacie && !$pharmacie->getAdresse()) {
+                $pharmacie->setAdresse($adresse);
+            }
+
+            // Save the updated address to the database
+            $entityManager->persist($adresse);
+            $entityManager->flush();
+
+            // Add a flash message for success
+            $this->addFlash('success', 'Votre adresse a été mise à jour avec succès.');
+        }
+
+        // Render both forms in the same template
+        return $this->render('pharmacie/profile.html.twig', [
+            'profileForm' => $profileForm->createView(),
+            'addressForm' => $addressForm->createView(),
         ]);
     }
 

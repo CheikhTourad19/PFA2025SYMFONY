@@ -1,0 +1,85 @@
+{# templates/pharmacie/profile.html.twig #}
+{% extends 'pharmacie/pharmacie.base.html.twig' %}
+
+{% block title %}Modifier Profil{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Modifier mes informations</h1>
+
+        {# Flash Messages #}
+        {% for message in app.flashes('success') %}
+            <div class="p-4 mb-6 bg-green-500 text-white rounded-lg text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="p-4 mb-6 bg-red-500 text-white rounded-lg text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {# Profile Form #}
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Profil</h2>
+            {{ form_start(profileForm) }}
+            <div class="space-y-4">
+                {# Hidden fields for nom and prenom #}
+                {{ form_widget(profileForm.nom) }}
+                {{ form_widget(profileForm.prenom) }}
+
+                {# Visible fields #}
+                {{ form_row(profileForm.email, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(profileForm.numero, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(profileForm.currentPassword, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(profileForm.newPassword, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+            </div>
+
+            <div class="mt-6">
+                <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    Enregistrer
+                </button>
+            </div>
+            {{ form_end(profileForm) }}
+        </div>
+
+        {# Address Form #}
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Adresse</h2>
+            {{ form_start(addressForm) }}
+            <div class="space-y-4">
+                {{ form_row(addressForm.rue, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(addressForm.ville, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(addressForm.quartier, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+            </div>
+
+            <div class="mt-6">
+                <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    Enregistrer l'adresse
+                </button>
+            </div>
+            {{ form_end(addressForm) }}
+        </div>
+    </div>
+{% endblock %}

@@ -4,59 +4,99 @@
 
 {% block content %}
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
-            Liste des médicaments
-        </h1>
+        {# Main Card Container #}
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden">
+            {# Card Header #}
+            <div class="p-6 bg-gradient-to-r from-blue-500 to-blue-600">
+                <h1 class="text-3xl font-bold text-white text-center">
+                    Liste des médicaments
+                </h1>
+            </div>
 
-        {# Flash messages #}
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="p-4 mb-6 rounded-lg {{ label == 'success' ? 'bg-green-500' : 'bg-red-500' }} text-white text-center">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-
-        {# Scrollable container for stock items #}
-        <div class="h-[600px] w-full max-w-6xl mx-auto overflow-y-auto p-4 bg-white rounded-lg shadow-lg border border-gray-200">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for stock in stocks %}
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all hover:scale-105 hover:shadow-lg">
-                        {# Medicament Information #}
-                        <div class="p-6">
-                            <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ stock['nom'] }}</h2>
-                            <p class="text-gray-600 text-base">
-                                {{ stock['description'] }}
-                            </p>
+            {# Card Body #}
+            <div class="p-6">
+                {# Flash Messages #}
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="p-4 mb-6 rounded-lg {{ label == 'success' ? 'bg-green-500' : 'bg-red-500' }} text-white text-center">
+                            {{ message }}
                         </div>
-
-                        {# Price and Quantity #}
-                        <div class="px-6 py-4 bg-gray-50">
-                            <div class="flex justify-between items-center">
-                                <span class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-800">
-                                    Prix: {{ stock['prix'] }} TND
-                                </span>
-                                <span class="inline-block rounded-full px-3 py-1 text-sm font-semibold {{ stock['quantite'] <= 10 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
-                                    Quantité: {{ stock['quantite'] }}
-                                </span>
-                            </div>
-                        </div>
-
-                        {# Form to update stock #}
-                        <div class="px-6 py-4">
-                            <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex items-center space-x-2">
-                                <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
-                                       class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-
-                                <button type="submit"
-                                        class="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors">
-                                    Ajouter
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                    {% endfor %}
                 {% endfor %}
+
+                {# Search Bar #}
+                <div class="mb-8">
+                    <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Rechercher un médicament..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                </div>
+
+                {# Scrollable Container for Stock Items #}
+                <div class="h-[500px] overflow-y-auto">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="stockContainer">
+                        {% for stock in stocks %}
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all hover:scale-105 hover:shadow-lg stock-item">
+                                {# Medicament Information #}
+                                <div class="p-6">
+                                    <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ stock['nom'] }}</h2>
+                                    <p class="text-gray-600 text-base">
+                                        {{ stock['description'] }}
+                                    </p>
+                                </div>
+
+                                {# Price and Quantity #}
+                                <div class="px-6 py-4 bg-gray-50">
+                                    <div class="flex justify-between items-center">
+                                        <span class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-800">
+                                            Prix: {{ stock['prix'] }} €
+                                        </span>
+                                        <span class="inline-block rounded-full px-3 py-1 text-sm font-semibold {{ stock['quantite'] <= 10 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                            Quantité: {{ stock['quantite'] }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {# Form to Update Stock #}
+                                <div class="px-6 py-4">
+                                    <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex items-center space-x-2">
+                                        <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
+                                               class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+                                        <button type="submit"
+                                                class="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors">
+                                            Ajouter
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    {# JavaScript for Search Functionality #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const stockItems = document.querySelectorAll('.stock-item');
+
+            searchInput.addEventListener('input', function () {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+
+                stockItems.forEach(item => {
+                    const medicamentName = item.querySelector('h2').textContent.toLowerCase();
+                    if (medicamentName.includes(searchTerm)) {
+                        item.style.display = 'block'; // Show matching items
+                    } else {
+                        item.style.display = 'none'; // Hide non-matching items
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
