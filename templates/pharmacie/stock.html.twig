@@ -3,62 +3,60 @@
 {% block title %}Stock{% endblock %}
 
 {% block content %}
-    <h1 class="w-full text-2xl font-bold text-center text-gray-800 my-4">
-        Liste des médicaments
-    </h1>
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="p-2 mb-2 bg-{{ label == 'success' ? 'green' : 'red' }}-500 text-white rounded">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-    <!-- Container with Fixed Height and Scrollable Content -->
-    <div class="h-[500px] w-full max-w-4xl mx-auto overflow-y-auto flex flex-wrap gap-4 border border-gray-600 rounded-lg">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+            Liste des médicaments
+        </h1>
 
-
-    {% for stock in stocks %}
-
-            <div class="w-64 bg-white shadow-lg rounded-lg overflow-hidden">
-                <!-- Medicament Information -->
-                <div class="px-6 py-4">
-                    <div class="font-bold text-xl mb-2 text-gray-800">{{ stock['nom'] }}</div>
-                    <p class="text-gray-700 text-base">
-                        {{ stock['description'] }}
-                    </p>
+        {# Flash messages #}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="p-4 mb-6 rounded-lg {{ label == 'success' ? 'bg-green-500' : 'bg-red-500' }} text-white text-center">
+                    {{ message }}
                 </div>
+            {% endfor %}
+        {% endfor %}
 
-                <!-- Price and Quantity -->
-                <div class="px-6 py-4">
-                    <div class="flex justify-between items-center">
-                        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
-                            Prix: {{ stock['prix'] }} €
-                        </span>
-                        {% if stock['quantite'] <= 10 %}
-                            <span class="inline-block bg-red-400 rounded-full px-3 py-1 text-sm font-semibold text-blue-700">
-        Quantité: {{ stock['quantite'] }}
-    </span>
-                        {% else %}
-                            <span class="inline-block bg-blue-200 rounded-full px-3 py-1 text-sm font-semibold text-blue-700">
-        Quantité: {{ stock['quantite'] }}
-    </span>
-                        {% endif %}
+        {# Scrollable container for stock items #}
+        <div class="h-[600px] w-full max-w-6xl mx-auto overflow-y-auto p-4 bg-white rounded-lg shadow-lg border border-gray-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for stock in stocks %}
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all hover:scale-105 hover:shadow-lg">
+                        {# Medicament Information #}
+                        <div class="p-6">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ stock['nom'] }}</h2>
+                            <p class="text-gray-600 text-base">
+                                {{ stock['description'] }}
+                            </p>
+                        </div>
 
+                        {# Price and Quantity #}
+                        <div class="px-6 py-4 bg-gray-50">
+                            <div class="flex justify-between items-center">
+                                <span class="inline-block bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-800">
+                                    Prix: {{ stock['prix'] }} €
+                                </span>
+                                <span class="inline-block rounded-full px-3 py-1 text-sm font-semibold {{ stock['quantite'] <= 10 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                    Quantité: {{ stock['quantite'] }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {# Form to update stock #}
+                        <div class="px-6 py-4">
+                            <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex items-center space-x-2">
+                                <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
+                                       class="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+                                <button type="submit"
+                                        class="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-md hover:bg-blue-600 transition-colors">
+                                    Ajouter
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <div class="px-6 py-4">
-                    <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex space-x-2">
-                        <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
-                               class="w-16 px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-                        <button type="submit"
-                                class="px-3 py-1 bg-green-500 text-white text-sm font-semibold rounded-md hover:bg-green-600">
-                            Ajouter
-                        </button>
-                    </form>
-                </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-
+        </div>
     </div>
 {% endblock %}
