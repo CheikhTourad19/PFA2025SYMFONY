@@ -102,12 +102,14 @@ final class PharmaController extends AbstractController
             if ($currentPassword && $newPassword) {
                 // Verify the current password
                 if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                    $this->addFlash('error', 'Le mot de passe actuel est incorrect.');
+                    $this->addFlash('error', 'Le mot de passe actuel est incorrect et information non enregistrés');
+                    return $this->redirectToRoute('app_pharma_profil');
                 } else {
                     // Hash and set the new password
                     $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                     $user->setPassword($hashedPassword);
                     $this->addFlash('success', 'Votre mot de passe a été mis à jour avec succès.');
+                    return $this->redirectToRoute('app_pharma_profil');
                 }
             }
 
@@ -117,6 +119,7 @@ final class PharmaController extends AbstractController
 
             // Add a flash message for success
             $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
+            return $this->redirectToRoute('app_pharma_profil');
         }
 
         // Create the address form with the current address data
@@ -136,8 +139,8 @@ final class PharmaController extends AbstractController
 
             // Add a flash message for success
             $this->addFlash('success', 'Votre adresse a été mise à jour avec succès.');
+            return $this->redirectToRoute('app_pharma_profil');
         }
-
         // Render both forms in the same template
         return $this->render('pharmacie/profile.html.twig', [
             'profileForm' => $profileForm->createView(),
