@@ -103,13 +103,13 @@ final class PharmaController extends AbstractController
                 // Verify the current password
                 if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
                     $this->addFlash('error', 'Le mot de passe actuel est incorrect et information non enregistrés');
-                    return $this->redirectToRoute('app_pharma_profil');
+
                 } else {
                     // Hash and set the new password
                     $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                     $user->setPassword($hashedPassword);
                     $this->addFlash('success', 'Votre mot de passe a été mis à jour avec succès.');
-                    return $this->redirectToRoute('app_pharma_profil');
+
                 }
             }
 
