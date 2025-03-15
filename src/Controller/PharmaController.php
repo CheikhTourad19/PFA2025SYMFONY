@@ -158,12 +158,14 @@ final class PharmaController extends AbstractController
 
                 if (!$ordonnance) {
                     $error = "Aucune ordonnance trouvée pour l'ID $id.";
+                    $this->addFlash('error', $error);
                 } else {
                     // Fetch the associated medications
                     $orm = $om->findBy(['ordonnance' => $ordonnance]);
 
                     if (empty($orm)) {
                         $error = "Aucun médicament trouvé pour cette ordonnance.";
+                        $this->addFlash('error', $error);
                     }
                 }
 
@@ -172,7 +174,6 @@ final class PharmaController extends AbstractController
         // Render the template with data
         return $this->render('pharmacie/ordonnance.html.twig', [
             'orm' => $orm, // List of medications
-            'error' => $error, // Error message (if any)
             'id' => $id, // Submitted ID (to repopulate the form)
         ]);
     }

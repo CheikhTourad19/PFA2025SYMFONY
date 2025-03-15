@@ -34,12 +34,8 @@
             </form>
         </div>
 
-        {# Error Message #}
-        {% if error %}
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8" role="alert">
-                <p>{{ error }}</p>
-            </div>
-        {% endif %}
+
+
 
         {# Results Section #}
         {% if orm|length > 0 %}

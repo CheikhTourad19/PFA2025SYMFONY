@@ -19,21 +19,51 @@
          x-data="{
             isModalOpen: false,
             isFlashModalOpen: false,
-            flashMessage: '',
-            flashType: ''
+            flashMessages: [],
+            currentFlashIndex: 0,
+            currentFlashMessage: '',
+            currentFlashType: '',
+
+            // Method to show the next flash message
+            showNextFlashMessage() {
+                if (this.currentFlashIndex < this.flashMessages.length - 1) {
+                    this.currentFlashIndex++;
+                    this.currentFlashMessage = this.flashMessages[this.currentFlashIndex].message;
+                    this.currentFlashType = this.flashMessages[this.currentFlashIndex].type;
+                } else {
+                    this.isFlashModalOpen = false;
+                }
+            },
+
+            // Method to show the previous flash message
+            showPreviousFlashMessage() {
+                if (this.currentFlashIndex > 0) {
+                    this.currentFlashIndex--;
+                    this.currentFlashMessage = this.flashMessages[this.currentFlashIndex].message;
+                    this.currentFlashType = this.flashMessages[this.currentFlashIndex].type;
+                }
+            }
          }"
          x-init="
             // Initialize flash messages on component load
             (() => {
-                // Check for flash messages from our pre-stored variable
+                // Prepare flash messages array from our pre-stored variable
                 const types = ['success', 'error', 'warning', 'info'];
+                let allMessages = [];
+
                 for (const type of types) {
                     if (window.flashMessages[type] && window.flashMessages[type].length > 0) {
-                        flashType = type;
-                        flashMessage = window.flashMessages[type][0];
-                        isFlashModalOpen = true;
-                        break;
+                        window.flashMessages[type].forEach(message => {
+                            allMessages.push({ type: type, message: message });
+                        });
                     }
+                }
+
+                if (allMessages.length > 0) {
+                    flashMessages = allMessages;
+                    currentFlashMessage = allMessages[0].message;
+                    currentFlashType = allMessages[0].type;
+                    isFlashModalOpen = true;
                 }
             })()
          ">
@@ -122,31 +152,50 @@
 
             <div class="bg-white rounded-lg shadow-lg p-6 w-96 z-50"
                  :class="{
-                    'border-l-4 border-green-500': flashType === 'success',
-                    'border-l-4 border-red-500': flashType === 'error',
-                    'border-l-4 border-yellow-500': flashType === 'warning',
-                    'border-l-4 border-blue-500': flashType === 'info'
+                    'border-l-4 border-green-500': currentFlashType === 'success',
+                    'border-l-4 border-red-500': currentFlashType === 'error',
+                    'border-l-4 border-yellow-500': currentFlashType === 'warning',
+                    'border-l-4 border-blue-500': currentFlashType === 'info'
                  }">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4"
-                    :class="{
-                        'text-green-700': flashType === 'success',
-                        'text-red-700': flashType === 'error',
-                        'text-yellow-700': flashType === 'warning',
-                        'text-blue-700': flashType === 'info'
-                    }">
-                    <span x-text="flashType === 'success' ? 'Succès' :
-                                 flashType === 'error' ? 'Erreur' :
-                                 flashType === 'warning' ? 'Attention' : 'Information'"></span>
-                </h2>
-                <p x-text="flashMessage" class="text-gray-700 mb-6"></p>
-                <div class="flex justify-end">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold"
+                        :class="{
+                            'text-green-700': currentFlashType === 'success',
+                            'text-red-700': currentFlashType === 'error',
+                            'text-yellow-700': currentFlashType === 'warning',
+                            'text-blue-700': currentFlashType === 'info'
+                        }">
+                        <span x-text="currentFlashType === 'success' ? 'Succès' :
+                                     currentFlashType === 'error' ? 'Erreur' :
+                                     currentFlashType === 'warning' ? 'Attention' : 'Information'"></span>
+                    </h2>
+                    <div class="text-gray-500 text-sm" x-show="flashMessages.length > 1">
+                        <span x-text="(currentFlashIndex + 1) + ' / ' + flashMessages.length"></span>
+                    </div>
+                </div>
+                <p x-text="currentFlashMessage" class="text-gray-700 mb-6"></p>
+                <div class="flex justify-between">
+                    <div class="space-x-2" x-show="flashMessages.length > 1">
+                        <button @click="showPreviousFlashMessage()"
+                                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                :disabled="currentFlashIndex === 0"
+                                :class="{ 'opacity-50 cursor-not-allowed': currentFlashIndex === 0 }">
+                            &larr;
+                        </button>
+                        <button @click="showNextFlashMessage()"
+                                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+                                :disabled="currentFlashIndex === flashMessages.length - 1"
+                                :class="{ 'opacity-50 cursor-not-allowed': currentFlashIndex === flashMessages.length - 1 }">
+                            &rarr;
+                        </button>
+                    </div>
                     <button @click="isFlashModalOpen = false"
                             class="px-4 py-2 rounded-lg text-white transition-colors"
                             :class="{
-                                'bg-green-500 hover:bg-green-600': flashType === 'success',
-                                'bg-red-500 hover:bg-red-600': flashType === 'error',
-                                'bg-yellow-500 hover:bg-yellow-600': flashType === 'warning',
-                                'bg-blue-500 hover:bg-blue-600': flashType === 'info' || !flashType
+                                'bg-green-500 hover:bg-green-600': currentFlashType === 'success',
+                                'bg-red-500 hover:bg-red-600': currentFlashType === 'error',
+                                'bg-yellow-500 hover:bg-yellow-600': currentFlashType === 'warning',
+                                'bg-blue-500 hover:bg-blue-600': currentFlashType === 'info' || !currentFlashType
                             }">
                         Fermer
                     </button>
