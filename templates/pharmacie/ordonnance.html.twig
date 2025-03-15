@@ -1,0 +1,81 @@
+{# templates/pharmacie/ordonnance.html.twig #}
+{% extends 'pharmacie/pharmacie.base.html.twig' %}
+
+{% block title %}Recherche de Médicaments par Ordonnance{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-8">
+        {# Page Header #}
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Recherche de Médicaments par Ordonnance</h1>
+            <p class="mt-2 text-lg text-gray-600">Entrez l'ID de l'ordonnance pour afficher les médicaments prescrits.</p>
+        </div>
+
+        {# Search Form #}
+        <div class="bg-white shadow-md rounded-lg p-6 mb-8">
+            <form method="GET" action="{{ path('app_pharma_ordonnance') }}" class="space-y-4">
+                <div>
+                    <label for="ordonnance_id" class="block text-sm font-medium text-gray-700">ID de l'Ordonnance</label>
+                    <input
+                            type="number"
+                            id="ordonnance_id"
+                            name="ordonnance_id"
+                            value="{{ id }}"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            required
+                    />
+                </div>
+                <button
+                        type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                    Rechercher
+                </button>
+            </form>
+        </div>
+
+        {# Error Message #}
+        {% if error %}
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8" role="alert">
+                <p>{{ error }}</p>
+            </div>
+        {% endif %}
+
+        {# Results Section #}
+        {% if orm|length > 0 %}
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Médicaments pour l'ordonnance #{{ id }}</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom Medicament</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom Medecin</th>
+
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité Prescrite</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                        {% for item in orm %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.medicament.nom }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Dr {{ item.ordonnance.medecin.user.nom }}</td>
+
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.medicament.description }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ item.medicament.prix ? item.medicament.prix ~ ' TND' : 'Non spécifié' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.quantite }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.instructions }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -6,17 +6,7 @@
 {% block content %}
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">Modifier mes informations</h1>
-        {# Flash Messages #}
-        {% for message in app.flashes('success') %}
-            <div class="p-4 mb-6 bg-green-500 text-white rounded-lg text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
-        {% for message in app.flashes('error') %}
-            <div class="p-4 mb-6 bg-red-500 text-white rounded-lg text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
+
 
         {# Profile Form #}
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-2xl mx-auto">

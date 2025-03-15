@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Form\AdresseType;
 use App\Form\UserType;
 use App\Repository\OrdonnanceMedicamentRepository;
+use App\Repository\OrdonnanceRepository;
 use App\Repository\PatientRepository;
 use App\Repository\PharmacieRepository;
 use App\Repository\StockRepository;
@@ -63,15 +64,7 @@ final class PharmaController extends AbstractController
         return $this->redirectToRoute('app_pharma_stock');
 
     }
-    #[Route('/pharmacie/ordonnance',  name: 'app_pharma_ordonnance')]
-    public function Ordonnanceindex(): Response
-    {
-        $user = $this->getUser();
 
-        return $this->render('pharmacie/index.html.twig', [
-            'user' => $user,
-        ]);
-    }
     #[Route('/pharmacie/profil', name: 'app_pharma_profil')]
     public function profilindex(
         Request $request,
@@ -145,6 +138,42 @@ final class PharmaController extends AbstractController
         return $this->render('pharmacie/profile.html.twig', [
             'profileForm' => $profileForm->createView(),
             'addressForm' => $addressForm->createView(),
+        ]);
+    }
+
+    #[Route('/pharmacie/ordonnance', name: 'app_pharma_ordonnance')]
+    public function Ordonnanceindex(Request $request, OrdonnanceMedicamentRepository $om, OrdonnanceRepository $or): Response
+    {
+        // Initialize variables
+        $orm = []; // Holds the list of medications
+        $error = null; // Holds error messages
+        $id = $request->query->get('ordonnance_id');; // Holds the submitted ID
+
+        // Check if the form is submitted
+        if ($id) {
+
+
+                // Find the ordonnance by ID
+                $ordonnance = $or->find($id);
+
+                if (!$ordonnance) {
+                    $error = "Aucune ordonnance trouvée pour l'ID $id.";
+                } else {
+                    // Fetch the associated medications
+                    $orm = $om->findBy(['ordonnance' => $ordonnance]);
+
+                    if (empty($orm)) {
+                        $error = "Aucun médicament trouvé pour cette ordonnance.";
+                    }
+                }
+
+        }
+
+        // Render the template with data
+        return $this->render('pharmacie/ordonnance.html.twig', [
+            'orm' => $orm, // List of medications
+            'error' => $error, // Error message (if any)
+            'id' => $id, // Submitted ID (to repopulate the form)
         ]);
     }
 
