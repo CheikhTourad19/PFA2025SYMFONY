@@ -80,13 +80,13 @@
     </div>
 
     {# JavaScript for Search Functionality #}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    <script>document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
-            const stockItems = document.querySelectorAll('.stock-item');
+            const stockContainer = document.getElementById('stockContainer');
 
             searchInput.addEventListener('input', function () {
                 const searchTerm = searchInput.value.trim().toLowerCase();
+                const stockItems = document.querySelectorAll('.stock-item');
 
                 stockItems.forEach(item => {
                     const medicamentName = item.querySelector('h2').textContent.toLowerCase();
@@ -96,6 +96,23 @@
                         item.style.display = 'none'; // Hide non-matching items
                     }
                 });
+            });
+
+            // Délégation d'événements pour maintenir la fonctionnalité après interaction
+            stockContainer.addEventListener('mouseover', function(event) {
+                // Continuez à permettre la recherche même après hover
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                if (searchTerm.length > 0) {
+                    searchInput.dispatchEvent(new Event('input'));
+                }
+            });
+
+            stockContainer.addEventListener('click', function(event) {
+                // Assurez-vous que la recherche fonctionne même après clic
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                if (searchTerm.length > 0) {
+                    searchInput.dispatchEvent(new Event('input'));
+                }
             });
         });
     </script>
