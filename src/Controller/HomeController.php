@@ -13,24 +13,26 @@ final class HomeController extends AbstractController
     public function home(): Response
     {
         $user = $this->getUser();
+
         if ($user) {
             dump('Authenticated as:', $user->getUserIdentifier(), $user->getRoles());
         } else {
             dump('Not authenticated');
         }
 
-        return $this->render('home/index.html.twig',['user' => $user]);
+        return $this->render('home/index.html.twig', ['user' => $user]);
     }
 
 
     #[Route('/medecin/', name: 'app_home_medecin')]
-    public function indexMedecin(): Response{
+    public function indexMedecin(): Response
+    {
         $user = $this->getUser();
-        if(!$user){
+        if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        $nom=$this->getUser()->getNom();
-        return $this->render('medecin/index.html.twig', ['nom'=>$nom]);
+        $nom = $this->getUser()->getNom();
+        return $this->render('medecin/index.html.twig', ['nom' => $nom]);
     }
 
 }

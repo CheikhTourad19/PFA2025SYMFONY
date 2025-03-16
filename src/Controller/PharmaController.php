@@ -155,7 +155,6 @@ final class PharmaController extends AbstractController
 
                 // Find the ordonnance by ID
                 $ordonnance = $or->find($id);
-
                 if (!$ordonnance) {
                     $error = "Aucune ordonnance trouvée pour l'ID $id.";
                     $this->addFlash('error', $error);
