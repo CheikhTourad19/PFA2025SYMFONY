@@ -24,11 +24,10 @@ USER myuser
 WORKDIR /var/www/html
 # Install PHP dependencies
 RUN composer install --no-interaction
-
+USER root
 # Set permissions for Symfony
 RUN chmod -R 775 var
 
-USER root
 
 
 # Expose port

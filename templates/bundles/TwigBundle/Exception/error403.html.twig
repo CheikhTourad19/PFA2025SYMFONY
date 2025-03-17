@@ -1,0 +1,20 @@
+{# templates/bundles/TwigBundle/Exception/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-red-500 to-orange-600 text-white">
+        <div class="text-center">
+            <h1 class="text-9xl font-bold mb-4">403</h1>
+            <h2 class="text-4xl font-semibold mb-8">Accès interdit</h2>
+            <p class="text-lg mb-8">
+                Désolé, vous n'avez pas les autorisations nécessaires pour accéder à cette page.
+                <br>
+                <a href="{{ path('app_home') }}" class="underline hover:text-gray-200">Retournez à la page d'accueil</a>
+                ou contactez l'administrateur si vous pensez qu'il s'agit d'une erreur.
+            </p>
+            <a href="{{ path('app_home') }}" class="inline-block bg-white text-red-600 font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
+{% endblock %}
