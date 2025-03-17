@@ -52,6 +52,7 @@ class UserType extends AbstractType
                         'message' => 'Veuillez entrer un nouveau mot de passe.',
                         'groups' => ['password_change'], // Validate only when changing password
                     ]),
+
                 ],
             ]);
     }
