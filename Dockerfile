@@ -19,7 +19,9 @@ WORKDIR /var/www/html
 
 # Copy the project files
 COPY . .
-
+RUN useradd -m myuser
+USER myuser
+WORKDIR /var/www/html
 # Install PHP dependencies
 RUN composer install --no-interaction
 
