@@ -1,29 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Bienvenue sur Notre Plateforme{% endblock %}
 
 {% block body %}
-    {% if not user %}
-        <div class="space-x-4 p-4">
-            <a href="{{ path('app_login') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Se connecter
-            </a>
-            <a href="{{ path('app_register') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
-                S'inscrire
-            </a>
-        </div>
-    {% else %}
-        {% if is_granted('ROLE_PHARMACIE') %}
-            <p>Bienvenue, {{ user.getId}} {{ user.getNom}} avec le rôle Pharmacie !</p>
-        {% endif %}
-        {% if is_granted('ROLE_MEDECIN') %}
-            <p>Bienvenue, {{ user.getNom}} avec le rôle medecin !</p>
-        {% endif %}
-        {% if is_granted('ROLE_PATIENT') %}
-            <p>Bienvenue,{{ user.getId}} {{ user.getNom}} avec le rôle Patient  !</p>
-        {% endif %}
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 "  style="background-image: url('{{ asset('assets/img.jpg') }}');">
+        {% if not user %}
+            <div class="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h1 class="text-4xl font-bold text-gray-800 mb-6">Bienvenue sur E-Medical</h1>
+                <p class="text-gray-600 mb-8">Veuillez vous connecter ou vous inscrire pour accéder à votre compte.</p>
+                <div class="space-x-4">
+                    <a href="{{ path('app_login') }}" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300">
+                        Se connecter
+                    </a>
+                    <a href="{{ path('app_register') }}" class="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition duration-300">
+                        S'inscrire
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            {# Redirect authenticated users to their home page based on their role #}
 
 
+            {# Fallback message in case JavaScript is disabled #}
+            <div class="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue, {{ user.getPrenom }} {{ user.getNom }} !</h1>
+                <p class="text-gray-600 mb-8">Vous êtes déjà connecté. </p>
 
-    {% endif %}
+                <div class="space-x-4">
+                    {% if is_granted('ROLE_PHARMACIE') %}
+                        <a href="{{ path('app_home_pharmacie') }}" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition duration-300">
+                            Accéder à l'espace Pharmacie
+                        </a>
+                    {% elseif is_granted('ROLE_MEDECIN') %}
+                        <a href="{{ path('app_home_medecin') }}" class="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600 transition duration-300">
+                            Accéder à l'espace Médecin
+                        </a>
+                    {% elseif is_granted('ROLE_PATIENT') %}
+                        <a href="{{ path('app_home_medecin') }}" class="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition duration-300">
+                            Accéder à l'espace Patient
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
