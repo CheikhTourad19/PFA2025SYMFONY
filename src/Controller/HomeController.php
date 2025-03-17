@@ -13,11 +13,6 @@ final class HomeController extends AbstractController
     public function home(): Response
     {
         $user = $this->getUser();
-        if ($user) {
-            dump('Authenticated as:', $user->getUserIdentifier(), $user->getRoles());
-        } else {
-            dump('Not authenticated');
-        }
 
         return $this->render('home/index.html.twig',['user' => $user]);
     }
