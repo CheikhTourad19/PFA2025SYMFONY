@@ -26,6 +26,9 @@ RUN composer install --no-interaction
 # Set permissions for Symfony
 RUN chmod -R 775 var
 
+# Set permissions for var and vendor directories
+RUN chmod -R 775 var vendor && \
+    chown -R www-data:www-data var vendor
 
 
 # Expose port
