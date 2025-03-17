@@ -28,5 +28,8 @@ RUN composer install --no-interaction
 # Set permissions for Symfony
 RUN chmod -R 775 var
 
+USER root
+
+
 # Expose port
 EXPOSE 9000
