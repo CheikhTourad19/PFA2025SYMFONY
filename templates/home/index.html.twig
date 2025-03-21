@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100 "  style="background-image: url('{{ asset('assets/img.jpg') }}');">
-        {% if not user %}
+        {% if not app.user %}
             <div class="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
                 <h1 class="text-4xl font-bold text-gray-800 mb-6">Bienvenue sur E-Medical</h1>
                 <p class="text-gray-600 mb-8">Veuillez vous connecter ou vous inscrire pour accéder à votre compte.</p>
@@ -23,7 +23,7 @@
 
             {# Fallback message in case JavaScript is disabled #}
             <div class="text-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue, {{ user.getPrenom }} {{ user.getNom }} !</h1>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">Bienvenue, {{ app.user.getPrenom }} {{ app.user.getNom }} !</h1>
                 <p class="text-gray-600 mb-8">Vous êtes déjà connecté. </p>
 
                 <div class="space-x-4">
