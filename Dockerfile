@@ -33,3 +33,6 @@ RUN chmod -R 775 var vendor && \
 
 # Expose port
 EXPOSE 9000
+
+CMD ["sh", "-c", "php bin/console messenger:consume async --no-interaction & php-fpm"]
+
