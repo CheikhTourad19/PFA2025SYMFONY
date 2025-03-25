@@ -6,11 +6,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function home(): Response
+    public function home(MailerInterface $mailer): Response
     {
 
 
