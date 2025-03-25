@@ -10,6 +10,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email.')]
+#[ORM\Table(name: "user")]
+#[ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
