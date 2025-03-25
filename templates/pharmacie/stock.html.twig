@@ -15,14 +15,7 @@
 
             {# Card Body #}
             <div class="p-6">
-                {# Flash Messages #}
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="p-4 mb-6 rounded-lg {{ label == 'success' ? 'bg-green-500' : 'bg-red-500' }} text-white text-center">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
+
 
                 {# Toggle Button for Add Form #}
                 <div class="mb-4 text-right">

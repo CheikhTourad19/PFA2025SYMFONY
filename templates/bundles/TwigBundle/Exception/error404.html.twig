@@ -2,10 +2,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Page not found</h1>
-
-    <p>
-        The requested page couldn't be located. Checkout for any URL
-        misspelling or <a href="{{ path('app_home') }}">return to the homepage</a>.
-    </p>
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div class="text-center">
+            <h1 class="text-9xl font-bold mb-4">404</h1>
+            <h2 class="text-4xl font-semibold mb-8">Page non trouvée</h2>
+            <p class="text-lg mb-8">
+                Désolé, la page que vous recherchez n'a pas pu être trouvée. Vérifiez l'URL ou
+                <a href="{{ path('app_home') }}" class="underline hover:text-gray-200">retournez à la page d'accueil</a>.
+            </p>
+            <a href="{{ path('app_home') }}" class="inline-block bg-white text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">
+                Retour à l'accueil
+            </a>
+        </div>
+    </div>
 {% endblock %}

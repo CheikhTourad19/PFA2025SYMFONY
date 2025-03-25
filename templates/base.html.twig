@@ -1,20 +1,47 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Welcome!{% endblock %}</title>
 
-        <link rel="icon" href="{{ asset('assets/img.jpg') }}">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+    {# Preload critical assets #}
+    <link rel="preload" href="{{ asset('build/app.css') }}" as="style">
+    <link rel="preload" href="{{ asset('build/app.js') }}" as="script">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <link rel="stylesheet" href="{{ asset('build/app.css') }}">
+    <link rel="icon" href="{{ asset('assets/img.jpg') }}">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
+    {% endblock %}
+</head>
+<body class="min-h-screen bg-gray-50">
+{% block body %}{% endblock %}
+
+{# Add loading state for better UX #}
+<div id="loading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loading = document.getElementById('loading');
+
+        // Show loading during transitions
+        document.addEventListener('htmx:beforeRequest', () => {
+            loading.classList.remove('opacity-0', 'pointer-events-none');
+        });
+
+        document.addEventListener('htmx:afterRequest', () => {
+            loading.classList.add('opacity-0', 'pointer-events-none');
+        });
+    });
+</script>
+</body>
 </html>

@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email envoyé | E-MEDICAL{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md">
+            <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 text-center">
+                <svg class="mx-auto h-12 w-12 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Email envoyé !
+                </h2>
+
+                <div class="mt-6 text-left text-gray-600">
+                    <p class="mb-4">
+                        Si un compte correspondant à votre email existe, un email vient d'être envoyé contenant un lien pour réinitialiser votre mot de passe.
+                    </p>
+                    <p class="font-medium">
+                        Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                    </p>
+                </div>
+
+                <div class="mt-8 text-sm text-gray-600">
+                    <p>
+                        Si vous ne recevez pas d'email, vérifiez votre dossier spam ou
+                        <a href="{{ path('app_forgot_password_request') }}" class="font-medium text-blue-600 hover:text-blue-500">
+                            essayez à nouveau
+                        </a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
