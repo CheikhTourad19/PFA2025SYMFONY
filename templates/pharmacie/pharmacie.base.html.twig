@@ -2,12 +2,14 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}E-Medical Pharmacie{% endblock %}
+{% block head %}
+    {{ parent() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock %}
 
 {% block body %}
-
-    {# Store flash messages in JavaScript variables BEFORE they're accessed anywhere #}
+    {# Store flash messages in JavaScript variables #}
     <script>
-        // Store flash messages before they get consumed by Twig
         window.flashMessages = {
             success: [{% for message in app.flashes('success') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}],
             error: [{% for message in app.flashes('error') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}],
@@ -20,12 +22,12 @@
          x-data="{
             isModalOpen: false,
             isFlashModalOpen: false,
+            isMobileMenuOpen: false,
             flashMessages: [],
             currentFlashIndex: 0,
             currentFlashMessage: '',
             currentFlashType: '',
 
-            // Method to show the next flash message
             showNextFlashMessage() {
                 if (this.currentFlashIndex < this.flashMessages.length - 1) {
                     this.currentFlashIndex++;
@@ -36,7 +38,6 @@
                 }
             },
 
-            // Method to show the previous flash message
             showPreviousFlashMessage() {
                 if (this.currentFlashIndex > 0) {
                     this.currentFlashIndex--;
@@ -46,9 +47,7 @@
             }
          }"
          x-init="
-            // Initialize flash messages on component load
             (() => {
-                // Prepare flash messages array from our pre-stored variable
                 const types = ['success', 'error', 'warning', 'info'];
                 let allMessages = [];
 
@@ -70,57 +69,119 @@
          ">
         <!-- Navbar -->
         <nav class="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 shadow-lg" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
-            <div class="max-w-7xl mx-auto flex items-center justify-between">
-                <!-- Titre de l'application -->
-                <div class="text-2xl font-bold tracking-tight">Espace Pharmacie</div>
+            <div class="max-w-7xl mx-auto">
+                <!-- Mobile menu header -->
+                <div class="flex items-center justify-between">
+                    <!-- Titre de l'application -->
+                    <div class="text-2xl font-bold tracking-tight">Espace Pharmacie</div>
 
-                <!-- Liens de navigation -->
-                <div class="flex items-center space-x-6">
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="text-white hover:text-gray-200 focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center justify-between mt-2">
+                    <!-- Navigation Links -->
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        {% set currentRoute = app.request.attributes.get('_route') %}
+
+                        <a href="{{ path('app_pharma_stock') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_stock' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Stock
+                        </a>
+
+                        <a href="{{ path('app_pharma_ordonnance') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_ordonnance' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Ordonnance
+                        </a>
+
+                        <a href="{{ path('app_pharma_profil') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_profil' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Profil
+                        </a>
+
+                        <a href="{{ path('app_home_pharmacie') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Accueil
+                        </a>
+                    </div>
+
+                    <!-- User Info and Logout -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Logout Button -->
+                        <button @click="isModalOpen = true"
+                                class="px-3 py-2 text-sm md:text-base md:px-4 bg-red-600 rounded-lg shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-300">
+                            Déconnexion
+                        </button>
+
+                        <!-- Informations utilisateur -->
+                        <div class="hidden md:flex flex-col items-end">
+                            <p class="font-semibold text-sm md:text-base">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                            <p class="text-xs md:text-sm text-gray-200">{{ app.user.email }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Navigation -->
+                <div x-show="isMobileMenuOpen" @click.away="isMobileMenuOpen = false"
+                     class="md:hidden mt-4 space-y-2 pb-2"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95">
                     {% set currentRoute = app.request.attributes.get('_route') %}
 
                     <a href="{{ path('app_pharma_stock') }}"
-                       class="px-4 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_stock' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_stock' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Stock
                     </a>
 
                     <a href="{{ path('app_pharma_ordonnance') }}"
-                       class="px-4 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_ordonnance' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_ordonnance' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Ordonnance
                     </a>
 
                     <a href="{{ path('app_pharma_profil') }}"
-                       class="px-4 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_profil' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_profil' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Profil
                     </a>
 
                     <a href="{{ path('app_home_pharmacie') }}"
-                       class="px-4 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Accueil
                     </a>
 
-                    <!-- Logout Button -->
-                    <button @click="isModalOpen = true"
-                            class="px-4 py-2 bg-red-600 rounded-lg shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-300">
-                        Se déconnecter
-                    </button>
-                </div>
+                    <div class="pt-2 border-t border-blue-400">
+                        <div class="mb-2">
+                            <p class="font-semibold">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                            <p class="text-sm text-gray-200">{{ app.user.email }}</p>
+                        </div>
 
-                <!-- Informations utilisateur -->
-                <div class="flex flex-col items-end">
-                    <p class="font-semibold text-lg">{{ app.user.prenom }} {{ app.user.nom }}</p>
-                    <p class="text-sm text-gray-200">{{ app.user.email }}</p>
+                        <button @click="isModalOpen = true"
+                                class="w-full px-3 py-2 bg-red-600 rounded-lg shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-300">
+                            Se déconnecter
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>
 
         <!-- Contenu principal -->
-        <div class="flex-1 container mx-auto p-6" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
+        <div class="flex-1 container mx-auto px-4 py-6 md:p-6" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
             {% block content %}{% endblock %}
         </div>
 
         <!-- Footer -->
         <footer class="bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 mt-8" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
-            <div class="max-w-7xl mx-auto text-center">
+            <div class="max-w-7xl mx-auto px-4 text-center">
                 <p class="text-sm">&copy; 2025 E-medical. Tous droits réservés.</p>
             </div>
         </footer>
@@ -138,7 +199,7 @@
                  x-transition:leave-end="opacity-0">
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6 w-96 z-50"
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm mx-4 sm:w-96 z-50"
                  x-transition:enter="transition transform ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-90"
                  x-transition:enter-end="opacity-100 scale-100"
@@ -173,13 +234,13 @@
                  x-transition:leave-end="opacity-0">
             </div>
 
-            <div class="bg-white rounded-lg shadow-lg p-6 w-96 z-50"
+            <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm mx-4 sm:w-96 z-50"
                  :class="{
-            'border-l-4 border-green-500': currentFlashType === 'success',
-            'border-l-4 border-red-500': currentFlashType === 'error',
-            'border-l-4 border-yellow-500': currentFlashType === 'warning',
-            'border-l-4 border-blue-500': currentFlashType === 'info'
-         }"
+                    'border-l-4 border-green-500': currentFlashType === 'success',
+                    'border-l-4 border-red-500': currentFlashType === 'error',
+                    'border-l-4 border-yellow-500': currentFlashType === 'warning',
+                    'border-l-4 border-blue-500': currentFlashType === 'info'
+                 }"
                  x-transition:enter="transition transform ease-out duration-300"
                  x-transition:enter-start="opacity-0 scale-90"
                  x-transition:enter-end="opacity-100 scale-100"
@@ -189,14 +250,14 @@
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold"
                         :class="{
-                    'text-green-700': currentFlashType === 'success',
-                    'text-red-700': currentFlashType === 'error',
-                    'text-yellow-700': currentFlashType === 'warning',
-                    'text-blue-700': currentFlashType === 'info'
-                }">
-                <span x-text="currentFlashType === 'success' ? 'Succès' :
-                             currentFlashType === 'error' ? 'Erreur' :
-                             currentFlashType === 'warning' ? 'Attention' : 'Information'"></span>
+                            'text-green-700': currentFlashType === 'success',
+                            'text-red-700': currentFlashType === 'error',
+                            'text-yellow-700': currentFlashType === 'warning',
+                            'text-blue-700': currentFlashType === 'info'
+                        }">
+                        <span x-text="currentFlashType === 'success' ? 'Succès' :
+                                     currentFlashType === 'error' ? 'Erreur' :
+                                     currentFlashType === 'warning' ? 'Attention' : 'Information'"></span>
                     </h2>
                     <div class="text-gray-500 text-sm" x-show="flashMessages.length > 1">
                         <span x-text="(currentFlashIndex + 1) + ' / ' + flashMessages.length"></span>
@@ -221,17 +282,15 @@
                     <button @click="isFlashModalOpen = false"
                             class="px-4 py-2 rounded-lg text-white transition-colors"
                             :class="{
-                        'bg-green-500 hover:bg-green-600': currentFlashType === 'success',
-                        'bg-red-500 hover:bg-red-600': currentFlashType === 'error',
-                        'bg-yellow-500 hover:bg-yellow-600': currentFlashType === 'warning',
-                        'bg-blue-500 hover:bg-blue-600': currentFlashType === 'info' || !currentFlashType
-                    }">
+                                'bg-green-500 hover:bg-green-600': currentFlashType === 'success',
+                                'bg-red-500 hover:bg-red-600': currentFlashType === 'error',
+                                'bg-yellow-500 hover:bg-yellow-600': currentFlashType === 'warning',
+                                'bg-blue-500 hover:bg-blue-600': currentFlashType === 'info' || !currentFlashType
+                            }">
                         Fermer
                     </button>
                 </div>
             </div>
         </div>
-
-
     </div>
 {% endblock %}
