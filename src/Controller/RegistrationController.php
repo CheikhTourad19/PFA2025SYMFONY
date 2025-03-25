@@ -22,12 +22,8 @@ class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
         $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user, [
-            'attr' => [
-                // set this if you want to force server-side validation
-                'novalidate' => 'novalidate',
-            ],
-        ]);
+        $patient = new Patient();
+        $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -35,11 +31,13 @@ class RegistrationController extends AbstractController
             $user->setPassword(
                 $passwordHasher->hashPassword($user, $user->getPassword())
             );
-
+            $patient->setUser($user);
+            $patient->setCin(1);
             $entityManager->persist($user);
+            $entityManager->persist($patient);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_home');
+            $this->addFlash('success', 'Inscription réussie! Vous pouvez maintenant vous connecter.');
+            return $this->redirectToRoute('app_login');
         }
         if ($form->isSubmitted() && !$form->isValid()) {
             // Collect all form errors
