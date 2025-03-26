@@ -15,13 +15,13 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(MailerInterface $mailer): Response
     {
-        $email = (new Email())
-            ->from('donotreplyemedical@gmail.com')
-            ->to('elghothvadel@gmail.com')
-            ->subject('Test Email')
-            ->text('This is a test email sent from Symfony!');
-
-        $mailer->send($email);
+//        $email = (new Email())
+//            ->from('donotreplyemedical@gmail.com')
+//            ->to('elghothvadel@gmail.com')
+//            ->subject('Test Email')
+//            ->text('This is a test email sent from Symfony!');
+//
+//        $mailer->send($email);
 
         return $this->render('home/index.html.twig');
     }
