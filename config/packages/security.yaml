@@ -10,19 +10,21 @@ security:
                 property: email
 
 
+
+
     firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
         main:
             pattern: ^/
             lazy: true
             provider: app_user_provider
-            remember_me:
-                secret: '%kernel.secret%'
-                lifetime: 604800 # 1 semaine en secondes
-                path: /
+
             form_login:
                 login_path: app_login
                 check_path: app_login
-                enable_csrf: true
+                enable_csrf: false
                 success_handler: App\Security\AuthenticationSuccessHandler
             logout:
                 path: app_logout
