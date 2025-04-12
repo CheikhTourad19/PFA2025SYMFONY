@@ -9,25 +9,32 @@ security:
                 class: App\Entity\User
                 property: email
 
+
+
+
     firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
         main:
             pattern: ^/
             lazy: true
             provider: app_user_provider
-            
+
             form_login:
                 login_path: app_login
                 check_path: app_login
-                enable_csrf: true
+                enable_csrf: false
                 success_handler: App\Security\AuthenticationSuccessHandler
             logout:
                 path: app_logout
 
     access_control:
-        - { path: ^/$, roles: PUBLIC_ACCESS}
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/medecin, roles: ROLE_MEDECIN }
         - { path: ^/patient, roles: ROLE_PATIENT }
         - { path: ^/pharmacie, roles: ROLE_PHARMACIE }
         - { path: ^/infermier, roles: ROLE_INFERMIER }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,15 +16,22 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function home(MailerInterface $mailer): Response
     {
-        $email = (new Email())
-            ->from('donotreplyemedical@gmail.com')
-            ->to('elghothvadel@gmail.com')
-            ->subject('Test Email')
-            ->text('This is a test email sent from Symfony!');
-
-        $mailer->send($email);
+//        $email = (new Email())
+//            ->from('donotreplyemedical@gmail.com')
+//            ->to('elghothvadel@gmail.com')
+//            ->subject('Test Email')
+//            ->text('This is a test email sent from Symfony!');
+//
+//        $mailer->send($email);
 
         return $this->render('home/index.html.twig');
+    }
+    #[Route('/api/users')]
+    public  function sendapi(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+        return $this->json($users);
+
     }
 
 

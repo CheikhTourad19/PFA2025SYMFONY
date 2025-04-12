@@ -6,18 +6,11 @@
     {{ parent() }}
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
-        .login-bg {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.4), url('{{ asset('assets/img.jpg') }}'));
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-color: #1e40af; /* Fallback color that matches your brand */
-        }
+
 
         .login-container {
             backdrop-filter: blur(12px);
-            background-color: rgba(255, 255, 255, 0.85);
+
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
@@ -29,10 +22,7 @@
         }
 
         @media (max-width: 768px) {
-            .login-bg {
-                background-attachment: scroll;
-                background-image: linear-gradient(rgba(0, 0, 0, 0.3), url('{{ asset('assets/img-mobile.jpg') | default(asset('assets/img.jpg')) }}'));
-            }
+
 
             .login-container {
                 margin: 1rem;
@@ -54,8 +44,8 @@
 {% endblock %}
 
 {% block body %}
-    <div class="flex min-h-screen items-center justify-center login-bg">
-        <div class="login-container w-full max-w-md mx-4 p-8 space-y-6 rounded-2xl">
+    <div class="flex min-h-screen items-center justify-center ">
+        <div class="login-container  w-full max-w-md mx-4 p-8 space-y-6 rounded-2xl">
             <div class="text-center">
                 <div class="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                     <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
