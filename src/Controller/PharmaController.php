@@ -30,6 +30,12 @@ final class PharmaController extends AbstractController
     public function index(): Response
     {
 
+        return $this->render('pharmacie/index.html.twig', [
+        ]);
+    }
+    #[Route('/pharmacie/contact',  name: 'app_pharma_contact')]
+    public function contact(): Response
+    {
 
         return $this->render('pharmacie/index.html.twig', [
         ]);
@@ -181,6 +187,7 @@ final class PharmaController extends AbstractController
         ]);
     }
 
+
     #[Route('/pharmacie/stock/add-medicament', name: 'app_pharma_add_medicament')]
     public function addMedicament(Request $request, EntityManagerInterface $entityManager, PharmacieRepository $pharmacieRepository, MedicamentRepository $medicamentRepository, StockRepository $stockRepository): Response
     {
@@ -232,5 +239,6 @@ final class PharmaController extends AbstractController
         // Rediriger vers la page de stock
         return $this->redirectToRoute('app_pharma_stock');
     }
+
 
 }

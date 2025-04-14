@@ -24,8 +24,9 @@ class Stock
     #[ORM\JoinColumn(name: 'pharmacie_id', referencedColumnName: 'pharmacie_id', onDelete: 'CASCADE')]
     private ?Pharmacie $pharmacie = null;
 
-    #[ORM\ManyToOne(targetEntity: Medicament::class)]
     #[ORM\JoinColumn(name: 'medicament_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\ManyToOne(targetEntity: Medicament::class, inversedBy: 'stocks')]
+
     private ?Medicament $medicament = null;
 
     public function getId(): ?int
