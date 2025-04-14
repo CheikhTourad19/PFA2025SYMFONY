@@ -37,7 +37,7 @@ final class PharmaController extends AbstractController
     public function contact(): Response
     {
 
-        return $this->render('pharmacie/index.html.twig', [
+        return $this->render('pharmacie/contact.html.twig', [
         ]);
     }
     #[Route('/pharmacie/stock',  name: 'app_pharma_stock')]

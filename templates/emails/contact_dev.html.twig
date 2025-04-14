@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau message de contact</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f8f9fa; padding: 10px; text-align: center; }
+        .content { margin: 20px 0; }
+        .footer { font-size: 0.8em; color: #6c757d; text-align: center; }
+        .info-label { font-weight: bold; color: #495057; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Nouveau message de contact</h2>
+    </div>
+
+    <div class="content">
+        <p><span class="info-label">Type de demande:</span> {{ data.issue_type }}</p>
+        <p><span class="info-label">De:</span> {{ data.name }}</p>
+        <p><span class="info-label">Rôle:</span> {{ data.role }}</p>
+        <p><span class="info-label">Email:</span> {{ data.email }}</p>
+
+        <h3>Message:</h3>
+        <p>{{ data.message|nl2br }}</p>
+    </div>
+
+    <div class="footer">
+        <p>Ce message a été envoyé via le formulaire de contact développeurs.</p>
+        <p>© {{ "now"|date("Y") }} E-Medical Pharmacie</p>
+    </div>
+</div>
+</body>
+</html>
