@@ -24,7 +24,7 @@ class OrdonnanceMedicament
     #[ORM\JoinColumn(name: 'ordonnance_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Ordonnance $ordonnance;
 
-    #[ORM\ManyToOne(targetEntity: Medicament::class)]
+    #[ORM\ManyToOne(targetEntity: Medicament::class, inversedBy: 'ordonnanceMedicaments')]
     #[ORM\JoinColumn(name: 'medicament_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private Medicament $medicament;
 

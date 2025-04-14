@@ -29,8 +29,9 @@ class Medicament
     #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'medicament')]
     private Collection $stocks;
 
-    #[ORM\OneToMany(targetEntity: OrdonnanceMedicament::class, mappedBy: 'medicament')]
+    #[ORM\OneToMany(mappedBy: 'medicament', targetEntity: OrdonnanceMedicament::class)]
     private Collection $ordonnanceMedicaments;
+
 
     public function __construct()
     {
