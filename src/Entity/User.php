@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $numero = null;
 
-    #[ORM\Column(type: 'string', enumType: Role::class, options: ['default' => 'patient'])]
+    #[ORM\Column(type: "role")]
     private Role $role = Role::PATIENT;
 
     public function getRoles(): array
@@ -52,7 +52,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function eraseCredentials(): void
-    {}
+    {
+    }
 
     public function getUserIdentifier(): string
     {

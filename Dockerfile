@@ -17,22 +17,18 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set the working directory
 WORKDIR /var/www/html
 
-# Copy the project files
+# Copy project files
 COPY . .
 
-WORKDIR /var/www/html
 # Install PHP dependencies
-RUN composer install --no-interaction
-# Set permissions for Symfony
-RUN chmod -R 775 var
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Set permissions for var and vendor directories
+# Set permissions for Symfony
 RUN chmod -R 775 var vendor && \
     chown -R www-data:www-data var vendor
 
-
-# Expose port
+# Expose port for php-fpm
 EXPOSE 9000
 
-CMD ["sh", "-c", "php bin/console messenger:consume async --no-interaction & php-fpm"]
-
+# Default command is php-fpm (used in php container)
+CMD ["php-fpm"]
