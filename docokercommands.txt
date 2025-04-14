@@ -1,0 +1,2 @@
+docker compose exec php composer require nom/du-package
+docker compose exec node npm install nom-du-package
