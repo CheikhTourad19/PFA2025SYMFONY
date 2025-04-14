@@ -30,5 +30,6 @@ RUN chmod -R 775 var vendor && \
 # Expose port for php-fpm
 EXPOSE 9000
 
+
 # Default command is php-fpm (used in php container)
 CMD ["php-fpm"]
