@@ -1,27 +1,27 @@
 name: app
 type: php:8.2
 
-disk: 1024   # <-- Add this line (in MB)
+disk: 1024 # <-- Add this line (in MB)
 
 build:
-    flavor: none
+  flavor: none
 
 web:
-    locations:
-        "/":
-            root: "public"
-            index:
-                - "index.php"
+  locations:
+    "/":
+      root: "public"
+      index:
+        - "index.php"
 
 mounts:
-    "/var": "shared:files"
+  "/var": "shared:files"
 
 variables:
-    env:
-        APP_ENV: "prod"
-        APP_SECRET: "your-secret"
+  env:
+    APP_ENV: "prod"
+    APP_SECRET: "f78451095cee280ba94717ff3b8961e8"
 
 hooks:
-    build: |
-        set -e
-        composer install --prefer-dist --no-dev --no-progress --no-interaction
+  build: |
+    set -e
+    composer install --prefer-dist --no-dev --no-progress --no-interaction
