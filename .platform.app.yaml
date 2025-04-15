@@ -12,6 +12,9 @@ web:
       root: "public"
       index:
         - "index.php"
+      scripts: true
+      allow: true
+      passthru: "/index.php" # 👈 This is what you're missing
 
 mounts:
   "/var": "shared:files"
