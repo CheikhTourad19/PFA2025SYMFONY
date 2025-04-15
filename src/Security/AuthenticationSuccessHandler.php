@@ -36,7 +36,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             return new RedirectResponse($this->router->generate('app_home_pharmacie'));
         }
         if (in_array('ROLE_INFERMIER', $roles, true)) {
-            return new RedirectResponse($this->router->generate('pp_home_infermier'));
+            return new RedirectResponse($this->router->generate('app_home_infermier'));
         }
 
         // Redirection par défaut si aucun rôle ne correspond
