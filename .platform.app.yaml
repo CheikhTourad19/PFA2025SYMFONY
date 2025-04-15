@@ -1,0 +1,28 @@
+name: app
+type: php:8.2
+
+build:
+    flavor: none
+
+web:
+    locations:
+        "/":
+            root: "public"
+            index: "index.php"
+
+mounts:
+    "/var": "shared:files"
+
+dependencies:
+    php:
+        composer/composer: "^2"
+
+variables:
+    env:
+        APP_ENV: "prod"
+        APP_SECRET: "ChangeThisSecret"
+
+hooks:
+    build: |
+        set -e
+        composer install --prefer-dist --no-dev --no-progress --no-interaction
