@@ -8,7 +8,8 @@ web:
     locations:
         "/":
             root: "public"
-            index: "index.php"
+            index: 
+                - "index.php"
 
 mounts:
     "/var": "shared:files"
