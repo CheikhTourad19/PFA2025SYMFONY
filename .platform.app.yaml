@@ -25,3 +25,5 @@ hooks:
   build: |
     set -e
     composer install --prefer-dist --no-dev --no-progress --no-interaction
+    npm install
+    npm run build
