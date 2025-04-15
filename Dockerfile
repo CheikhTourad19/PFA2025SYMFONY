@@ -1,7 +1,14 @@
-# Use the official PHP image with necessary extensions
+# Stage 1: Build PHP dependencies with Composer
+FROM composer:2 as composer
+
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+# Stage 2: PHP + Symfony runtime environment
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
+# Install dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
@@ -11,25 +18,18 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install intl pdo pdo_mysql zip
 
-# Install Composer globally
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Set the working directory
+# Set working directory
 WORKDIR /var/www/html
 
 # Copy project files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Copy vendor from Composer stage
+COPY --from=composer /app/vendor ./vendor
 
-# Set permissions for Symfony
+# Set permissions
 RUN chmod -R 775 var vendor && \
     chown -R www-data:www-data var vendor
 
-# Expose port for php-fpm
 EXPOSE 9000
-
-
-# Default command is php-fpm (used in php container)
 CMD ["php-fpm"]
