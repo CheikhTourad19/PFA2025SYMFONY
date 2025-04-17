@@ -39,7 +39,7 @@ final class ContactController extends AbstractController
         } catch (TransportExceptionInterface $e) {
             $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi du message.');
         // my future logic l pageat lkoul
-        $this->addFlash('success','Votre message a bien été transmis vers l equpe de developpement et sera traiter');
+
         }
         return $this->redirect($route);
     }
