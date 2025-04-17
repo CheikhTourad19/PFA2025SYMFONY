@@ -36,10 +36,17 @@
                             Accéder à l'espace Médecin
                         </a>
                     {% elseif is_granted('ROLE_PATIENT') %}
-                        <a href="{{ path('app_home_medecin') }}" class="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition duration-300">
+                        <a href="{{ path('app_home_patient') }}" class="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition duration-300">
                             Accéder à l'espace Patient
                         </a>
+                    {% elseif is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_home_admin') }}" class="bg-indigo-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition duration-300">
+                            Accéder à l'espace Admin
+                        </a>
                     {% endif %}
+                    <a href="{{ path('app_logout') }}" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-indigo-600 transition duration-300">
+                        Se déconnecter
+                    </a>
                 </div>
             </div>
         {% endif %}
