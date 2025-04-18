@@ -24,7 +24,7 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
 
         // Redirection en fonction des rôles
         if (in_array('ROLE_ADMIN', $roles, true)) {
-            return new RedirectResponse($this->router->generate('app_home_admin'));
+            return new RedirectResponse($this->router->generate('app_admin_home'));
         }
         if (in_array('ROLE_MEDECIN', $roles, true)) {
             return new RedirectResponse($this->router->generate('app_home_medecin'));
