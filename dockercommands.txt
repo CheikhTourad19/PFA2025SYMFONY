@@ -1,2 +1,165 @@
 docker compose exec php composer require nom/du-package
 docker compose exec node npm install nom-du-package
+
+
+
+
+
+<!-- Navbar -->
+        <nav class="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 shadow-lg" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
+            <div class="max-w-7xl mx-auto">
+                <!-- Mobile menu header -->
+                <div class="flex items-center justify-between">
+                    <!-- Titre de l'application -->
+                    <div class="text-2xl font-bold tracking-tight">Espace Admin</div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden">
+                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="text-white hover:text-gray-200 focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center justify-between mt-2">
+                    <!-- Navigation Links -->
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        {% set currentRoute = app.request.attributes.get('_route') %}
+
+                        <a href="{{ path('app_admin_home') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_home' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Dashboard
+                        </a>
+
+                        <a href="{{ path('app_admin_users') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_users' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            utilisateurs
+                        </a>
+
+                        <a href="{{ path('app_admin_reports') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_reports' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            rapports
+                        </a>
+
+                        <a href="{{ path('app_admin_settings') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_settings' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            chatbot
+                        </a>
+
+
+                    </div>
+
+                    <!-- Replace the existing "User Info and Logout" section with this -->
+                    <div class="flex items-center space-x-4">
+                        <!-- User Dropdown -->
+                        <div x-data="{ open: false }" class="relative inline-block">
+                            <!-- Dropdown Toggle -->
+                            <button @click="open = !open"
+                                    class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 rounded-lg transition-all duration-300">
+                                <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-900 flex items-center justify-center">
+                                    <span class="text-xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                     class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }">
+                                    <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div x-cloak x-show="open" @click.outside="open = false"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 -translate-y-3"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 translate-y-10"
+                                 class="absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                <!-- User Info -->
+                                <div class="px-4 py-3">
+                                    <p class="text-sm font-medium text-gray-900">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                                    <p class="text-xs text-gray-500 truncate">{{ app.user.email }}</p>
+                                </div>
+
+                                <!-- Menu Items -->
+                                <div class="py-1">
+                                    <a href="{{ path('app_admin_profile') }}"
+                                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Profile
+                                    </a>
+                                    <a href="{{ path('app_admin_settings') }}"
+                                       class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M19 5.5a4.5 4.5 0 01-4.791 4.49c-.873-.055-1.808.128-2.368.8l-6.024 7.23a2.724 2.724 0 11-3.837-3.837L9.21 8.16c.672-.56.855-1.495.8-2.368a4.5 4.5 0 015.873-4.575c.324.105.39.51.15.752L13.34 4.66a.455.455 0 00-.11.494 3.01 3.01 0 001.617 1.617c.17.07.363.02.493-.111l2.692-2.692c.241-.241.647-.174.752.15.14.435.216.9.216 1.382zM4 17a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Settings
+                                    </a>
+                                </div>
+
+                                <!-- Logout -->
+                                <div class="py-1">
+                                        <button @click="isModalOpen = true"
+                                                class="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd"/>
+                                                <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd"/>
+                                            </svg>
+                                            Logout
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Mobile Navigation -->
+                <div x-show="isMobileMenuOpen" @click.away="isMobileMenuOpen = false"
+                     class="md:hidden mt-4 space-y-2 pb-2"
+                     x-transition:enter="transition ease-out duration-100"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-75"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95">
+                    {% set currentRoute = app.request.attributes.get('_route') %}
+
+                    <a href="{{ path('app_admin_home') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_home' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Dashboard
+                    </a>
+
+                    <a href="{{ path('app_admin_users') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_users' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Utilisateurs
+                    </a>
+
+                    <a href="{{ path('app_admin_reports') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_reports' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Rapports
+                    </a>
+
+                    <a href="{{ path('app_admin_chatbot') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_chatbot' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        chatbot
+                    </a>
+
+                    <div class="pt-2 border-t border-blue-400">
+                        <div class="mb-2">
+                            <p class="font-semibold">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                            <p class="text-sm text-gray-200">{{ app.user.email }}</p>
+
+                        </div>
+
+                        <button @click="isModalOpen = true"
+                                class="w-full px-3 py-2 bg-red-600 rounded-lg shadow-md hover:bg-red-500 hover:shadow-lg transition-all duration-300">
+                            Se déconnecter
+                        </button>
+                        <a class=" mt-3 bg-green-500 block px-3 py-2 rounded-lg transition-all duration-300" href="{{ path('app_home') }}">Quitter l'espace </a>
+                    </div>
+                </div>
+            </div>
+        </nav>

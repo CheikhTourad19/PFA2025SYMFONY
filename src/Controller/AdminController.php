@@ -48,6 +48,7 @@ final class AdminController extends AbstractController
     ): Response {
         // Fetch the current user
         $user = $this->getUser();
+
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
