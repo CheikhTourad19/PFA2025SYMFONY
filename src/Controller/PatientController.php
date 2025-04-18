@@ -12,6 +12,8 @@ final class PatientController extends AbstractController
     public function index(): Response
     {
 
+
+        $this->addFlash('success', 'Bienvenue sur votre espace patient');
         return $this->render('patient/index.html.twig', [
 
         ]);
