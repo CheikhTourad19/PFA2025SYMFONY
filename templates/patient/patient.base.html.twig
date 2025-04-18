@@ -1,7 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Hello PatientController!{% endblock %}
+{% block stylesheets %}
 
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css?v={{ 'now'|date('YmdHi') }}" rel="stylesheet" />
+{%endblock  %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script>
+        // Reinitialize Flowbite components on page updates
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof flowbite !== 'undefined') {
+                flowbite.initDropdowns();
+                flowbite.initModals();
+                // Add other component initializers as needed
+            }
+        });
+    </script>
+{% endblock %}
 
 {% block body %}
     {% set currentRoute = app.request.attributes.get('_route') %}
