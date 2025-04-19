@@ -116,10 +116,14 @@
                             chatbot
                         </a>
 
+                        <a href="{{ path('app_admin_supports') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_admin_supports' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                            Contact support
+                        </a>
 
                     </div>
 
-                    <!-- Replace the existing "User Info and Logout" section with this -->
+
                     <div class="flex items-center space-x-4">
                         <!-- User Dropdown -->
                         <div x-data="{ open: false }" class="relative inline-block">
