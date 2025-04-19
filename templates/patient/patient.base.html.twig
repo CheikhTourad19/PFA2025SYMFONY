@@ -95,22 +95,17 @@
                     <div class="flex items-center space-x-2 md:space-x-4">
                         {% set currentRoute = app.request.attributes.get('_route') %}
 
-                        <a href="{{ path('app_pharma_stock') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_stock' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                            Stock
-                        </a>
-
-                        <a href="{{ path('app_pharma_ordonnance') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_ordonnance' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        <a href="{{ path('app_ordonnances_patient') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                             Ordonnance
                         </a>
 
-                        <a href="{{ path('app_home_pharmacie') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        <a href="{{ path('app_home_patient') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                             Accueil
                         </a>
-                        <a href="{{ path('app_pharma_contact') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
+                        <a href="{{ path('app_patient_contact') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
                         >
                             Nous Contacter
                         </a>
@@ -147,7 +142,7 @@
                                     </div>
                                     <a class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="{{ path('app_home') }}">Quitter l'espace</a>
                                     <!-- Profil Link -->
-                                    <a href="{{ path('app_pharma_profil') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <a href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-gray-500">
                                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
                                         </svg>
@@ -179,22 +174,19 @@
                      x-transition:leave-end="opacity-0 scale-95">
                     {% set currentRoute = app.request.attributes.get('_route') %}
 
-                    <a href="{{ path('app_pharma_stock') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_stock' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Stock
+
+
+                    <a href="{{ path('app_ordonnances_patient') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Ordonnances
                     </a>
 
-                    <a href="{{ path('app_pharma_ordonnance') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_pharma_ordonnance' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Ordonnance
-                    </a>
-
-                    <a href="{{ path('app_home_pharmacie') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                    <a href="{{ path('app_home_patient') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Accueil
                     </a>
-                    <a href="{{ path('app_pharma_contact') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_pharma_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                    <a href="{{ path('app_patient_contact') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Nous Contacter
                     </a>
 
@@ -228,7 +220,7 @@
                                 </div>
 
                                 <!-- Profil Link -->
-                                <a href="{{ path('app_pharma_profil') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                                <a href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
                                     </svg>
