@@ -25,24 +25,7 @@
 <body class="min-h-screen bg-gray-50">
 {% block body %}{% endblock %}
 
-{# Add loading state for better UX #}
-<div id="loading" class="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0 pointer-events-none">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-</div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const loading = document.getElementById('loading');
 
-        // Show loading during transitions
-        document.addEventListener('htmx:beforeRequest', () => {
-            loading.classList.remove('opacity-0', 'pointer-events-none');
-        });
-
-        document.addEventListener('htmx:afterRequest', () => {
-            loading.classList.add('opacity-0', 'pointer-events-none');
-        });
-    });
-</script>
 </body>
 </html>
