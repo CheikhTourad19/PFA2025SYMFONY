@@ -1,2 +1,149 @@
 {% extends 'admin/admin.base.html.twig' %}
-{%  block content %} users {%  endblock %}
+
+{% block content %}
+<div x-data="{
+        activeTab: 'medecin',
+        showAddModal: false,
+        searchQuery: '',
+        selectedUser: null
+    }" class="container mx-auto p-8">
+
+    <!-- Role Navigation -->
+    <div class="flex gap-4 mb-6 border-b-2 border-gray-200">
+        <button @click="activeTab = 'medecin'"
+                :class="{ 'border-b-4 border-blue-600 text-blue-600': activeTab === 'medecin' }"
+                class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600 transition-colors">
+            Médecins
+        </button>
+        <button @click="activeTab = 'pharmacie'"
+                :class="{ 'border-b-4 border-blue-600 text-blue-600': activeTab === 'pharmacie' }"
+                class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600 transition-colors">
+            Pharmacies
+        </button>
+        <button @click="activeTab = 'infermier'"
+                :class="{ 'border-b-4 border-blue-600 text-blue-600': activeTab === 'infermier' }"
+                class="px-4 py-2 text-gray-600 font-medium hover:text-blue-600 transition-colors">
+            Infirmiers
+        </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="mb-6">
+        <input type="text" x-model="searchQuery"
+               placeholder="Rechercher utilisateurs..."
+               class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+
+    <!-- Users Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Détails</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+            <!-- Sample Doctors -->
+            <template x-if="activeTab === 'medecin'">
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Dr. Jean Dupont</td>
+                    <td class="px-6 py-4 whitespace-nowrap">jean.dupont@example.com</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Cardiologie</td>
+                    <td class="px-6 py-4 whitespace-nowrap space-x-2">
+                        <button class="text-blue-600 hover:text-blue-900">Réinitialiser MDP</button>
+                        <button class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                </tr>
+            </template>
+
+            <!-- Sample Pharmacies -->
+            <template x-if="activeTab === 'pharmacie'">
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Pharmacie Centrale</td>
+                    <td class="px-6 py-4 whitespace-nowrap">pharma.centrale@example.com</td>
+                    <td class="px-6 py-4 whitespace-nowrap">123 Rue Principale</td>
+                    <td class="px-6 py-4 whitespace-nowrap space-x-2">
+                        <button class="text-blue-600 hover:text-blue-900">Réinitialiser MDP</button>
+                        <button class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                </tr>
+            </template>
+
+            <!-- Sample Nurses -->
+            <template x-if="activeTab === 'infermier'">
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">Marie Curie</td>
+                    <td class="px-6 py-4 whitespace-nowrap">marie.curie@example.com</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Service Urgences</td>
+                    <td class="px-6 py-4 whitespace-nowrap space-x-2">
+                        <button class="text-blue-600 hover:text-blue-900">Réinitialiser MDP</button>
+                        <button class="text-red-600 hover:text-red-900">Supprimer</button>
+                    </td>
+                </tr>
+            </template>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add User Floating Button -->
+    <button @click="showAddModal = true"
+            class="fixed bottom-16 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+    </button>
+
+    <!-- Add User Modal -->
+    <div x-show="showAddModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-96" @click.outside="showAddModal = false">
+            <h3 class="text-xl font-bold mb-4">Ajouter Utilisateur</h3>
+            <form x-data="{ role: '' }">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Rôle</label>
+                        <select x-model="role" class="mt-1 block w-full rounded-lg border-gray-300">
+                            <option value="ROLE_MEDECIN">Médecin</option>
+                            <option value="ROLE_PHARMACIE">Pharmacie</option>
+                            <option value="ROLE_INFERMIER">Infirmier</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" class="mt-1 block w-full rounded-lg border-gray-300">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Mot de passe temporaire</label>
+                        <input type="password" class="mt-1 block w-full rounded-lg border-gray-300">
+                    </div>
+
+                    <div x-show="role === 'ROLE_MEDECIN'">
+                        <label class="block text-sm font-medium text-gray-700">Service</label>
+                        <input type="text" class="mt-1 block w-full rounded-lg border-gray-300">
+                    </div>
+
+                    <div x-show="role === 'ROLE_PHARMACIE'">
+                        <label class="block text-sm font-medium text-gray-700">Adresse</label>
+                        <input type="text" class="mt-1 block w-full rounded-lg border-gray-300">
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" @click="showAddModal = false"
+                                class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">
+                            Annuler
+                        </button>
+                        <button type="button"
+                                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                            Créer
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
