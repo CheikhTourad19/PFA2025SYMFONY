@@ -112,55 +112,114 @@
                     </div>
 
                     <!-- User Info with Dropdown -->
-                    <div class="flex items-center space-x-4">
+                    <!-- User Info with Offcanvas -->
+                    <div class="flex items-center space-x-4" x-data="{ offcanvasOpen: false }">
+                        <!-- Offcanvas Toggle Button -->
+                        <button
+                                x-on:click="offcanvasOpen = true"
+                                type="button"
+                                class="flex items-center space-x-2 px-3 py-2 bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-300"
+                        >
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-900 flex items-center justify-center">
+                                <span class="text-xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
 
-                        <!-- User Dropdown -->
-                        <div x-data="{ open: false }" @click.away="open = false" class="relative">
-                            <button @click="open = !open"
-                                    class="flex items-center space-x-2 px-3 py-2 bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-300">
-                                <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-900 flex items-center justify-center">
-                                    <span class="text-xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
-                                </div>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" :class="{'rotate-180': open}">
-                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-
-                            <!-- Dropdown Menu -->
-                            <div x-cloak x-show="open"
-                                 x-transition:enter="transition ease-out duration-100"
-                                 x-transition:enter-start="opacity-0 transform scale-95"
-                                 x-transition:enter-end="opacity-100 transform scale-100"
-                                 x-transition:leave="transition ease-in duration-75"
-                                 x-transition:leave-start="opacity-100 transform scale-100"
-                                 x-transition:leave-end="opacity-0 transform scale-95"
-                                 class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg bg-white text-gray-800 z-10">
-                                <div class="py-1 divide-y divide-gray-100">
-                                    <div class="mb-2 mx-1">
-                                        <p class="font-semibold">{{ app.user.prenom }} {{ app.user.nom }}</p>
-                                        <p class="text-sm text-gray-900">{{ app.user.email }}</p>
-                                    </div>
-                                    <a class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" href="{{ path('app_home') }}">Quitter l'espace</a>
-                                    <!-- Profil Link -->
-                                    <a href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-gray-500">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
+                        <!-- Offcanvas Backdrop -->
+                        <div
+                                x-cloak
+                                x-show="offcanvasOpen"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0"
+                                x-transition:enter-end="opacity-100"
+                                x-transition:leave="transition ease-in duration-200"
+                                x-transition:leave-start="opacity-100"
+                                x-transition:leave-end="opacity-0"
+                                x-bind:aria-hidden="!offcanvasOpen"
+                                tabindex="-1"
+                                role="dialog"
+                                aria-labelledby="pm-offcanvas-title"
+                                class="z-90 fixed inset-0 overflow-hidden bg-zinc-700/75 backdrop-blur-xs dark:bg-zinc-950/50"
+                        >
+                            <!-- Offcanvas Sidebar -->
+                            <div
+                                    x-cloak
+                                    x-show="offcanvasOpen"
+                                    x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter-start="translate-x-full"
+                                    x-transition:enter-end="translate-x-0"
+                                    x-transition:leave="transition ease-in duration-200"
+                                    x-transition:leave-start="translate-x-0"
+                                    x-transition:leave-end="translate-x-full"
+                                    role="document"
+                                    class="absolute flex h-dvh w-full max-w-xs flex-col bg-white shadow-lg will-change-transform dark:bg-zinc-900 dark:text-zinc-100 dark:shadow-zinc-950 top-0 end-0"
+                                    @click.away="offcanvasOpen = false"
+                            >
+                                <!-- Header -->
+                                <div class="flex min-h-16 flex-none items-center justify-between border-b border-zinc-100 px-5 dark:border-zinc-800 md:px-7">
+                                    <h3 id="pm-offcanvas-title" class="py-5 font-semibold">Mon Compte</h3>
+                                    <button
+                                            x-on:click="offcanvasOpen = false"
+                                            type="button"
+                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs focus:ring-zinc-300/25 active:border-zinc-200 active:shadow-none dark:border-zinc-700 dark:bg-transparent dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:text-zinc-200 dark:focus:ring-zinc-600/50 dark:active:border-zinc-700"
+                                    >
+                                        <svg class="hi-solid hi-x -mx-1 inline-block size-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                         </svg>
-                                        Profil
-                                    </a>
-
-                                    <!-- Déconnexion Button -->
-                                    <button @click="isModalOpen = true" class="flex items-center w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2 text-red-500">
-                                            <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
-                                            <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
-                                        </svg>
-                                        Déconnexion
                                     </button>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="flex grow flex-col overflow-y-auto p-5 md:p-7">
+                                    <!-- User Info -->
+                                    <div class="mb-6">
+                                        <div class="flex items-center space-x-4 mb-4">
+                                            <div class="flex-shrink-0 h-16 w-16 rounded-full bg-blue-900 flex items-center justify-center">
+                                                <span class="text-2xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
+                                            </div>
+                                            <div>
+                                                <p class="font-semibold text-lg">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ app.user.email }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Menu Items -->
+                                    <div class="space-y-2">
+                                        <a x-on:click="offcanvasOpen = false" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200" href="{{ path('app_home') }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
+                                                <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" clip-rule="evenodd" />
+                                            </svg>
+                                            Quitter l'espace
+                                        </a>
+
+                                        <a x-on:click="offcanvasOpen = false" href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
+                                            </svg>
+                                            Profil
+                                        </a>
+
+                                        <!-- In your offcanvas menu items section -->
+                                        <button
+                                                @click="isModalOpen = true; offcanvasOpen = false"
+                                                class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-500 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-red-500">
+                                                <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
+                                                <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
+                                            </svg>
+                                            Déconnexion
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- END Offcanvas -->
                 </div>
 
                 <!-- Mobile Navigation -->
