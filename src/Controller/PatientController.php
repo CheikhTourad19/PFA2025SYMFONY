@@ -10,7 +10,8 @@ use App\Repository\OrdonnanceRepository;
 use App\Repository\PharmacieRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Proxies\__CG__\App\Entity\OrdonnanceMedicament;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,37 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PatientController extends AbstractController
 {
+    #[Route('/patient/ordonnance/pdf/{id}', name: 'ordonnance_pdf')]
+    public function exportOrdonnancePdf(int $id,OrdonnanceRepository $ordonnanceRepository,OrdonnanceMedicamentRepository $ordonnanceMedicamentRepository): Response
+    {
+        $ordonnance=$ordonnanceMedicamentRepository->findBy(['ordonnance'=>$id]);
+        $total=0;
+        foreach ($ordonnance as $m) {
+            $total=$total+($m->getMedicament()->getPrix()*$m->getQuantite() );
+        }
+        // Render HTML
+        $html = $this->renderView('pdf/ordonnance.html.twig', [
+            'ordonnance'=>$ordonnance,
+            'total'=>$total,
+        ]);
+
+        // Setup Dompdf
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="ordonnance.pdf"',
+            ]
+        );
+    }
     #[Route('/patient', name: 'app_home_patient')]
     public function index(): Response
     {

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordonnance Médicale</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            @top-center {
+                content: "";
+                font-family: 'Segoe UI', sans-serif;
+            }
+            @bottom-center {
+                content: "Page " counter(page) " sur " counter(pages);
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 9pt;
+                color: #666;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .letterhead {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e6ed;
+        }
+
+        .letterhead h2 {
+            color: #166088;
+            font-size: 10pt;
+            font-weight: 600;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .letterhead h1 {
+            color: #2c3e50;
+            font-size: 24pt;
+            margin: 10px 0 5px 0;
+            font-weight: 300;
+        }
+
+        .document-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #166088;
+            font-size: 18pt;
+            margin: 0 0 10px 0;
+            font-weight: 600;
+        }
+
+        .patient-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .info-section {
+            flex: 1;
+            padding: 0 15px;
+        }
+
+        .info-section:first-child {
+            border-right: 1px solid #e0e6ed;
+        }
+
+        .info-label {
+            font-weight: 600;
+            font-size: 9pt;
+            color: #4a6fa5;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 11pt;
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            page-break-inside: avoid;
+        }
+
+        th {
+            background-color: #166088;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 10pt;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e6ed;
+            font-size: 10pt;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .total-row {
+            font-weight: 600;
+            background-color: #e6f0f7;
+        }
+
+        .total-row td {
+            padding: 12px 15px;
+            font-size: 11pt;
+            color: #166088;
+        }
+
+        .signature-section {
+            margin-top: 50px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .signature-line {
+            width: 250px;
+            border-top: 1px solid #ccc;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 10pt;
+            color: #666;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 9pt;
+            color: #666;
+            text-align: center;
+            border-top: 1px solid #e0e6ed;
+            padding-top: 15px;
+        }
+
+        .print-date {
+            position: absolute;
+            top: 1.5cm;
+            right: 1.5cm;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="letterhead">
+    <h2>E-Medical</h2>
+    <h1>Ordonnance Médicale</h1>
+    <p>Solution numérique par les étudiants d'ESPRIM</p>
+</div>
+
+<div class="print-date">
+    Imprimé le: {{ "now"|date('d/m/Y H:i') }}
+</div>
+
+<div class="document-meta">
+    <div>Date de création: {{ ordonnance[0].ordonnance.getDateCreation|date('d/m/Y') }}</div>
+    <div>Référence: ORD-{{ ordonnance[0].ordonnance.id }}</div>
+</div>
+
+<div class="patient-info">
+    <div class="info-section">
+        <div class="info-label">Patient</div>
+        <div class="info-value">{{ ordonnance[0].ordonnance.patient.nom }}</div>
+    </div>
+    <div class="info-section">
+        <div class="info-label">Prescrit par</div>
+        <div class="info-value">Dr. {{ ordonnance[0].ordonnance.medecin.user.nom }}</div>
+        <div class="info-value">{{ ordonnance[0].ordonnance.medecin.service }}</div>
+    </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Médicament</th>
+        <th>Quantité</th>
+        <th>Posologie</th>
+        <th>Description</th>
+        <th>Prix</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for med in ordonnance %}
+        <tr>
+            <td>{{ med.medicament.nom }}</td>
+            <td>{{ med.quantite }}</td>
+            <td>{{ med.instructions }}</td>
+            <td>{{ med.medicament.description }}</td>
+            <td>{{ med.medicament.prix }} DT</td>
+        </tr>
+    {% endfor %}
+    <tr class="total-row">
+        <td colspan="4">Total</td>
+        <td>{{ total }} DT</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="signature-section">
+    <div class="signature-line">
+        Signature et cachet du médecin
+    </div>
+</div>
+
+<div class="footer">
+    <p>Cette ordonnance est valable pour 3 mois à compter de la date d'émission</p>
+    <p>E-Medical • Solution développée par les étudiants d'ESPRIM • Contact: +216 56575154</p>
+</div>
+</body>
+</html>
