@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Enum\Role;
 use App\Form\UserType;
 use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\OrdonnanceRepository;
+use App\Repository\PharmacieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Proxies\__CG__\App\Entity\OrdonnanceMedicament;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,6 +24,16 @@ final class PatientController extends AbstractController
     {
 
         return $this->render('patient/index.html.twig', []);
+    }
+    #[Route('/patient/pahrmacie', name: 'app_patient_pharmacie')]
+    public function pharmacie(PharmacieRepository $pharmacieRepository,UserRepository $userRepository): Response
+
+    {
+
+        $users=$userRepository->findBy(['role'=>Role::PHARMACIE]);
+
+        $pharmacies=$pharmacieRepository->findBy(['user' => $users]);
+        return $this->render('patient/pharmacie.html.twig', ['pharmacies' => $pharmacies]);
     }
     #[Route('/patient/ordonnances', name: 'app_ordonnances_patient')]
     public function ordonnances(OrdonnanceRepository $ordonnanceRepository): Response

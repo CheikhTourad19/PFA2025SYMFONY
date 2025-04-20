@@ -109,6 +109,13 @@
                         >
                             Nous Contacter
                         </a>
+                        <a href="{{ path('app_patient_pharmacie') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
+                        >
+                            Chercher Pharmacie
+                        </a>
+
+
                     </div>
 
                     <!-- User Info with Dropdown -->
@@ -248,7 +255,10 @@
                        class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Nous Contacter
                     </a>
-
+                    <a href="{{ path('app_patient_pharmacie') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Chercher Pharmacie
+                    </a>
                     <div x-data="{ open: false }" @click.away="open = false" class="relative">
                         <button @click="open = !open"
                                 class="flex items-center justify-between w-full px-3 py-2 bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-300">
