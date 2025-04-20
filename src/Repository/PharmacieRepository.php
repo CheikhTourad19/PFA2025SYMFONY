@@ -15,7 +15,16 @@ class PharmacieRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Pharmacie::class);
     }
-
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->leftJoin('p.user', 'u')
+            ->leftJoin('p.adresse', 'a')
+            ->addSelect('u' , 'a')
+            ->orderBy('u.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
     //     * @return Pharmacie[] Returns an array of Pharmacie objects
     //     */

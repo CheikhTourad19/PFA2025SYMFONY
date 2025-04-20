@@ -3,6 +3,9 @@
 namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\InfermierRepository;
+use App\Repository\MedecinRepository;
+use App\Repository\PharmacieRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,15 +17,26 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin', name: 'app_admin')]
 final class AdminController extends AbstractController
 {
+
     #[Route('/home', name: '_home')]
     public function index(): Response
     {
         return $this->render('admin/index.html.twig');
     }
     #[Route('/users', name: '_users')]
-    public function users():Response
+    public function users(Request $request , EntityManagerInterface $em, MedecinRepository $medecinRepo,
+                          PharmacieRepository $pharmacieRepo,
+                          InfermierRepository $infermierRepo):Response
     {
-        return $this->render('admin/users.html.twig');
+        $medecins = $medecinRepo->findAll();
+        $pharmacies = $pharmacieRepo->findAll();
+        $infermiers = $infermierRepo->findAll();
+
+        return $this->render('admin/users.html.twig', [
+            'medecins' => $medecins,
+            'pharmacies' => $pharmacies,
+            'infermiers' => $infermiers,
+        ]);
     }
     #[Route('/reports', name: '_reports')]
     public function reports():Response
@@ -97,5 +111,59 @@ final class AdminController extends AbstractController
             'profileForm' => $profileForm->createView()
         ]);
     }
+    #[Route('/users/add/{type}', name: '_user_add')]
+    public function addUser(string $type, Request $request): Response
+    {
+        switch ($type) {
+            case 'medecin':
+                $form = $this->createForm(MedecinType::class, new Medecin());
+                break;
+            case 'pharmacie':
+                $form = $this->createForm(PharmacieType::class, new Pharmacie());
+                break;
+            case 'infermier':
+                $form = $this->createForm(InfermierType::class, new Infermier());
+                break;
+            default:
+                throw $this->createNotFoundException('Invalid user type');
+        }
 
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entity = $form->getData();
+            $user = $entity->getUser();
+
+            // Set role based on type
+            $user->setRoles(['ROLE_'.strtoupper($type)]);
+
+            // Hash password
+            $user->setPassword(
+                $this->passwordHasher->hashPassword(
+                    $user,
+                    $form->get('user')->get('plainPassword')->getData()
+                )
+            );
+
+            $this->em->persist($entity);
+            $this->em->flush();
+
+            $this->addFlash('success', 'User created successfully');
+            return $this->redirectToRoute('admin_users');
+        }
+
+        return $this->render('admin/add_user.html.twig', [
+            'form' => $form->createView(),
+            'type' => $type
+        ]);
+    }
+    #[Route('/users/{type}/delete/{id}', name: '_user_delete')]
+public function deleteUser():Response{
+        return render('admin/user.html.twig');
+    }
+    #[Route('/users/{type}/edit/{id}', name: '_user_edit')]
+    public function editUser():Response{
+        return render('admin/user.html.twig');
+    }
 }
+

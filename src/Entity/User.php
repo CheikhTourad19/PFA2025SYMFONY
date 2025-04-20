@@ -46,6 +46,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "string", enumType: Role::class)]
     private Role $role = Role::PATIENT;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Medecin::class, cascade: ['persist', 'remove'])]
+    private ?Medecin $medecin = null;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Pharmacie::class, cascade: ['persist', 'remove'])]
+    private ?Pharmacie $pharmacie = null;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Infermier::class, cascade: ['persist', 'remove'])]
+    private ?Infermier $infermier = null;
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: Patient::class, cascade: ['persist', 'remove'])]
+    private ?Patient $patient = null;
+
     public function getRoles(): array
     {
         return ['ROLE_' . strtoupper($this->role->value)];
