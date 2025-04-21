@@ -1,16 +1,23 @@
 <?php
 
 namespace App\Form;
+use App\Entity\Infermier;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-class InfermierType
+use Symfony\Component\OptionsResolver\OptionsResolver;
+class InfermierType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('user', UserType::class)
-            ->add('specialite', TextType::class);
+            ->add('service', TextType::class);
 
+    }
+    public function configureOptions(OptionsResolver $resolver): void{
+        $resolver->setDefaults([
+            'data_class' => Infermier::class,
+        ]);
     }
 }

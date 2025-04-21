@@ -14,8 +14,12 @@ class Pharmacie
     #[ORM\Column(type: 'string', length: 100)]
     private $cin;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Adresse',fetch: 'EAGER')]
-    #[ORM\JoinColumn(name: 'adresse_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\OneToOne(
+        targetEntity: Adresse::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[ORM\JoinColumn(name: 'adresse_id', referencedColumnName: 'id')]
     private $adresse;
 
     // Getters and Setters
