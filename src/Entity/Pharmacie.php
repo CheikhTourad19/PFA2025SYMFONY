@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Pharmacie
 {
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: 'User')]
+    #[ORM\OneToOne(targetEntity: 'User',inversedBy: 'pharmacie')]
     #[ORM\JoinColumn(name: 'pharmacie_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $user;
 
