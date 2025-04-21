@@ -28,19 +28,28 @@ final class PatientController extends AbstractController
         foreach ($ordonnance as $m) {
             $total=$total+($m->getMedicament()->getPrix()*$m->getQuantite() );
         }
+        $signaturePath = $this->getParameter('kernel.project_dir') . '/public/assets/signature.png';
+
+        $signatureBase64 = base64_encode(file_get_contents($signaturePath));
+
         // Render HTML
         $html = $this->renderView('pdf/ordonnance.html.twig', [
             'ordonnance'=>$ordonnance,
             'total'=>$total,
+            'signatureBase64' => $signatureBase64,
         ]);
 
         // Setup Dompdf
         $options = new Options();
+        $options->set('isRemoteEnabled', true); // ⚠️ OBLIGATOIRE pour les images avec URL absolue
+
         $options->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
+        $signaturePath = $this->getParameter('kernel.project_dir') . '/public/assets/signature.png';
+        $signatureBase64 = base64_encode(file_get_contents($signaturePath));
 
         return new Response(
             $dompdf->output(),

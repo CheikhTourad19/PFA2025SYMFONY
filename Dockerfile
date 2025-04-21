@@ -1,7 +1,7 @@
 # Use the official PHP image with necessary extensions
 FROM php:8.2-fpm
 
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libicu-dev \
     libpq-dev \
@@ -9,7 +9,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    && docker-php-ext-install intl pdo pdo_mysql zip
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install intl pdo pdo_mysql zip gd
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -30,6 +34,5 @@ RUN chmod -R 775 var vendor && \
 # Expose port for php-fpm
 EXPOSE 9000
 
-
-# Default command is php-fpm (used in php container)
+# Default command
 CMD ["php-fpm"]
