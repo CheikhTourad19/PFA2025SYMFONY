@@ -19,6 +19,7 @@ use App\Repository\StockRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -81,75 +82,62 @@ final class PharmaController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         PharmacieRepository $pharmacieRepository
     ): Response {
-        // Fetch the current user
         $user = $this->getUser();
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
-        // Fetch the user's pharmacy and address
+        // Récupération de la pharmacie et de l'adresse
         $pharmacie = $pharmacieRepository->findOneBy(['user' => $user]);
-        $adresse = $pharmacie ? $pharmacie->getAdresse() : new Adresse();
+        $adresse = $pharmacie ? $pharmacie->getAdresse() ?? new Adresse() : new Adresse();
 
-        // Create the profile form with the current user data
+        // Formulaire du profil utilisateur
         $profileForm = $this->createForm(UserType::class, $user);
         $profileForm->handleRequest($request);
 
-        // Handle profile form submission
         if ($profileForm->isSubmitted() && $profileForm->isValid()) {
-            // Handle password update if provided
             $currentPassword = $profileForm->get('currentPassword')->getData();
             $newPassword = $profileForm->get('newPassword')->getData();
 
             if ($currentPassword && $newPassword) {
                 if (strlen($newPassword) < 8) {
-                    $this->addFlash('error', 'Le nouveau mot de passe doit contenir au moins 8 caractères.');
-                }
-                // Verify the current password
-                else if (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
-                    $this->addFlash('error', 'Le mot de passe actuel est incorrect et information non enregistrés');
+                    $profileForm->get('newPassword')->addError(new FormError('Le nouveau mot de passe doit contenir au moins 8 caractères.'));
+                } elseif (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
+                    $profileForm->get('currentPassword')->addError(new FormError('Le mot de passe actuel est incorrect.'));
                 } else {
-                    // Hash and set the new password
                     $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                     $user->setPassword($hashedPassword);
                     $this->addFlash('success', 'Votre mot de passe a été mis à jour avec succès.');
                 }
             }
 
-            // Save the updated user to the database
-            $entityManager->persist($user); // Ensure the user is persisted
-            $entityManager->flush();
-
-            // Add a flash message for success
+            $entityManager->flush(); // Pas besoin de persist sur un user déjà managé
             $this->addFlash('success', 'Vos informations ont été mises à jour avec succès.');
             return $this->redirectToRoute('app_pharma_profil');
         }
 
-        // Create the address form with the current address data
+        // Formulaire de l'adresse
         $addressForm = $this->createForm(AdresseType::class, $adresse);
         $addressForm->handleRequest($request);
 
-        // Handle address form submission
         if ($addressForm->isSubmitted() && $addressForm->isValid()) {
-            // Associate the address with the pharmacy if not already associated
             if ($pharmacie && !$pharmacie->getAdresse()) {
                 $pharmacie->setAdresse($adresse);
             }
 
-            // Save the updated address to the database
-            $entityManager->persist($adresse);
+            $entityManager->persist($adresse); // Utile si nouvelle adresse
             $entityManager->flush();
 
-            // Add a flash message for success
             $this->addFlash('success', 'Votre adresse a été mise à jour avec succès.');
             return $this->redirectToRoute('app_pharma_profil');
         }
-        // Render both forms in the same template
+
         return $this->render('pharmacie/profile.html.twig', [
             'profileForm' => $profileForm->createView(),
             'addressForm' => $addressForm->createView(),
         ]);
     }
+
 
     #[Route('/pharmacie/ordonnance', name: 'app_pharma_ordonnance')]
     public function Ordonnanceindex(Request $request, OrdonnanceMedicamentRepository $om, OrdonnanceRepository $or): Response

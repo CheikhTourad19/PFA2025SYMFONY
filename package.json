@@ -26,6 +26,7 @@
         "alpinejs": "^3.14.9",
         "autoprefixer": "^10.4.20",
         "axios": "^1.8.4",
+        "flyonui": "^2.1.0",
         "postcss": "^8.5.3",
         "postcss-loader": "^8.1.1",
         "tailwindcss": "^4.0.8",
