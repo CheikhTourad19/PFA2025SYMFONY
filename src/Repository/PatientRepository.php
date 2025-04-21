@@ -15,15 +15,15 @@ class PatientRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Patient::class);
     }
-    public function findAll(): array
-    {
-        return $this->createQueryBuilder('p')
-            ->leftJoin('p.user', 'u')
-            ->addSelect('u')
-            ->orderBy('u.nom', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
+//    public function findAll(): array
+//    {
+//        return $this->createQueryBuilder('p')
+//            ->leftJoin('p.user', 'u')
+//            ->addSelect('u')
+//            ->orderBy('u.nom', 'ASC')
+//            ->getQuery()
+//            ->getResult();
+//    }
     //    /**
     //     * @return Patient[] Returns an array of Patient objects
     //     */

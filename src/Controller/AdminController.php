@@ -17,6 +17,7 @@ use App\Repository\InfermierRepository;
 use App\Repository\MedecinRepository;
 use App\Repository\PatientRepository;
 use App\Repository\PharmacieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,12 +41,16 @@ final class AdminController extends AbstractController
     public function users(Request $request , EntityManagerInterface $em, MedecinRepository $medecinRepo,
                           PharmacieRepository $pharmacieRepo,
                           InfermierRepository $infermierRepo,
-    PatientRepository $patientRepos):Response
+    PatientRepository $patientRepos,UserRepository $userRepository):Response
     {
-        $medecins = $medecinRepo->findAll();
-        $pharmacies = $pharmacieRepo->findAll();
-        $infermiers = $infermierRepo->findAll();
-        $patients = $patientRepos->findAll();
+//        $medecins = $medecinRepo->findAll();
+//        $pharmacies = $pharmacieRepo->findAll();
+//        $infermiers = $infermierRepo->findAll();
+//        $patients = $patientRepos->findAll();
+        $medecins=$userRepository->findBy(['role'=>Role::MEDECIN]);
+        $pharmacies=$userRepository->findBy(['role'=>Role::PHARMACIE]);
+        $infermiers=$userRepository->findBy(['role'=>Role::INFERMIER]);
+        $patients=$userRepository->findBy(['role'=>Role::PATIENT]);
         return $this->render('admin/users.html.twig', [
             'medecins' => $medecins,
             'pharmacies' => $pharmacies,
@@ -191,7 +196,9 @@ final class AdminController extends AbstractController
                 $infermier->setService($entity->getService());
                 $em->persist($infermier);
                 break;
-                case 'patient':$patient=new Patient();$patient->setUser($user);$patient->setCin($entity->getPatient()->getCin());
+                case 'patient':
+
+                    $patient=new Patient();$patient->setUser($user);$patient->setCin($entity->getPatient()->getCin());
                 $em->persist($patient);
                 break;
             }
@@ -209,12 +216,15 @@ final class AdminController extends AbstractController
         ]);
     }
     #[Route('/users/{type}/delete/{id}', name: '_user_delete')]
-public function deleteUser():Response{
-        return render('admin/user.html.twig');
+    public function deleteUser(int $id,UserRepository $userRepository):Response{
+        $user=$userRepository->find($id);
+//        UserRepository::class->remove($user);
+        $this->addFlash('success', 'User deleted successfully');
+        return $this->redirectToRoute('app_admin_users');
     }
     #[Route('/users/{type}/edit/{id}', name: '_user_edit')]
     public function editUser():Response{
-        return render('admin/user.html.twig');
+        return $this->render('admin/user.html.twig');
     }
 }
 

@@ -15,15 +15,15 @@ class InfermierRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Infermier::class);
     }
-    public function findAll(): array
-    {
-        return $this->createQueryBuilder('i')
-            ->leftJoin('i.user', 'u')
-            ->addSelect('u')
-            ->orderBy('u.nom', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
+//    public function findAll(): array
+//    {
+//        return $this->createQueryBuilder('i')
+//            ->leftJoin('i.user', 'u')
+//            ->addSelect('u')
+//            ->orderBy('u.nom', 'ASC')
+//            ->getQuery()
+//            ->getResult();
+//    }
 
     //    /**
     //     * @return Infermier[] Returns an array of Infermier objects

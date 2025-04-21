@@ -15,15 +15,15 @@ class MedecinRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Medecin::class);
     }
-    public function findAll(): array
-    {
-        return $this->createQueryBuilder('m')
-            ->leftJoin('m.user', 'u')
-            ->addSelect('u')
-            ->orderBy('u.nom', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
+//    public function findAll(): array
+//    {
+//        return $this->createQueryBuilder('m')
+//            ->leftJoin('m.user', 'u')
+//            ->addSelect('u')
+//            ->orderBy('u.nom', 'ASC')
+//            ->getQuery()
+//            ->getResult();
+//    }
     //    /**
     //     * @return Medecin[] Returns an array of Medecin objects
     //     */
