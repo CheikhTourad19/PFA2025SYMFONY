@@ -10,23 +10,50 @@
         <!-- User Fields -->
         <div class="border-b pb-4">
             <h3 class="text-lg font-semibold mb-2">Informations de base</h3>
-            {{ form_row(form.user.nom) }}
-            {{ form_row(form.user.prenom) }}
-            {{ form_row(form.user.email) }}
-            {{ form_row(form.user.numero) }}
-            {{ form_row(form.user.newPassword) }}
+            {{ form_row(form.user.nom, {
+                'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_row(form.user.prenom, {
+                'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_row(form.user.email, {
+                'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_row(form.user.numero, {
+                'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
+            {{ form_row(form.user.newPassword, {
+                'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+            }) }}
         </div>
 
         <!-- Role-specific Fields -->
         <div class="pt-4">
             <h3 class="text-lg font-semibold mb-2">Informations spécifiques</h3>
             {% if type == 'medecin' %}
-                {{ form_row(form.service) }}
+                {{ form_row(form.service, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
             {% elseif type == 'pharmacie' %}
-                {{ form_row(form.adresse) }}
-                {{ form_row(form.cin) }}
+                {{ form_row(form.adresse, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
+                {{ form_row(form.cin, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
             {% elseif type == 'infermier' %}
-                {{ form_row(form.service) }}
+                {{ form_row(form.service, {
+                    'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500'},
+                    'label_attr': {'class': 'block text-sm font-medium text-gray-700'}
+                }) }}
             {% endif %}
         </div>
 

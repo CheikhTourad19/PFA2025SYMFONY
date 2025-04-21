@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Patient;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Form\UserType;
@@ -70,6 +71,9 @@ final class PatientController extends AbstractController
     public function pharmacie(PharmacieRepository $pharmacieRepository,UserRepository $userRepository): Response
 
     {
+
+        $patient= new Patient();
+        $patient->setUser($this->getUser());
 
         $users=$userRepository->findBy(['role'=>Role::PHARMACIE]);
 
