@@ -1,7 +1,15 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Adresse;
+use App\Entity\Infermier;
+use App\Entity\Medecin;
+use App\Entity\Pharmacie;
 use App\Entity\User;
+use App\Enum\Role;
+use App\Form\InfermierType;
+use App\Form\MedecinType;
+use App\Form\PharmacieType;
 use App\Form\UserType;
 use App\Repository\InfermierRepository;
 use App\Repository\MedecinRepository;
@@ -17,6 +25,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/admin', name: 'app_admin')]
 final class AdminController extends AbstractController
 {
+
+
 
     #[Route('/home', name: '_home')]
     public function index(): Response
@@ -112,8 +122,12 @@ final class AdminController extends AbstractController
         ]);
     }
     #[Route('/users/add/{type}', name: '_user_add')]
-    public function addUser(string $type, Request $request): Response
+    public function addUser(string $type,
+                            Request $request,
+                            UserPasswordHasherInterface $passwordHasher,
+                            EntityManagerInterface $em): Response
     {
+
         switch ($type) {
             case 'medecin':
                 $form = $this->createForm(MedecinType::class, new Medecin());
@@ -133,23 +147,49 @@ final class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entity = $form->getData();
             $user = $entity->getUser();
-
             // Set role based on type
-            $user->setRoles(['ROLE_'.strtoupper($type)]);
+            switch ($type) {
+                case 'medecin': $user->setRole(Role::MEDECIN);
+                break;
+                case 'pharmacie': $user->setRole(Role::PHARMACIE);
+                break;
+                case 'infermier': $user->setRole(Role::INFERMIER);
+                break;
+                
+            }
 
             // Hash password
             $user->setPassword(
-                $this->passwordHasher->hashPassword(
+                $passwordHasher->hashPassword(
                     $user,
-                    $form->get('user')->get('plainPassword')->getData()
+                    $form->get('user')->get('newPassword')->getData()
                 )
             );
+            $em->persist($user);
+            switch ($type){
+                case 'medecin':$medecin=new Medecin();$medecin->setUser($user);
+                $medecin->setService($entity->getService());
+                $em->persist($medecin);
+                break;
+                case 'pharmacie':$pharmacie=new Pharmacie();$pharmacie->setUser($user);
+                $adresse=new Adresse();
+                $adresse->setRue($form->get('adresse')->get('rue')->getData());
+                $adresse->setVille($form->get('adresse')->get('ville')->getData());
+                $adresse->setQuartier($form->get('adresse')->get('quartier')->getData());
+                $pharmacie->setAdresse($adresse);
+                $pharmacie->setCin($entity->getCin());
+                $em->persist($pharmacie);
+                    break;
+                case 'infermier':$infermier=new Infermier();$infermier->setUser($user);
+                $infermier->setService($entity->getService());
+                $em->persist($infermier);
+            }
 
-            $this->em->persist($entity);
-            $this->em->flush();
+
+            $em->flush();
 
             $this->addFlash('success', 'User created successfully');
-            return $this->redirectToRoute('admin_users');
+            return $this->redirectToRoute('app_admin_users');
         }
 
         return $this->render('admin/add_user.html.twig', [

@@ -1,0 +1,46 @@
+{% extends 'admin/admin.base.html.twig' %}
+{% block content %}
+<div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-6">
+        Ajouter {{ type|capitalize }}
+    </h2>
+
+    {{ form_start(form) }}
+    <div class="space-y-4">
+        <!-- User Fields -->
+        <div class="border-b pb-4">
+            <h3 class="text-lg font-semibold mb-2">Informations de base</h3>
+            {{ form_row(form.user.nom) }}
+            {{ form_row(form.user.prenom) }}
+            {{ form_row(form.user.email) }}
+            {{ form_row(form.user.numero) }}
+            {{ form_row(form.user.newPassword) }}
+        </div>
+
+        <!-- Role-specific Fields -->
+        <div class="pt-4">
+            <h3 class="text-lg font-semibold mb-2">Informations spécifiques</h3>
+            {% if type == 'medecin' %}
+                {{ form_row(form.service) }}
+            {% elseif type == 'pharmacie' %}
+                {{ form_row(form.adresse) }}
+                {{ form_row(form.cin) }}
+            {% elseif type == 'infermier' %}
+                {{ form_row(form.service) }}
+            {% endif %}
+        </div>
+
+        <div class="flex justify-end gap-2 mt-6">
+            <a href="{{ path('app_admin_users') }}"
+               class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">
+                Annuler
+            </a>
+            <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Enregistrer
+            </button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
