@@ -1,2 +1,194 @@
+{# templates/admin/dashboard.html.twig #}
 {% extends 'admin/admin.base.html.twig' %}
-{%  block content %} hello admin {%  endblock %}
+
+{% block title %}Tableau de bord Médical - Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="space-y-6">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Stat Card 1 - Patients -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Patients actifs</p>
+                        <p class="text-3xl font-bold">1,842</p>
+                    </div>
+                    <div class="bg-cyan-100 p-3 rounded-full">
+                        <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-green-500 mt-2">↑ 8% ce mois</p>
+            </div>
+
+            <!-- Stat Card 2 - Médecins -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Médecins actifs</p>
+                        <p class="text-3xl font-bold">127</p>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-green-500 mt-2">3 nouveaux cette semaine</p>
+            </div>
+
+            <!-- Stat Card 3 - Pharmacies -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Pharmacies partenaires</p>
+                        <p class="text-3xl font-bold">89</p>
+                    </div>
+                    <div class="bg-emerald-100 p-3 rounded-full">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-red-500 mt-2">2 en attente de vérification</p>
+            </div>
+
+            <!-- Stat Card 4 - Consultations -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-1">Consultations/jour</p>
+                        <p class="text-3xl font-bold">312</p>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-sm text-green-500 mt-2">↑ 15% vs hier</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Line Chart - Activité médicale -->
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-semibold mb-4">Activité des consultations</h3>
+                <div class="h-80">
+                    <canvas id="consultationsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pie Chart - Spécialités -->
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-semibold mb-4">Répartition des spécialités</h3>
+                <div class="h-80">
+                    <canvas id="specialitesChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau des rendez-vous -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold mb-4">Rendez-vous récents</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Médecin</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Spécialité</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        {% for i in 1..5 %}
+                            <tr>
+                                <td class="px-6 py-4 text-sm">Jean Dupont</td>
+                                <td class="px-6 py-4 text-sm">Dr. Marie Curie</td>
+                                <td class="px-6 py-4 text-sm">Cardiologie</td>
+                                <td class="px-6 py-4">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if i % 2 == 0 %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                    {% if i % 2 == 0 %}Terminé{% else %}En attente{% endif %}
+                                </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm">2023-10-0{{i}} 14:00</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertes urgentes -->
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <div>
+                    <h4 class="font-semibold">2 alertes urgentes</h4>
+                    <p class="text-sm">Interventions nécessaires dans le service d'urgence</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Line Chart - Consultations
+            const consCtx = document.getElementById('consultationsChart').getContext('2d');
+            new Chart(consCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                    datasets: [{
+                        label: 'Consultations hebdomadaires',
+                        data: [45, 78, 65, 92, 81, 55, 40],
+                        borderColor: '#06B6D4',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Pie Chart - Spécialités
+            const specCtx = document.getElementById('specialitesChart').getContext('2d');
+            new Chart(specCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Généraliste', 'Cardiologie', 'Pédiatrie', 'Chirurgie'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B', '#6366F1']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

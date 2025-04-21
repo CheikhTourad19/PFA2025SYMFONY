@@ -19,6 +19,7 @@
             warning: [{% for message in app.flashes('warning') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}],
             info: [{% for message in app.flashes('info') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}]
         };
+
     </script>
 
     <div class="min-h-screen flex flex-col bg-gray-50"
