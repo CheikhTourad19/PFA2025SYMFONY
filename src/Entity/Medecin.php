@@ -44,4 +44,8 @@ class Medecin
     {
         return ['ROLE_MEDECIN'];
     }
+    public function getId(): ?int
+    {
+        return $this->user->getId();
+    }
 }

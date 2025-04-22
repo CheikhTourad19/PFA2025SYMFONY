@@ -15,7 +15,10 @@ class Infermier
     private $service;
 
     // Getters and Setters
-
+    public function getId(): ?int
+    {
+        return $this->user->getId();
+    }
     public function getService(): ?string
     {
         return $this->service;

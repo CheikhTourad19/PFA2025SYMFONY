@@ -58,6 +58,47 @@ final class AdminController extends AbstractController
             'patients' => $patients,
         ]);
     }
+    #[Route('/user/{type}/{id}', name: '_user_info')]
+    public function userInfo(string $type, int $id, EntityManagerInterface $em): Response
+    {
+        $entity = null;
+        $templateVariable = null;
+
+        switch (strtolower($type)) {
+            case 'medecin':
+                $entity = $em->getRepository(Medecin::class)->find($id);
+                $templateVariable = 'medecin';
+                break;
+
+            case 'pharmacie':
+                $entity = $em->getRepository(Pharmacie::class)->find($id);
+                $templateVariable = 'pharmacie';
+                break;
+
+            case 'infermier':
+                $entity = $em->getRepository(Infermier::class)->find($id);
+                $templateVariable = 'infermier';
+                break;
+
+            case 'patient':
+                $entity = $em->getRepository(Patient::class)->find($id);
+                $templateVariable = 'patient';
+                break;
+
+            default:
+                throw $this->createNotFoundException('Type utilisateur invalide');
+        }
+
+        if (!$entity || !method_exists($entity, 'getUser')) {
+            throw $this->createNotFoundException('Utilisateur non trouvé');
+        }
+
+        return $this->render('admin/user_info.html.twig', [
+            $templateVariable => $entity,
+            'userType' => $type,
+            'entity' => $entity
+        ]);
+    }
     #[Route('/reports', name: '_reports')]
     public function reports():Response
     {

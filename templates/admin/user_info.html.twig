@@ -1,0 +1,104 @@
+{% extends 'admin/admin.base.html.twig' %}
+
+{% block content %}
+    <div class="container mx-auto p-6">
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h2 class="text-2xl font-semibold">
+                    {% if userType == 'medecin' %}
+                        Dr. {{ medecin.user.nom }} {{ medecin.user.prenom }}
+                    {% elseif userType == 'pharmacie' %}
+                        {{ pharmacie.user.nom }} {{ pharmacie.user.prenom }}
+                    {% elseif userType == 'infermier' %}
+                        {{ infermier.user.nom }} {{ infermier.user.prenom }}
+                    {% elseif userType == 'patient' %}
+                        {{ patient.user.nom }} {{ patient.user.prenom }}
+                    {% endif %}
+                </h2>
+            </div>
+
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Common Fields -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-600">Email:</label>
+                            <p class="mt-1">
+                                {% if userType == 'medecin' %}
+                                    {{ medecin.user.email }}
+                                {% elseif userType == 'pharmacie' %}
+                                    {{ pharmacie.user.email }}
+                                {% elseif userType == 'infermier' %}
+                                    {{ infermier.user.email }}
+                                {% elseif userType == 'patient' %}
+                                    {{ patient.user.email }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-gray-600">Téléphone:</label>
+                            <p class="mt-1">
+                                {% if userType == 'medecin' %}
+                                    {{ medecin.user.numero }}
+                                {% elseif userType == 'pharmacie' %}
+                                    {{ pharmacie.user.numero }}
+                                {% elseif userType == 'infermier' %}
+                                    {{ infermier.user.numero }}
+                                {% elseif userType == 'patient' %}
+                                    {{ patient.user.numero }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Type-Specific Fields -->
+                    <div class="space-y-4">
+                        {% if userType == 'medecin' %}
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Service:</label>
+                                <p class="mt-1">{{ medecin.service }}</p>
+                            </div>
+
+                        {% elseif userType == 'pharmacie' %}
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Adresse:</label>
+                                <p class="mt-1">
+                                    {{ pharmacie.adresse.rue ?? 'N/A' }}<br>
+                                    {{ pharmacie.adresse.quartier ?? 'N/A'  }}, {{ pharmacie.adresse.ville ?? 'N/A'  }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">CIN:</label>
+                                <p class="mt-1">{{ pharmacie.cin }}</p>
+                            </div>
+
+                        {% elseif userType == 'infermier' %}
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">Service:</label>
+                                <p class="mt-1">{{ infermier.service }}</p>
+                            </div>
+
+                        {% elseif userType == 'patient' %}
+                            <div>
+                                <label class="text-sm font-medium text-gray-600">CIN:</label>
+                                <p class="mt-1">{{ patient.cin }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="mt-6 flex gap-4">
+                    <a href="{{ path('app_admin_users') }}"
+                       class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
+                        Retour
+                    </a>
+                    <a href="{{ path('app_admin_user_edit', {type: userType, id: entity.id}) }}"
+                       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Modifier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
