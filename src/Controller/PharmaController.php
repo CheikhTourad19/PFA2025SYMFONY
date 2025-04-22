@@ -102,8 +102,10 @@ final class PharmaController extends AbstractController
             if ($currentPassword && $newPassword) {
                 if (strlen($newPassword) < 8) {
                     $profileForm->get('newPassword')->addError(new FormError('Le nouveau mot de passe doit contenir au moins 8 caractères.'));
+                    $this->addFlush('error','Mot de passe doit contenir 8 caractere au minimum');
                 } elseif (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
                     $profileForm->get('currentPassword')->addError(new FormError('Le mot de passe actuel est incorrect.'));
+                    $this->addFlush('error','Mot de passe invalide')
                 } else {
                     $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                     $user->setPassword($hashedPassword);
