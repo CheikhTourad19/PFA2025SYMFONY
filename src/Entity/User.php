@@ -7,9 +7,12 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Enum\Role;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\Index;
+
 
 #[ORM\Entity]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email.')]
+#[ORM\Index(name: "idx_user_role", columns: ["role"])]
 #[ORM\Table(name: "user")]
 #[ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

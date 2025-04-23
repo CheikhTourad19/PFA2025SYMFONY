@@ -102,10 +102,10 @@ final class PharmaController extends AbstractController
             if ($currentPassword && $newPassword) {
                 if (strlen($newPassword) < 8) {
                     $profileForm->get('newPassword')->addError(new FormError('Le nouveau mot de passe doit contenir au moins 8 caractères.'));
-                    $this->addFlush('error','Mot de passe doit contenir 8 caractere au minimum');
+                    $this->addFlash('error','Mot de passe doit contenir 8 caractere au minimum');
                 } elseif (!$passwordHasher->isPasswordValid($user, $currentPassword)) {
                     $profileForm->get('currentPassword')->addError(new FormError('Le mot de passe actuel est incorrect.'));
-                    $this->addFlush('error','Mot de passe invalide');
+                    $this->addFlash('error','Mot de passe invalide');
                 } else {
                     $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                     $user->setPassword($hashedPassword);
@@ -151,17 +151,13 @@ final class PharmaController extends AbstractController
 
         // Check if the form is submitted
         if ($id) {
-
-
                 // Find the ordonnance by ID
-                $ordonnance = $or->find($id);
-                if (!$ordonnance) {
+                $orm=$om->findBy(['ordonnance'=>$id]);
+                if (!$orm || count($orm) == 0) {
                     $error = "Aucune ordonnance trouvée pour l'ID $id.";
                     $this->addFlash('error', $error);
                 } else {
                     // Fetch the associated medications
-                    $orm = $om->findBy(['ordonnance' => $ordonnance]);
-
                     if (empty($orm)) {
                         $error = "Aucun médicament trouvé pour cette ordonnance.";
                         $this->addFlash('error', $error);

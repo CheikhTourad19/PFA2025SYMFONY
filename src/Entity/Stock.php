@@ -5,11 +5,8 @@ namespace App\Entity;
 use App\Repository\StockRepository;
 use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
-#[ORM\Table(name: 'stock',
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(name: 'pharmacie_medicament_unique', columns: ['pharmacie_id', 'medicament_id'])
-    ]
-)]
+#[ORM\UniqueConstraint(name: "unique_stock_entry", columns: ["product_id", "pharmacy_id"])]
+#[ORM\Table(name: 'stock')]
 class Stock
 {
     #[ORM\Id]
