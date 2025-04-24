@@ -8,6 +8,7 @@
     <style>
         [x-cloak] { display: none !important; }
     </style>
+    
 {% endblock %}
 
 {% block body %}
@@ -21,7 +22,8 @@
         };
     </script>
 
-    <div class="min-h-screen flex flex-col bg-gray-50"
+    <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900
+"
          x-data="{
             isModalOpen: false,
             isFlashModalOpen: false,
@@ -72,7 +74,8 @@
          "
          x-on:keydown.esc.prevent="isModalOpen = false; isFlashModalOpen = false;">
         <!-- Navbar -->
-        <nav class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white shadow-lg" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
+        <nav class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white shadow-lg dark:from-indigo-800 dark:to-blue-900 dark:shadow-gray-900
+" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
             <div class="max-w-7xl mx-auto px-4 sm:px-6">
                 <div class="flex items-center justify-between h-16">
                     <!-- Logo/Brand -->
@@ -315,9 +318,29 @@
         </nav>
 
         <!-- Contenu principal -->
-        <div class="flex-1 container mx-auto px-4 py-6 md:p-6" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
-            {% block content %}{% endblock %}
+        <!-- Mobile menu - if it exists in your template -->
+        <div x-show="isMobileMenuOpen" class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white dark:bg-gray-800 shadow-lg dark:shadow-gray-900">
+                <!-- Mobile menu items -->
+                <a href="{{ path('app_pharma_stock') }}"
+                   class="block px-3 py-2 rounded-md text-base font-medium {% if currentRoute == 'app_pharma_stock' %}bg-indigo-700 dark:bg-indigo-800 text-white{% else %}text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+                    Stock
+                </a>
+                <!-- More menu items... -->
+            </div>
         </div>
+
+        <!-- Main content area -->
+        <main class="flex-1 py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 shadow-sm dark:shadow-gray-900 overflow-hidden sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
 
         <!-- Footer -->
         <footer class="bg-gradient-to-r from-indigo-600 to-blue-500 text-white shadow-lg" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
