@@ -1,154 +1,267 @@
-
 {% extends 'pharmacie/pharmacie.base.html.twig' %}
 
-{% block title %}Stock{% endblock %}
+{% block title %}Stock Management{% endblock %}
 
 {% block content %}
     <div class="container mx-auto px-4 py-8 dark:bg-gray-900">
-        {# Main Card Container #}
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden transition-colors duration-200">
-            {# Card Header #}
-            <div class="p-6 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-800">
-                <h1 class="text-3xl font-bold text-white text-center">
-                    Liste des médicaments
-                </h1>
+        {# Main Card Container with Glass Morphism Effect #}
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden transition-all duration-300 border border-gray-200/30 dark:border-gray-700/30">
+            {# Card Header with Gradient #}
+            <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-900">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-3xl font-bold text-white">
+                        <i class="fas fa-pills mr-2"></i> Medicaments Stock
+                    </h1>
+                    <div class="relative">
+                        <button id="toggleFormBtn" class="flex items-center px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white font-medium rounded-lg transition-all duration-300 group">
+                            <span id="toggleBtnText" class="mr-2">Ajouter Medicament</span>
+                            <i class="fas fa-plus transition-transform duration-300 group-hover:rotate-90"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {# Card Body #}
-            <div class="p-6 dark:bg-gray-800">
-                {# Toggle Button for Add Form #}
-                <div class="mb-4 text-right">
-                    <button id="toggleFormBtn" class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
-                        <span id="toggleBtnText">Ajouter un médicament</span>
-                    </button>
-                </div>
+            <div class="p-6 dark:bg-gray-800/50">
+                {# Form to Add New Medicament - Collapsible with Slide Effect #}
+                <div id="addMedicamentForm" class="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 shadow-inner border border-gray-200/50 dark:border-gray-700/50 hidden transition-all duration-500 ease-in-out transform opacity-0 -translate-y-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+                            <i class="fas fa-file-medical mr-2 text-blue-600 dark:text-blue-400"></i> Nouveau
+                        </h2>
+                        <button id="cancelAddBtn" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
 
-                {# Form to Add New Medicament - Collapsible #}
-                <div id="addMedicamentForm" class="mb-8 bg-gray-50 dark:bg-gray-700 rounded-lg p-6 shadow-md hidden">
-                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Ajouter un nouveau médicament</h2>
-
-                    <form action="{{ path('app_pharma_add_medicament') }}" method="POST" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom du médicament</label>
-                                <input
-                                        type="text"
-                                        id="nom"
-                                        name="nom"
-                                        required
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                        placeholder="Nom du médicament"
-                                >
+                    <form action="{{ path('app_pharma_add_medicament') }}" method="POST" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="space-y-1">
+                                <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                    <i class="fas fa-tag mr-2 text-blue-500"></i> Nom
+                                </label>
+                                <div class="relative">
+                                    <input
+                                            type="text"
+                                            id="nom"
+                                            name="nom"
+                                            required
+                                            class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
+                                            placeholder="e.g. Paracetamol 500mg"
+                                    >
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-pills text-gray-400"></i>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div>
-                                <label for="prix" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prix </label>
+                            <div class="space-y-1">
+                                <label for="prix" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                    <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i> Prix (TND)
+                                </label>
+                                <div class="relative">
+                                    <input
+                                            type="number"
+                                            id="prix"
+                                            name="prix"
+                                            required
+                                            step="0.01"
+                                            min="0"
+                                            class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
+                                            placeholder="0.00"
+                                    >
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-dollar-sign text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                <i class="fas fa-align-left mr-2 text-blue-500"></i> Description
+                            </label>
+                            <div class="relative">
+                                <textarea
+                                        id="description"
+                                        name="description"
+                                        rows="3"
+                                        class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
+                                        placeholder="Description "
+                                ></textarea>
+                                <div class="absolute top-3 left-3">
+                                    <i class="fas fa-info-circle text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label for="quantite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                <i class="fas fa-boxes mr-2 text-blue-500"></i>  Quantité Initiale
+                            </label>
+                            <div class="relative">
                                 <input
                                         type="number"
-                                        id="prix"
-                                        name="prix"
+                                        id="quantite"
+                                        name="quantite"
                                         required
-                                        step="0.01"
-                                        min="0"
-                                        class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                        placeholder="Prix"
+                                        min="1"
+                                        value="1"
+                                        class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
+                                        placeholder="Quantité"
                                 >
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-layer-group text-gray-400"></i>
+                                </div>
                             </div>
                         </div>
 
-                        <div>
-                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-                            <textarea
-                                    id="description"
-                                    name="description"
-                                    rows="3"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                    placeholder="Description du médicament"
-                            ></textarea>
-                        </div>
-
-                        <div>
-                            <label for="quantite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quantité initiale</label>
-                            <input
-                                    type="number"
-                                    id="quantite"
-                                    name="quantite"
-                                    required
-                                    min="1"
-                                    value="1"
-                                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                    placeholder="Quantité initiale"
-                            >
-                        </div>
-
-                        <div class="flex justify-end space-x-2">
-                            <button
-                                    type="button"
-                                    id="cancelAddBtn"
-                                    class="px-6 py-3 bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-white font-medium rounded-lg hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
-                            >
-                                Annuler
-                            </button>
+                        <div class="flex justify-end space-x-3 pt-2">
                             <button
                                     type="submit"
-                                    class="px-6 py-3 bg-blue-500 dark:bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                                    class="flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
                             >
-                                Ajouter le médicament
+                                <i class="fas fa-save mr-2"></i> Sauvegarder Medicament
                             </button>
                         </div>
                     </form>
                 </div>
 
-                {# Search Bar #}
-                <div class="mb-8">
+                {# Search Bar with Icon #}
+                <div class="mb-8 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
                     <input
                             type="text"
                             id="searchInput"
-                            placeholder="Rechercher un médicament..."
-                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                            placeholder="Chercher un medicament par son nom..."
+                            class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm transition-all duration-300"
                     />
                 </div>
 
-                {# Scrollable Container for Stock Items #}
-                <div class="h-[500px] overflow-y-auto">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="stockContainer">
-                        {% for stock in stocks %}
-                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden transform transition-all hover:scale-105 hover:shadow-lg stock-item">
-                                {# Medicament Information #}
-                                <div class="p-6">
-                                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">{{ stock['nom'] }}</h2>
-                                    <p class="text-gray-600 dark:text-gray-300 text-base">
-                                        {{ stock['description'] }}
-                                    </p>
-                                </div>
+                {# Stock Summary Cards #}
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+                    <div class="bg-blue-50/70 dark:bg-blue-900/30 rounded-xl p-4 border border-blue-200/50 dark:border-blue-800/50 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-800/50 mr-4">
+                                <i class="fas fa-pills text-blue-600 dark:text-blue-300 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-blue-600 dark:text-blue-300 font-medium">Total des Medicaments</p>
+                                <h3 class="text-2xl font-bold text-blue-800 dark:text-white">{{ stocks|length }}</h3>
+                            </div>
+                        </div>
+                    </div>
 
-                                {# Price and Quantity #}
-                                <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
-                                    <div class="flex justify-between items-center">
-                                        <span class="inline-block bg-blue-100 dark:bg-blue-900 rounded-full px-3 py-1 text-sm font-semibold text-blue-800 dark:text-blue-200">
-                                            Prix: {{ stock['prix'] }} TND
-                                        </span>
-                                        <span class="inline-block rounded-full px-3 py-1 text-sm font-semibold
-                                            {{ stock['quantite'] <= 10 ?
-                                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
-                                        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' }}">
-                                            Quantité: {{ stock['quantite'] }}
-                                        </span>
+                    <div class="bg-green-50/70 dark:bg-green-900/30 rounded-xl p-4 border border-green-200/50 dark:border-green-800/50 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-lg bg-green-100 dark:bg-green-800/50 mr-4">
+                                <i class="fas fa-box-open text-green-600 dark:text-green-300 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-green-600 dark:text-green-300 font-medium">En Stock</p>
+                                <h3 class="text-2xl font-bold text-green-800 dark:text-white">
+                                    {{ stocks|filter(stock => stock['quantite'] > 10)|length }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/70 dark:bg-amber-900/30 rounded-xl p-4 border border-amber-200/50 dark:border-amber-800/50 shadow-sm">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-800/50 mr-4">
+                                <i class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-300 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-amber-600 dark:text-amber-300 font-medium">En Rupture Stock</p>
+                                <h3 class="text-2xl font-bold text-amber-800 dark:text-white">
+                                    {{ stocks|filter(stock => stock['quantite'] <= 10)|length }}
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Scrollable Container for Stock Items with Modern Cards #}
+                <div class="h-[500px] overflow-y-auto pr-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="stockContainer">
+                        {% for stock in stocks %}
+                            <div class="bg-white/70 dark:bg-gray-700/70 rounded-xl shadow-md overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg stock-item border border-gray-200/50 dark:border-gray-600/50 group">
+                                {# Medication Header with Gradient #}
+                                <div class="p-5 bg-gradient-to-r from-blue-500/10 to-indigo-600/10 dark:from-blue-600/20 dark:to-indigo-700/20 border-b border-gray-200/50 dark:border-gray-600/50">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h2 class="text-xl font-bold text-gray-800 dark:text-white truncate">{{ stock['nom'] }}</h2>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                ID: {{ stock['id'] }}
+                                            </p>
+                                        </div>
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-white/70 dark:bg-gray-800/70 flex items-center justify-center shadow-inner">
+                                            <i class="fas fa-pills text-blue-500 dark:text-blue-400"></i>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {# Form to Update Stock #}
-                                <div class="px-6 py-4 dark:bg-gray-700">
-                                    <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex items-center space-x-2">
-                                        <input type="number" name="additional_quantity" min="1" placeholder="Ajouter" required
-                                               class="w-20 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                                {# Medication Details #}
+                                <div class="p-5">
+                                    <p class="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3">
+                                        {{ stock['description'] ?: 'Pas description ' }}
+                                    </p>
 
-                                        <button type="submit"
-                                                class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
-                                            Ajouter
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div class="flex items-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                                {{ stock['quantite'] <= 10 ?
+                                            'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200' :
+                                            'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200' }}">
+                                                <i class="fas fa-boxes mr-1.5"></i>
+                                                {{ stock['quantite'] }} en stock
+                                            </span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                                {{ stock['prix'] }} TND
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {# Update Stock Form with Slide-up Effect on Hover #}
+                                <div class="px-5 pb-5 transition-all duration-300 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100">
+                                    <form action="/pharmacie/stock/update-stock/{{ stock['id'] }}" method="POST" class="flex items-center space-x-2">
+                                        <div class="relative flex-grow">
+                                            <input
+                                                    type="number"
+                                                    name="additional_quantity"
+                                                    min="1"
+                                                    placeholder="Ajouter quantite"
+                                                    required
+                                                    class="w-full pl-10 pr-4 py-2 border-0 bg-white/80 dark:bg-gray-800/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
+                                            >
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-plus text-gray-400"></i>
+                                            </div>
+                                        </div>
+                                        <button
+                                                type="submit"
+                                                class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg transition-colors duration-300 shadow-sm flex items-center justify-center"
+                                        >
+                                            <i class="fas fa-arrow-up mr-1.5"></i> Ajouter
                                         </button>
                                     </form>
                                 </div>
+                            </div>
+                        {% else %}
+                            <div class="col-span-full text-center py-10">
+                                <div class="mx-auto w-24 h-24 mb-4 text-gray-400 dark:text-gray-500">
+                                    <i class="fas fa-pills text-6xl"></i>
+                                </div>
+                                <h3 class="text-lg font-medium text-gray-500 dark:text-gray-400">Pas de medicament</h3>
+                                <p class="mt-1 text-sm text-gray-400 dark:text-gray-500">Add your first medication to get started</p>
+                                <button id="emptyStateToggleBtn" class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-300">
+                                    <i class="fas fa-plus mr-2"></i> Ajouter Medicament
+                                </button>
                             </div>
                         {% endfor %}
                     </div>
@@ -157,64 +270,126 @@
         </div>
     </div>
 
-    {# JavaScript for Search Functionality and Form Toggle #}
+    {# Enhanced JavaScript with Animations #}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Search functionality
+            // Elements
             const searchInput = document.getElementById('searchInput');
             const stockContainer = document.getElementById('stockContainer');
             const stockItems = document.querySelectorAll('.stock-item');
-
-            searchInput.addEventListener('input', function () {
-                const searchTerm = searchInput.value.trim().toLowerCase();
-
-                stockItems.forEach(item => {
-                    const medicamentName = item.querySelector('h2').textContent.toLowerCase();
-                    if (medicamentName.includes(searchTerm)) {
-                        item.style.display = 'block'; // Show matching items
-                    } else {
-                        item.style.display = 'none'; // Hide non-matching items
-                    }
-                });
-            });
-
-            // Fix for search after hover/click
-            stockContainer.addEventListener('mouseover', function(event) {
-                const searchTerm = searchInput.value.trim().toLowerCase();
-                if (searchTerm.length > 0) {
-                    searchInput.dispatchEvent(new Event('input'));
-                }
-            });
-
-            stockContainer.addEventListener('click', function(event) {
-                const searchTerm = searchInput.value.trim().toLowerCase();
-                if (searchTerm.length > 0) {
-                    searchInput.dispatchEvent(new Event('input'));
-                }
-            });
-
-            // Form toggle functionality
             const toggleFormBtn = document.getElementById('toggleFormBtn');
             const toggleBtnText = document.getElementById('toggleBtnText');
             const addMedicamentForm = document.getElementById('addMedicamentForm');
             const cancelAddBtn = document.getElementById('cancelAddBtn');
+            const emptyStateToggleBtn = document.getElementById('emptyStateToggleBtn');
 
-            toggleFormBtn.addEventListener('click', function() {
-                if (addMedicamentForm.classList.contains('hidden')) {
-                    addMedicamentForm.classList.remove('hidden');
-                    toggleBtnText.textContent = 'Masquer le formulaire';
-                } else {
-                    addMedicamentForm.classList.add('hidden');
-                    toggleBtnText.textContent = 'Ajouter un médicament';
-                }
+            // Search functionality with debounce
+            let searchTimeout;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const searchTerm = searchInput.value.trim().toLowerCase();
+
+                    stockItems.forEach(item => {
+                        const medicamentName = item.querySelector('h2').textContent.toLowerCase();
+                        if (medicamentName.includes(searchTerm)) {
+                            item.style.display = 'block';
+                            item.classList.add('animate-fadeIn');
+                            item.classList.remove('animate-fadeOut');
+                        } else {
+                            item.classList.add('animate-fadeOut');
+                            item.classList.remove('animate-fadeIn');
+                            setTimeout(() => {
+                                item.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                }, 300);
             });
 
+            // Form toggle with animations
+            function toggleForm() {
+                if (addMedicamentForm.classList.contains('hidden')) {
+                    addMedicamentForm.classList.remove('hidden');
+                    setTimeout(() => {
+                        addMedicamentForm.classList.remove('opacity-0');
+                        addMedicamentForm.classList.remove('-translate-y-2');
+                    }, 10);
+                    toggleBtnText.textContent = 'Cacher';
+                } else {
+                    addMedicamentForm.classList.add('opacity-0');
+                    addMedicamentForm.classList.add('-translate-y-2');
+                    setTimeout(() => {
+                        addMedicamentForm.classList.add('hidden');
+                    }, 500);
+                    toggleBtnText.textContent = 'Ajouter Medicament';
+                }
+            }
+
+            toggleFormBtn.addEventListener('click', toggleForm);
+            if (emptyStateToggleBtn) {
+                emptyStateToggleBtn.addEventListener('click', toggleForm);
+            }
+
             cancelAddBtn.addEventListener('click', function() {
-                addMedicamentForm.classList.add('hidden');
-                toggleBtnText.textContent = 'Ajouter un médicament';
-                // Réinitialiser le formulaire
+                addMedicamentForm.classList.add('opacity-0');
+                addMedicamentForm.classList.add('-translate-y-2');
+                setTimeout(() => {
+                    addMedicamentForm.classList.add('hidden');
+                }, 500);
+                toggleBtnText.textContent = 'Ajouter Medicament';
                 document.querySelector('form').reset();
+            });
+
+            // Add animation classes to stock items on load
+            stockItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('animate-fadeInUp');
+                }, index * 50);
             });
         });
     </script>
+
+    {# Animation Keyframes #}
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .animate-fadeOut {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 {% endblock %}

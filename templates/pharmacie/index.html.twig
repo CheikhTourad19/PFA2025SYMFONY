@@ -1,41 +1,233 @@
 {% extends 'pharmacie/pharmacie.base.html.twig' %}
 
-{% block title %}Accueil - E-Medical Pharmacie{% endblock %}
+{% block title %}Tableau de bord - E-Medical Pharmacie{% endblock %}
 
 {% block content %}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Welcome Section -->
-        <div class="text-center py-12">
-            <h1 class="text-4xl font-bold text-gray-900 dark:text-white">Bienvenue, {{ app.user.prenom }} !</h1>
-            <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Gérez votre pharmacie efficacement avec E-Medical.</p>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- Welcome Hero Section with Gradient Background -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 mb-12">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0,0 L100,0 L100,100 L0,100 Z" fill="url(#grid)" />
+                </svg>
+                <defs>
+                    <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                        <path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" />
+                    </pattern>
+                </defs>
+            </div>
+            <div class="relative py-16 px-8 text-center">
+                <svg class="w-20 h-20 mx-auto mb-6 text-white opacity-75" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 7c0 1.1-.9 2-2 2H7v2h3c1.1 0 2 .9 2 2v2H5v-2h3v-1H5v-6h4c1.1 0 2 .9 2 2v1zm4-3h3v10h-3V7z"/>
+                </svg>
+                <h1 class="text-5xl font-bold text-white mb-4">Bonjour, {{ app.user.prenom }} !</h1>
+                <p class="text-xl text-blue-100 max-w-2xl mx-auto">Votre portail pour gérer votre pharmacie avec efficacité et précision</p>
+            </div>
         </div>
 
-        <!-- Quick Stats Section -->
+        <!-- Analytics Summary -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <!-- Metric Cards -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Produits en stock</span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-white mt-2">367</span>
+                <span class="mt-2 text-sm text-green-500 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                    +3% cette semaine
+                </span>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Ordonnances traitées</span>
+                <span class="text-3xl font-bold text-gray-900 dark:text-white mt-2">42</span>
+                <span class="mt-2 text-sm text-green-500 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                    +12% aujourd'hui
+                </span>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 flex flex-col">
+                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Stock faible</span>
+                <span class="text-3xl font-bold text-amber-500 mt-2">8</span>
+                <span class="mt-2 text-sm text-amber-500 flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    Attention requise
+                </span>
+            </div>
+
+
+        </div>
+
+        <!-- Main Actions Cards -->
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Gestion de la pharmacie</h2>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <!-- Stock Card -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Stock</h2>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Consultez et gérez votre stock de médicaments.</p>
-                <a href="{{ path('app_pharma_stock') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
-                    Voir le stock
-                </a>
+            <!-- Stock Management Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-all duration-300 group border border-gray-100 dark:border-gray-700">
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-6">
+                    <svg class="w-10 h-10 text-blue-600 dark:text-blue-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Gestion du stock</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Consultez et gérez votre inventaire de médicaments, surveillez les niveaux de stock et configurez des alertes.</p>
+                    <div class="flex items-center justify-between">
+                        <a href="{{ path('app_pharma_stock') }}" class="inline-flex items-center font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 group-hover:translate-x-1 transition-transform duration-300">
+                            Gérer le stock
+                            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <span class="bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-xs font-medium px-2.5 py-0.5 rounded-full">Essentiel</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Ordonnance Card -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Ordonnances</h2>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Consultez les ordonnances et les médicaments prescrits.</p>
-                <a href="{{ path('app_pharma_ordonnance') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
-                    Voir les ordonnances
-                </a>
+            <!-- Prescriptions Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-all duration-300 group border border-gray-100 dark:border-gray-700">
+                <div class="bg-indigo-50 dark:bg-indigo-900/20 p-6">
+                    <svg class="w-10 h-10 text-indigo-600 dark:text-indigo-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Ordonnances</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Consultez et traitez les ordonnances des patients, vérifiez les médicaments prescrits et leur disponibilité.</p>
+                    <div class="flex items-center justify-between">
+                        <a href="{{ path('app_pharma_ordonnance') }}" class="inline-flex items-center font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 group-hover:translate-x-1 transition-transform duration-300">
+                            Traiter les ordonnances
+                            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300 text-xs font-medium px-2.5 py-0.5 rounded-full">15 en attente</span>
+                    </div>
+                </div>
             </div>
 
-            <!-- Profil Card -->
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Profil</h2>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Modifiez vos informations personnelles.</p>
-                <a href="{{ path('app_pharma_profil') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
-                    Voir le profil
+            <!-- Profile Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-all duration-300 group border border-gray-100 dark:border-gray-700">
+                <div class="bg-purple-50 dark:bg-purple-900/20 p-6">
+                    <svg class="w-10 h-10 text-purple-600 dark:text-purple-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Profil & Paramètres</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 dark:text-gray-300 mb-6">Gérez vos informations personnelles, modifiez les paramètres du compte et configurez les préférences.</p>
+                    <div class="flex items-center justify-between">
+                        <a href="{{ path('app_pharma_profil') }}" class="inline-flex items-center font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 group-hover:translate-x-1 transition-transform duration-300">
+                            Modifier le profil
+                            <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </a>
+                        <span class="bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300 text-xs font-medium px-2.5 py-0.5 rounded-full">À jour</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Activité récente</h2>
+                <a href="#" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">Voir tout</a>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 overflow-hidden">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-500 dark:bg-green-900/30 dark:text-green-400">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Ordonnance #OR-2304 traitée</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Patient: Martin Richard</p>
+                            </div>
+                            <div class="text-right">
+                                <time class="text-xs text-gray-500 dark:text-gray-400" datetime="2025-04-24T10:32">10:32</time>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Stock mis à jour</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Doliprane 1000mg - Quantité: +50</p>
+                            </div>
+                            <div class="text-right">
+                                <time class="text-xs text-gray-500 dark:text-gray-400" datetime="2025-04-24T09:15">09:15</time>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-500 dark:bg-amber-900/30 dark:text-amber-400">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white truncate">Alerte de stock</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Ventoline - Stock faible (5 unités)</p>
+                            </div>
+                            <div class="text-right">
+                                <time class="text-xs text-gray-500 dark:text-gray-400" datetime="2025-04-23T16:45">Hier, 16:45</time>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Quick Actions Footer -->
+        <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Actions rapides</h3>
+            <div class="flex flex-wrap gap-3">
+                <a href="#" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300">
+                    <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Ajouter un produit
+                </a>
+                <a href="#" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300">
+                    <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                    </svg>
+                    Nouvelle vente
+                </a>
+                <a href="#" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300">
+                    <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                    </svg>
+                    Commande fournisseur
+                </a>
+                <a href="#" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-300">
+                    <svg class="w-4 h-4 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Rapport journalier
                 </a>
             </div>
         </div>
