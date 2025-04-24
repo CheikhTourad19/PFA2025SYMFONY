@@ -1,0 +1,99 @@
+{% extends 'patient/patient.base.html.twig' %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Mes Rendez-vous</h5>
+            </div>
+            <div class="card-body">
+                {% if rdv is empty %}
+                    <div class="alert alert-info d-flex align-items-center">
+                        <i class="fas fa-info-circle me-3 fs-4"></i>
+                        <div>Aucun rendez-vous programmé pour le moment.</div>
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                            <tr class="table-light">
+                                <th scope="col">Médecin</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Statut</th>
+                                <th scope="col" class="text-center">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for rdvv in rdv %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="doctor-avatar bg-primary text-white me-3">
+                                                {{ rdvv.medecin.user.nom|first }}
+                                            </div>
+                                            <div>
+                                                <span class="fw-bold">Dr. {{ rdvv.medecin.user.nom }}</span>
+                                                <div class="text-muted small">{{ rdvv.medecin.specialite|default('Médecin') }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <span><i class="far fa-calendar-alt me-1 text-primary"></i> {{ rdvv.date|date('d/m/Y') }}</span>
+                                            <span class="text-muted small"><i class="far fa-clock me-1"></i> {{ rdvv.date|date('H:i') }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if rdvv.statut == 'confirme' %}
+                                            <span class="badge rounded-pill bg-success">Confirmé</span>
+                                        {% elseif rdvv.statut == 'attente' %}
+                                            <span class="badge rounded-pill bg-warning text-dark">En attente</span>
+                                        {% elseif rdvv.statut == 'annule' %}
+                                            <span class="badge rounded-pill bg-danger">Annulé</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-secondary">{{ rdvv.statut }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if rdvv.statut != 'annule' %}
+                                            <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">
+                                                <i class="fas fa-times-circle me-1"></i>Annuler
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted fst-italic small">Aucune action</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .doctor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .table tbody tr {
+            border-bottom: 1px solid rgba(0,0,0,.05);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(0,123,255,.05);
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+        }
+    </style>
+{% endblock %}

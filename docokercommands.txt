@@ -1,2 +1,13 @@
 docker compose exec php composer require nom/du-package
 docker compose exec node npm install nom-du-package
+
+
+docker-compose exec php  -----command------ ex: docker-compose exec php php bin/console make:entity
+                                                docker-compose exec node npm install tailwind
+
+docker-compose up
+
+docker-compose build
+
+
+

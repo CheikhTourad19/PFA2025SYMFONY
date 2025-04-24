@@ -9,6 +9,7 @@ use App\Form\UserType;
 use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\OrdonnanceRepository;
 use App\Repository\PharmacieRepository;
+use App\Repository\RdvRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
@@ -61,6 +62,14 @@ final class PatientController extends AbstractController
             ]
         );
     }
+    #[Route('/patient/rdv', name: 'app_patient_rdv')]
+    public function rdv(RdvRepository $rdvRepository)
+    {
+        $rdv = $rdvRepository->findBy(['patient'=>$this->getUser()]);
+
+        return $this->render('patient/rdv.html.twig', ['rdv' => $rdv]);
+    }
+
     #[Route('/patient', name: 'app_home_patient')]
     public function index(): Response
     {

@@ -114,6 +114,11 @@
                         >
                             Chercher Pharmacie
                         </a>
+                        <a href="{{ path('app_patient_rdv') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_rdv' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
+                        >
+                            Mes Rendez-vous
+                        </a>
 
 
                     </div>
@@ -258,6 +263,11 @@
                     <a href="{{ path('app_patient_pharmacie') }}"
                        class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
                         Chercher Pharmacie
+                    </a>
+
+                    <a href="{{ path('app_patient_rdv') }}"
+                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
+                        Mes Rendez-vous
                     </a>
                     <div x-data="{ open: false }" @click.away="open = false" class="relative">
                         <button @click="open = !open"

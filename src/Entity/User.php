@@ -145,4 +145,92 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = $role;
         return $this;
     }
+
+    public function getMedecin(): ?Medecin
+    {
+        return $this->medecin;
+    }
+
+    public function setMedecin(?Medecin $medecin): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($medecin === null && $this->medecin !== null) {
+            $this->medecin->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($medecin !== null && $medecin->getUser() !== $this) {
+            $medecin->setUser($this);
+        }
+
+        $this->medecin = $medecin;
+
+        return $this;
+    }
+
+    public function getPharmacie(): ?Pharmacie
+    {
+        return $this->pharmacie;
+    }
+
+    public function setPharmacie(?Pharmacie $pharmacie): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($pharmacie === null && $this->pharmacie !== null) {
+            $this->pharmacie->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($pharmacie !== null && $pharmacie->getUser() !== $this) {
+            $pharmacie->setUser($this);
+        }
+
+        $this->pharmacie = $pharmacie;
+
+        return $this;
+    }
+
+    public function getInfermier(): ?Infermier
+    {
+        return $this->infermier;
+    }
+
+    public function setInfermier(?Infermier $infermier): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($infermier === null && $this->infermier !== null) {
+            $this->infermier->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($infermier !== null && $infermier->getUser() !== $this) {
+            $infermier->setUser($this);
+        }
+
+        $this->infermier = $infermier;
+
+        return $this;
+    }
+
+    public function getPatient(): ?Patient
+    {
+        return $this->patient;
+    }
+
+    public function setPatient(?Patient $patient): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($patient === null && $this->patient !== null) {
+            $this->patient->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($patient !== null && $patient->getUser() !== $this) {
+            $patient->setUser($this);
+        }
+
+        $this->patient = $patient;
+
+        return $this;
+    }
 }
