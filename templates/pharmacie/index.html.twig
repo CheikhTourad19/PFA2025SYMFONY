@@ -1,46 +1,43 @@
 {% extends 'pharmacie/pharmacie.base.html.twig' %}
 
-
 {% block title %}Accueil - E-Medical Pharmacie{% endblock %}
 
 {% block content %}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Welcome Section -->
         <div class="text-center py-12">
-            <h1 class="text-4xl font-bold text-gray-900">Bienvenue, {{ app.user.prenom }} !</h1>
-            <p class="mt-4 text-lg text-gray-600">Gérez votre pharmacie efficacement avec E-Medical.</p>
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white">Bienvenue, {{ app.user.prenom }} !</h1>
+            <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">Gérez votre pharmacie efficacement avec E-Medical.</p>
         </div>
 
         <!-- Quick Stats Section -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <!-- Stock Card -->
-            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600">Stock</h2>
-                <p class="mt-2 text-gray-600">Consultez et gérez votre stock de médicaments.</p>
-                <a href="{{ path('app_pharma_stock') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-300">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
+                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Stock</h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Consultez et gérez votre stock de médicaments.</p>
+                <a href="{{ path('app_pharma_stock') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
                     Voir le stock
                 </a>
             </div>
 
             <!-- Ordonnance Card -->
-            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600">Ordonnances</h2>
-                <p class="mt-2 text-gray-600">Consultez les ordonnances et les médicaments prescrits.</p>
-                <a href="{{ path('app_pharma_ordonnance') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-300">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
+                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Ordonnances</h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Consultez les ordonnances et les médicaments prescrits.</p>
+                <a href="{{ path('app_pharma_ordonnance') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
                     Voir les ordonnances
                 </a>
             </div>
 
             <!-- Profil Card -->
-            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <h2 class="text-xl font-semibold text-blue-600">Profil</h2>
-                <p class="mt-2 text-gray-600">Modifiez vos informations personnelles.</p>
-                <a href="{{ path('app_pharma_profil') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-300">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-900 dark:hover:shadow-gray-800 transition-shadow duration-300">
+                <h2 class="text-xl font-semibold text-blue-600 dark:text-blue-400">Profil</h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Modifiez vos informations personnelles.</p>
+                <a href="{{ path('app_pharma_profil') }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg transition-all duration-300">
                     Voir le profil
                 </a>
             </div>
         </div>
-
-
     </div>
 {% endblock %}

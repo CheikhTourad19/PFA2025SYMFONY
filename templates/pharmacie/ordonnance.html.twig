@@ -6,27 +6,27 @@
     <div class="container mx-auto px-4 py-8">
         {# Page Header #}
         <div class="text-center mb-8">
-            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Recherche de Médicaments par Ordonnance</h1>
-            <p class="mt-2 text-base sm:text-lg text-gray-600">Entrez l'ID de l'ordonnance pour afficher les médicaments prescrits.</p>
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Recherche de Médicaments par Ordonnance</h1>
+            <p class="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300">Entrez l'ID de l'ordonnance pour afficher les médicaments prescrits.</p>
         </div>
 
         {# Search Form #}
-        <div class="bg-white shadow-md rounded-lg p-4 sm:p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 mb-8">
             <form method="GET" action="{{ path('app_pharma_ordonnance') }}" class="space-y-4">
                 <div>
-                    <label for="ordonnance_id" class="block text-sm font-medium text-gray-700">ID de l'Ordonnance</label>
+                    <label for="ordonnance_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">ID de l'Ordonnance</label>
                     <input
                             type="number"
                             id="ordonnance_id"
                             name="ordonnance_id"
                             value="{{ id }}"
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
                             required
                     />
                 </div>
                 <button
                         type="submit"
-                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-800"
                 >
                     Rechercher
                 </button>
@@ -35,35 +35,48 @@
 
         {# Results Section #}
         {% if orm|length > 0 %}
-            <div class="bg-white shadow-md rounded-lg p-4 sm:p-6 overflow-hidden">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Médicaments pour l'ordonnance #{{ id }}</h2>
+            <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 overflow-hidden">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">Médicaments pour l'ordonnance #{{ id }}</h2>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Médicament</th>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Médecin</th>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qté</th>
-                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructions</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Médicament</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Médecin</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Prix</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Qté</th>
+                            <th scope="col" class="px-3 py-2 sm:px-6 sm:py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Instructions</th>
                         </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {% for item in orm %}
-                            <tr>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ item.medicament.nom }}</td>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">Dr {{ item.ordonnance.medecin.user.nom }}</td>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm text-gray-900">{{ item.medicament.description|slice(0, 30) }}{% if item.medicament.description|length > 30 %}...{% endif %}</td>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
-                                    {{ item.medicament.prix ? item.medicament.prix ~ ' TND' : 'N/A' }}
-                                </td>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{{ item.quantite }}</td>
-                                <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm text-gray-900">{{ item.instructions|slice(0, 30) }}{% if item.instructions|length > 30 %}...{% endif %}</td>
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-200">{{ item.medicament.nom }}</td>
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-200">Dr {{ item.ordonnance.medecin.user.nom }}</td>
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm text-gray-900 dark:text-gray-200">{{ item.medicament.description|slice(0, 30) }}{% if item.medicament.description|length > 30 %}...{% endif %}</td>
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-200">{{ item.medicament.prix }} DH</td>
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900 dark:text-gray-200">{{ item.quantite }}</td>
+                                <td class="px-3 py-2 sm:px-6 sm:py-4 text-xs sm:text-sm text-gray-900 dark:text-gray-200">{{ item.instructions }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                </div>
+            </div>
+        {% elseif id is not empty %}
+            <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                            Aucun médicament trouvé pour l'ordonnance #{{ id }}.
+                        </p>
+                    </div>
                 </div>
             </div>
         {% endif %}
