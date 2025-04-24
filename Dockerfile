@@ -32,7 +32,7 @@ RUN chmod -R 775 var vendor && \
     chown -R www-data:www-data var vendor
 
 # Expose port for php-fpm
-EXPOSE 9000
+EXPOSE 9002
 
 # Default command
 CMD ["php-fpm"]
