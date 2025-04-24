@@ -72,8 +72,7 @@ final class PatientController extends AbstractController
 
     {
 
-        $patient= new Patient();
-        $patient->setUser($this->getUser());
+
 
         $users=$userRepository->findBy(['role'=>Role::PHARMACIE]);
 
