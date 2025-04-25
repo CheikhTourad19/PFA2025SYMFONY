@@ -62,6 +62,24 @@ final class PatientController extends AbstractController
             ]
         );
     }
+
+    #[Route('/patient/annuler/rdv/{id}', name: 'app_patient_annuler_rdv')]
+    public function annuler_rdv(int $id,RdvRepository $rdvRepository,EntityManagerInterface $em)
+    {
+        $rdv=$rdvRepository->find($id);
+        $rdv->setStatut('annule');
+        $em->persist($rdv);
+        $em->flush();
+        $this->addFlash('success','RDV Annule.');
+        return $this->redirectToRoute('app_patient_rdv');
+    }
+    #[Route('/patient/prendrdv', name: 'app_patient_prendrdv')]
+    public function prendrdv(RdvRepository $rdvRepository)
+    {
+        $rdv = $rdvRepository->findBy(['patient'=>$this->getUser()]);
+
+        return $this->render('patient/prendrdv.html.twig', ['rdv' => $rdv]);
+    }
     #[Route('/patient/rdv', name: 'app_patient_rdv')]
     public function rdv(RdvRepository $rdvRepository)
     {
@@ -70,18 +88,18 @@ final class PatientController extends AbstractController
         return $this->render('patient/rdv.html.twig', ['rdv' => $rdv]);
     }
 
+
     #[Route('/patient', name: 'app_home_patient')]
     public function index(): Response
     {
 
         return $this->render('patient/index.html.twig', []);
     }
+
     #[Route('/patient/pahrmacie', name: 'app_patient_pharmacie')]
     public function pharmacie(PharmacieRepository $pharmacieRepository,UserRepository $userRepository): Response
 
     {
-
-
 
         $users=$userRepository->findBy(['role'=>Role::PHARMACIE]);
 

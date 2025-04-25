@@ -1,0 +1,104 @@
+{% extends 'patient/patient.base.html.twig' %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-user-md me-2"></i>Liste des Médecins</h5>
+                <div class="input-group input-group-sm w-auto">
+                    <input type="text" class="form-control" placeholder="Rechercher un médecin..." id="searchDoctor">
+                    <button class="btn btn-light" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if rdv is empty %}
+                    <div class="alert alert-info d-flex align-items-center">
+                        <i class="fas fa-info-circle me-3 fs-4"></i>
+                        <div>Aucun médecin disponible pour le moment.</div>
+                    </div>
+                {% else %}
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for rdvv in rdv %}
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm hover-card">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="doctor-avatar bg-primary text-white me-3">
+                                                {{ rdvv.medecin.user.nom|first }}
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-0">Dr. {{ rdvv.medecin.user.nom }}</h6>
+                                                <span class="badge bg-light text-primary">{{ rdvv.medecin.service|default('Médecin') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="doctor-info">
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-graduation-cap me-1"></i> Spécialiste en {{ rdvv.medecin.service|default('médecine générale') }}
+                                            </p>
+                                            <p class="text-muted small mb-2">
+                                                <i class="fas fa-hospital me-1"></i> Centre médical de {{ rdvv.medecin.user.adresse|default('votre région') }}
+                                            </p>
+                                            <div class="doctor-rating text-warning">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="far fa-star"></i>
+                                                <span class="text-muted small ms-1">(4.0)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 pt-0">
+                                        <a href="#" class="btn btn-primary btn-sm w-100 rounded-pill">
+                                            <i class="fas fa-calendar-plus me-1"></i> Prendre rendez-vous
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        .doctor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .hover-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+
+        .pagination .page-link {
+            border-radius: 50%;
+            margin: 0 3px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--bs-primary);
+            border-color: var(--bs-primary);
+        }
+    </style>
+{% endblock content %}

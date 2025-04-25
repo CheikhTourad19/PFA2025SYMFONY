@@ -56,8 +56,9 @@
                                     </td>
                                     <td class="text-center">
                                         {% if rdvv.statut != 'annule' %}
-                                            <a href="#" class="btn btn-sm btn-outline-danger rounded-pill">
-                                                <i class="fas fa-times-circle me-1"></i>Annuler
+                                            <a href="{{ path('app_patient_annuler_rdv', {id: rdvv.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill">
+
+                                            <i class="fas fa-times-circle me-1"></i>Annuler
                                             </a>
                                         {% else %}
                                             <span class="text-muted fst-italic small">Aucune action</span>
