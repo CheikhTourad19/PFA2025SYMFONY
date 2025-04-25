@@ -80,6 +80,16 @@ final class PatientController extends AbstractController
 
         return $this->render('patient/prendrdv.html.twig', ['rdv' => $rdv]);
     }
+    #[Route('/patient/supprimer/rdv/{id}', name: 'app_patient_supprimer_rdv')]
+    public function supprimer_rdv(int $id,RdvRepository $rdvRepository,EntityManagerInterface $em)
+    {
+        $rdv=$rdvRepository->find($id);
+        $em->remove($rdv);
+        $em->flush();
+        $this->addFlash('success','RDV Supprimer.');
+        return $this->redirectToRoute('app_patient_rdv');
+    }
+
     #[Route('/patient/rdv', name: 'app_patient_rdv')]
     public function rdv(RdvRepository $rdvRepository)
     {
