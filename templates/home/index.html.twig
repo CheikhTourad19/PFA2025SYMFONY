@@ -99,7 +99,7 @@
                     </svg>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Découvrez E-Medical en 2 minutes</h3>
                     <p class="text-gray-600 mb-4">Regardez comment notre plateforme transforme l'expérience médicale en Tunisie</p>
-                    <button class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center mx-auto">
+                    <button aria-haspopup="dialog" aria-expanded="false" aria-controls="video-modal" data-overlay="#video-modal" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
                         </svg>
@@ -353,6 +353,15 @@
     </div>
 
 
+    <div id="video-modal" class="overlay modal overlay-open:opacity-100 overlay-open:duration-300 hidden" role="dialog" tabindex="-1">
+        <div class="modal-dialog overlay-open:opacity-100 overlay-open:duration-300">
+            <div class="modal-content">
+                <div class="modal-body rounded-lg p-0">
+                    <iframe width="1252" height="704" src="https://www.youtube.com/embed/vK1tlWxBrSM" title="E-Medical" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" class="aspect-video h-96 w-full" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
     {% else %}
     <!-- Authenticated User View -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
