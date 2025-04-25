@@ -3,6 +3,28 @@
 {% block title %}Bienvenue sur E-Medical - Votre plateforme médicale intelligente{% endblock %}
 {% block head %}
     {{ parent() }}
+    <style>
+        @keyframes blob {
+            0% {
+                transform: translate(0px, 0px) scale(1);
+            }
+            33% {
+                transform: translate(30px, -50px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+            100% {
+                transform: translate(0px, 0px) scale(1);
+            }
+        }
+        .animate-blob {
+            animation: blob 7s infinite;
+        }
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         [x-cloak] { display: none !important; }
@@ -11,124 +33,326 @@
 
 {% block body %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <nav class="flex justify-end space-x-3 pr-4 pt-5">
+        <!-- Login Button -->
+        <a href="{{ path('app_login') }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            <span class="whitespace-nowrap">Connexion</span>
+            <div class="absolute inset-0 rounded-full border border-white/20 group-hover:border-white/30"></div>
+        </a>
+
+        <!-- Register Button -->
+        <a href="{{ path('app_register') }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md border border-gray-200 hover:border-gray-300 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+            </svg>
+            <span class="whitespace-nowrap">S'inscrire</span>
+            <div class="absolute inset-0 rounded-full border border-transparent group-hover:border-gray-100"></div>
+        </a>
+    </nav>
     {% if not app.user %}
     <!-- Unauthenticated User View -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <!-- Hero Section -->
-        <div class="text-center mb-16">
-            <div class="mx-auto h-24 w-24 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Hero Section avec animation -->
+
+        <div class="text-center mb-20 relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+            <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+            <div class="relative mx-auto h-28 w-28 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center mb-8 shadow-xl transform transition hover:scale-110 duration-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
             </div>
-            <h1 class="text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">E-Medical</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto">La solution médicale intelligente conçue par des étudiants d'ESPRIT pour révolutionner les soins de santé</p>
-        </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                E-Medical
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                La plateforme médicale intelligente conçue par les étudiants d'ESPRIT pour <span class="font-semibold text-indigo-600">révolutionner l'expérience des soins</span> en Tunisie
+            </p>
 
-        <!-- Features Grid -->
-        <div class="grid md:grid-cols-3 gap-8 mb-16">
-            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
-                <div class="text-blue-600 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <div class="mt-8 flex justify-center space-x-4">
+                <div class="flex items-center text-sm bg-blue-50 px-4 py-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
+                    <span>Solution certifiée CNPM</span>
                 </div>
-                <h3 class="text-lg font-semibold mb-2">Prise de rendez-vous</h3>
-                <p class="text-gray-600">Planifiez vos consultations médicales en quelques clics, sans attente ni déplacement inutile.</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
-                <div class="text-green-600 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                <div class="flex items-center text-sm bg-indigo-50 px-4 py-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
+                    <span>Prix Innovation Santé 2023</span>
                 </div>
-                <h3 class="text-lg font-semibold mb-2">Ordonnances électroniques</h3>
-                <p class="text-gray-600">Recevez et gérez vos ordonnances de manière sécurisée et accessible à tout moment.</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300">
-                <div class="text-purple-600 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold mb-2">AI Chatbot</h3>
-                <p class="text-gray-600">Notre assistant intelligent vous guide pour des consultations précoces et des conseils médicaux.</p>
             </div>
         </div>
 
-        <!-- Auth Card -->
-        <div class="max-w-md mx-auto">
-            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl">
-                <div class="p-8">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Commencer maintenant</h2>
+        <!-- Vidéo Présentation -->
+        <div class="mb-20 rounded-3xl overflow-hidden shadow-2xl">
+            <div class="aspect-w-16 aspect-h-9 bg-gray-200 flex items-center justify-center">
+                <div class="text-center p-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-indigo-600 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Découvrez E-Medical en 2 minutes</h3>
+                    <p class="text-gray-600 mb-4">Regardez comment notre plateforme transforme l'expérience médicale en Tunisie</p>
+                    <button class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                        </svg>
+                        Lire la vidéo
+                    </button>
+                </div>
+            </div>
+        </div>
 
-                    <div class="space-y-4">
-                        <a href="{{ path('app_login') }}" class="block w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center justify-center shadow-md hover:shadow-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                            </svg>
-                            Se connecter
-                        </a>
+        <!-- Features Grid améliorée -->
+        <div class="mb-20">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Une solution complète pour <span class="text-indigo-600">tous les acteurs de santé</span></h2>
 
-                        <a href="{{ path('app_register') }}" class="block w-full px-6 py-3 border-2 border-gray-200 hover:border-indigo-300 hover:bg-gray-50 text-gray-700 font-medium rounded-lg transition duration-200 flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- Carte 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-500 transform hover:-translate-y-2">
+                    <div class="text-blue-500 mb-6">
+                        <div class="inline-flex items-center justify-center h-14 w-14 rounded-full bg-blue-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            S'inscrire
-                        </a>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Gestion de rendez-vous intelligente</h3>
+                    <p class="text-gray-600 mb-4">Planifiez, modifiez ou annulez vos consultations en temps réel avec notre système de prise de rendez-vous optimisé.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Rappels automatiques par SMS/Email
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Synchronisation avec agenda Google/Apple
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Estimation du temps d'attente
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Carte 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-green-500 transform hover:-translate-y-2">
+                    <div class="text-green-500 mb-6">
+                        <div class="inline-flex items-center justify-center h-14 w-14 rounded-full bg-green-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Dossier médical électronique</h3>
+                    <p class="text-gray-600 mb-4">Centralisez l'ensemble de vos documents médicaux dans un espace sécurisé et accessible à tout moment.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Ordonnances numériques certifiées
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Résultats d'analyses intégrés
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Partage sécurisé avec professionnels
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Carte 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-purple-500 transform hover:-translate-y-2">
+                    <div class="text-purple-500 mb-6">
+                        <div class="inline-flex items-center justify-center h-14 w-14 rounded-full bg-purple-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Assistant médical intelligent</h3>
+                    <p class="text-gray-600 mb-4">Notre IA médicale vous guide pour une première évaluation de vos symptômes et vous oriente vers les bons spécialistes.</p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Analyse des symptômes en temps réel
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Suggestions de spécialistes adaptés
+                        </li>
+                        <li class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Alertes pour consultations préventives
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bannière Statistiques -->
+            <div class="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-8 text-white shadow-xl">
+                <div class="grid md:grid-cols-4 gap-6 text-center">
+                    <div>
+                        <div class="text-4xl font-bold mb-2">15K+</div>
+                        <div class="text-indigo-100">Patients satisfaits</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">1.2K</div>
+                        <div class="text-indigo-100">Professionnels partenaires</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">24/7</div>
+                        <div class="text-indigo-100">Assistance disponible</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-bold mb-2">95%</div>
+                        <div class="text-indigo-100">Rendez-vous honorés</div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
-                    <p class="text-sm text-gray-600 text-center">
-                        En continuant, vous acceptez nos
-                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Conditions d'utilisation</a>
-                        et notre
-                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Politique de confidentialité</a>.
+
+
+        <!-- Témoignages améliorés -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Ils nous font confiance</h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Témoignage 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-start mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/43.jpg" alt="Dr. Leila Ben Ammar" class="h-14 w-14 rounded-full object-cover border-2 border-white shadow-md">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">Dr. Leila Ben Ammar</h4>
+                            <p class="text-sm text-gray-500">Cardiologue, Tunis</p>
+                            <div class="flex mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic relative pl-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-200 absolute -left-1 top-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        "E-Medical a transformé ma pratique médicale. La gestion des dossiers patients est maintenant fluide et sécurisée. Mes patients apprécient particulièrement la facilité de prise de rendez-vous."
+                    </p>
+                </div>
+
+                <!-- Témoignage 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-start mb-6">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mohamed Trabelsi" class="h-14 w-14 rounded-full object-cover border-2 border-white shadow-md">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">Mohamed Trabelsi</h4>
+                            <p class="text-sm text-gray-500">Patient régulier</p>
+                            <div class="flex mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic relative pl-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-200 absolute -left-1 top-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        "En tant que patient diabétique, E-Medical m'a changé la vie. Je peux suivre mes rendez-vous, mes ordonnances et mes résultats d'analyses en un seul endroit. L'assistant IA m'a même alerté sur un problème que je n'avais pas remarqué!"
+                    </p>
+                </div>
+
+                <!-- Témoignage 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition duration-300">
+                    <div class="flex items-start mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Pharmacie Ennasr" class="h-14 w-14 rounded-full object-cover border-2 border-white shadow-md">
+                        <div class="ml-4">
+                            <h4 class="font-semibold text-lg">Pharmacie Ennasr</h4>
+                            <p class="text-sm text-gray-500">Partenaire depuis 2022</p>
+                            <div class="flex mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic relative pl-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-200 absolute -left-1 top-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        "L'intégration avec E-Medical a considérablement réduit les erreurs de lecture d'ordonnances. Nous recevons les prescriptions directement dans notre système, ce qui améliore la sécurité des patients et notre efficacité."
                     </p>
                 </div>
             </div>
         </div>
 
-        <!-- Testimonials -->
-        <div class="mt-16">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8">Ce que disent nos utilisateurs</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-3">JD</div>
-                        <div>
-                            <h4 class="font-semibold">Dr. Jean Dupont</h4>
-                            <p class="text-sm text-gray-500">Médecin généraliste</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 italic">"E-Medical a simplifié ma gestion des patients et des ordonnances. Un gain de temps considérable!"</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-3">SM</div>
-                        <div>
-                            <h4 class="font-semibold">Sarah Martin</h4>
-                            <p class="text-sm text-gray-500">Patient</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 italic">"Prendre rendez-vous n'a jamais été aussi simple. L'AI m'a même aidé à identifier mes symptômes avant ma consultation."</p>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="flex items-center mb-4">
-                        <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-3">PL</div>
-                        <div>
-                            <h4 class="font-semibold">Pharmacie Lambert</h4>
-                            <p class="text-sm text-gray-500">Gérant de pharmacie</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-600 italic">"La gestion des stocks et des ordonnances est maintenant un jeu d'enfant grâce à E-Medical."</p>
-                </div>
-            </div>
-        </div>
+        <!-- Partenaires -->
+
     </div>
+
+
     {% else %}
     <!-- Authenticated User View -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
