@@ -72,17 +72,22 @@
          "
          x-on:keydown.esc.prevent="isModalOpen = false; isFlashModalOpen = false;">
         <!-- Navbar -->
-        <nav class="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 shadow-lg" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
+        <nav class="bg-gradient-to-r from-blue-700 to-blue-500 text-white p-4 shadow-xl" :class="{ 'blur-sm': isModalOpen || isFlashModalOpen }">
             <div class="max-w-7xl mx-auto">
                 <!-- Mobile menu header -->
                 <div class="flex items-center justify-between">
-                    <!-- Titre de l'application -->
-                    <div class="text-2xl font-bold tracking-tight">Espace Patient</div>
+                    <!-- Logo et titre de l'application -->
+                    <div class="flex items-center space-x-2">
+
+                        <svg class="h-8 w-8 text-white" fill="#fffafa" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 229.957 229.957" xml:space="preserve" stroke="#fffafa"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M104.706,129.12h24.242v-16.162h16.162V88.715h-16.162V72.554h-24.242v16.162H88.544v24.242h16.162V129.12z M96.625,104.877v-8.081h16.162V80.635h8.081v16.162h16.161v8.08h-16.162v16.162h-8.081v-16.162H96.625z"></path> <rect x="23.897" y="137.2" width="28.283" height="8.081"></rect> <rect x="23.897" y="153.362" width="28.283" height="8.081"></rect> <rect x="23.897" y="169.523" width="28.283" height="8.081"></rect> <rect x="177.433" y="137.2" width="28.283" height="8.081"></rect> <rect x="177.433" y="153.362" width="28.283" height="8.081"></rect> <rect x="177.433" y="169.523" width="28.283" height="8.081"></rect> <path d="M221.877,197.807L221.877,197.807v-76.768h-52.525V32.15h20.202v-8.081h-20.202H60.261H40.059v8.081h20.202v88.889H7.736 v76.768H0v8.081h7.736h52.525h8.081h24.242h44.444h24.242h8.081h52.525h8.081v-8.081H221.877z M60.261,197.806H15.817v-68.687 h44.444V197.806z M128.948,197.806h-28.283v-32.323h28.283V197.806z M161.271,121.039v76.768h-24.242v-0.001v-40.404H92.584 v40.404H68.342v-76.767V32.15h92.929V121.039z M213.796,197.806h-44.444v-68.687h44.444V197.806z"></path> </g> </g> </g> </g></svg>
+
+                        <div class="text-2xl font-bold tracking-tight">Espace Patient</div>
+                    </div>
 
                     <!-- Mobile menu button -->
                     <div class="md:hidden">
-                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="text-white hover:text-gray-200 focus:outline-none">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 rounded-lg p-1">
+                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                             </svg>
                         </button>
@@ -90,55 +95,100 @@
                 </div>
 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center justify-between mt-2">
+                <div class="hidden md:flex items-center justify-between mt-3">
                     <!-- Navigation Links -->
-                    <div class="flex items-center space-x-2 md:space-x-4">
+                    <div class="flex items-center space-x-1 lg:space-x-2">
                         {% set currentRoute = app.request.attributes.get('_route') %}
 
-                        <a href="{{ path('app_ordonnances_patient') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                            Ordonnance
-                        </a>
-
                         <a href="{{ path('app_home_patient') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                            Accueil
-                        </a>
-                        <a href="{{ path('app_patient_contact') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
-                        >
-                            Nous Contacter
-                        </a>
-                        <a href="{{ path('app_patient_pharmacie') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
-                        >
-                            Chercher Pharmacie
-                        </a>
-                        <a href="{{ path('app_patient_rdv') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_rdv' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
-                        >
-                            Mes Rendez-vous
-                        </a>
-                        <a href="{{ path('app_patient_prendrdv') }}"
-                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_prendrdv' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}"
-                        >
-                            Prend Rendez-vous
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-white text-blue-700 font-medium shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                            <div class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                </svg>
+                                <span>Accueil</span>
+                            </div>
                         </a>
 
+                        <a href="{{ path('app_ordonnances_patient') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-white text-blue-700 font-medium shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                            <div class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Ordonnances</span>
+                            </div>
+                        </a>
+
+                        <div class="relative group" x-data="{ isOpen: false }">
+                            <button @click="isOpen = !isOpen" @click.away="isOpen = false" class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 hover:bg-blue-600 hover:shadow-md flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Rendez-vous</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" :class="{'rotate-180': isOpen}" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu for RDV -->
+                            <div x-show="isOpen" x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-1"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 translate-y-1"
+                                 class="absolute left-0 mt-2 w-48 rounded-lg bg-white shadow-lg z-20">
+                                <div class="py-1 rounded-lg divide-y divide-gray-100">
+                                    <a href="{{ path('app_patient_rdv') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                        </svg>
+                                        Mes rendez-vous
+                                    </a>
+                                    <a href="{{ path('app_patient_prendrdv') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 rounded-b-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                        </svg>
+                                        Prendre rendez-vous
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ path('app_patient_pharmacie') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_pharmacie' ? 'bg-white text-blue-700 font-medium shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                            <div class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Pharmacies</span>
+                            </div>
+                        </a>
+
+                        <a href="{{ path('app_patient_contact') }}"
+                           class="px-3 py-2 text-sm md:text-base md:px-4 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_contact' ? 'bg-white text-blue-700 font-medium shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                            <div class="flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                                <span>Contact</span>
+                            </div>
+                        </a>
                     </div>
 
-                    <!-- User Info with Dropdown -->
                     <!-- User Info with Offcanvas -->
-                    <div class="flex items-center space-x-4" x-data="{ offcanvasOpen: false }">
+                    <div class="flex items-center" x-data="{ offcanvasOpen: false }">
                         <!-- Offcanvas Toggle Button -->
                         <button
                                 x-on:click="offcanvasOpen = true"
                                 type="button"
-                                class="flex items-center space-x-2 px-3 py-2  rounded-lg  hover:bg-blue-900 hover:shadow-lg transition-all duration-300"
+                                class="flex items-center space-x-2 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-800 hover:shadow-md transition-all duration-300 border border-blue-400"
                         >
-                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-900 flex items-center justify-center">
-                                <span class="text-xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center border-2 border-white shadow-inner">
+                                <span class="text-lg font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
                             </div>
+                            <span class="font-medium hidden sm:block">{{ app.user.prenom }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                             </svg>
@@ -148,89 +198,106 @@
                         <div
                                 x-cloak
                                 x-show="offcanvasOpen"
-                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter="transition ease-out duration-200"
                                 x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100"
-                                x-transition:leave="transition ease-in duration-200"
+                                x-transition:leave="transition ease-in duration-150"
                                 x-transition:leave-start="opacity-100"
                                 x-transition:leave-end="opacity-0"
                                 x-bind:aria-hidden="!offcanvasOpen"
                                 tabindex="-1"
                                 role="dialog"
-                                aria-labelledby="pm-offcanvas-title"
-                                class="z-90 fixed inset-0 overflow-hidden bg-zinc-700/75 backdrop-blur-xs dark:bg-zinc-950/50"
+                                class="z-50 fixed inset-0 overflow-hidden bg-black/30 backdrop-blur-sm"
                         >
                             <!-- Offcanvas Sidebar -->
                             <div
                                     x-cloak
                                     x-show="offcanvasOpen"
-                                    x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter="transition ease-out duration-200"
                                     x-transition:enter-start="translate-x-full"
                                     x-transition:enter-end="translate-x-0"
-                                    x-transition:leave="transition ease-in duration-200"
+                                    x-transition:leave="transition ease-in duration-150"
                                     x-transition:leave-start="translate-x-0"
                                     x-transition:leave-end="translate-x-full"
                                     role="document"
-                                    class="absolute flex h-dvh w-full max-w-xs flex-col bg-white shadow-lg will-change-transform dark:bg-zinc-900 dark:text-zinc-100 dark:shadow-zinc-950 top-0 end-0"
+                                    class="absolute flex h-dvh w-full max-w-xs flex-col bg-white shadow-xl dark:bg-zinc-900 dark:text-zinc-100 top-0 end-0"
                                     @click.away="offcanvasOpen = false"
                             >
                                 <!-- Header -->
-                                <div class="flex min-h-16 flex-none items-center justify-between border-b border-zinc-100 px-5 dark:border-zinc-800 md:px-7">
-                                    <h3 id="pm-offcanvas-title" class="py-5 text-gray-800 font-semibold">Mon Compte</h3>
+                                <div class="flex items-center justify-between px-6 py-5">
+                                    <h3 id="pm-offcanvas-title" class="text-xl font-semibold text-gray-900 dark:text-white">Mon Compte</h3>
                                     <button
                                             x-on:click="offcanvasOpen = false"
                                             type="button"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs focus:ring-zinc-300/25 active:border-zinc-200 active:shadow-none dark:border-zinc-700 dark:bg-transparent dark:text-zinc-300 dark:hover:border-zinc-600 dark:hover:text-zinc-200 dark:focus:ring-zinc-600/50 dark:active:border-zinc-700"
+                                            class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-zinc-800"
+                                            aria-label="Close menu"
                                     >
-                                        <svg class="hi-solid hi-x -mx-1 inline-block size-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                         </svg>
                                     </button>
                                 </div>
 
-                                <!-- Content -->
-                                <div class="flex grow flex-col overflow-y-auto p-5 md:p-7">
-                                    <!-- User Info -->
-                                    <div class="mb-6">
-                                        <div class="flex items-center space-x-4 mb-4">
-                                            <div class="flex-shrink-0 h-16 w-16 rounded-full bg-blue-900 flex items-center justify-center">
-                                                <span class="text-2xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
-                                            </div>
-                                            <div>
-                                                <p class="font-semibold text-gray-800 text-lg">{{ app.user.prenom }} {{ app.user.nom }}</p>
-                                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ app.user.email }}</p>
-                                            </div>
+                                <!-- User Info -->
+                                <div class="px-6 pb-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="relative h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-medium">
+                                            {{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}
+                                            <span class="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white bg-green-500"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900 dark:text-white">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ app.user.email }}</p>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Menu Items -->
-                                    <div class="space-y-2">
-                                        <a x-on:click="offcanvasOpen = false" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200" href="{{ path('app_home') }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
-                                                <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" clip-rule="evenodd" />
-                                            </svg>
-                                            Quitter l'espace
-                                        </a>
+                                <!-- Menu Items -->
+                                <nav class="flex-1 space-y-1 px-2">
+                                    <a
+                                            x-on:click="offcanvasOpen = false"
+                                            href="{{ path('app_home') }}"
+                                            class="group flex items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                                    >
+                                    <span class="mr-3 flex h-6 w-6 items-center justify-center text-gray-400 group-hover:text-blue-500 dark:text-gray-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                                            <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z" clip-rule="evenodd" />
+                                        </svg>
+                                    </span>
+                                        Quitter l'espace
+                                    </a>
 
-                                        <a x-on:click="offcanvasOpen = false" href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
+                                    <a
+                                            x-on:click="offcanvasOpen = false"
+                                            href="{{ path('app_patient_profil') }}"
+                                            class="group flex items-center rounded-lg px-4 py-3 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-800 transition-colors"
+                                    >
+                                        <span class="mr-3 flex h-6 w-6 items-center justify-center text-gray-400 group-hover:text-blue-500 dark:text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
                                             </svg>
-                                            Profil
-                                        </a>
+                                        </span>
+                                        Profil
+                                    </a>
 
-                                        <!-- In your offcanvas menu items section -->
-                                        <button
-                                                @click="isModalOpen = true; offcanvasOpen = false"
-                                                class="flex items-center w-full px-4 py-3 text-sm font-medium text-red-500 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition-colors duration-200"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-red-500">
+                                    <button
+                                            @click="isModalOpen = true; offcanvasOpen = false"
+                                            class="group flex w-full items-center rounded-lg px-4 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-zinc-800 transition-colors"
+                                    >
+                                        <span class="mr-3 flex h-6 w-6 items-center justify-center text-red-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                                                 <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
                                                 <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
                                             </svg>
-                                            Déconnexion
-                                        </button>
-                                    </div>
+                                        </span>
+                                        Déconnexion
+                                    </button>
+                                </nav>
+
+                                <!-- Footer -->
+                                <div class="mt-auto border-t border-gray-200 p-4 text-center text-sm text-gray-500 dark:border-zinc-800 dark:text-gray-400">
+                                    <p>© 2025 Espace Patient</p>
+                                    <p class="mt-1 text-xs opacity-75">Version 1.0.0</p>
                                 </div>
                             </div>
                         </div>
@@ -240,71 +307,117 @@
 
                 <!-- Mobile Navigation -->
                 <div x-show="isMobileMenuOpen" @click.away="isMobileMenuOpen = false"
-                     class="md:hidden mt-4 space-y-2 pb-2"
-                     x-transition:enter="transition ease-out duration-100"
-                     x-transition:enter-start="opacity-0 scale-95"
-                     x-transition:enter-end="opacity-100 scale-100"
-                     x-transition:leave="transition ease-in duration-75"
-                     x-transition:leave-start="opacity-100 scale-100"
-                     x-transition:leave-end="opacity-0 scale-95">
+                     class="md:hidden mt-4 space-y-2 pb-2 px-1"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 -translate-y-2"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 translate-y-0"
+                     x-transition:leave-end="opacity-0 -translate-y-2">
                     {% set currentRoute = app.request.attributes.get('_route') %}
 
-
+                    <a href="{{ path('app_home_patient') }}"
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                        </svg>
+                        <span>Accueil</span>
+                    </a>
 
                     <a href="{{ path('app_ordonnances_patient') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Ordonnances
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 {{ currentRoute == 'app_ordonnances_patient' ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Ordonnances</span>
                     </a>
 
-                    <a href="{{ path('app_home_patient') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300 {{ currentRoute == 'app_home_patient' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Accueil
-                    </a>
                     <a href="{{ path('app_patient_contact') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_contact' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Nous Contacter
-                    </a>
-                    <a href="{{ path('app_patient_pharmacie') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Chercher Pharmacie
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_contact' ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        </svg>
+                        <span>Nous Contacter</span>
                     </a>
 
-                    <a href="{{ path('app_patient_rdv') }}"
-                       class="block px-3 py-2 rounded-lg transition-all duration-300{{ currentRoute == 'app_patient_pharmacie' ? 'bg-blue-700 shadow-md' : 'hover:bg-blue-700 hover:shadow-md' }}">
-                        Mes Rendez-vous
+                    <a href="{{ path('app_patient_pharmacie') }}"
+                       class="flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-300 {{ currentRoute == 'app_patient_pharmacie' ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-600 hover:shadow-md' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Chercher Pharmacie</span>
                     </a>
-                    <div x-data="{ open: false }" @click.away="open = false" class="relative">
-                        <button @click="open = !open"
-                                class="flex items-center justify-between w-full px-3 py-2 bg-blue-500 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all duration-300">
-                            <div class="flex items-center space-x-2">
-                                <div class="flex-shrink-0 h-12 w-12 rounded-full bg-blue-900 flex items-center justify-center">
-                                    <span class="text-xl font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
-                                </div>
-                                <span class="text-white">{{ app.user.prenom }}</span>
+
+                    <!-- Accordion for Rendez-vous -->
+                    <div x-data="{ open: false }" class="border border-blue-600 rounded-lg overflow-hidden">
+                        <button @click="open = !open" class="flex items-center justify-between w-full px-4 py-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200">
+                            <div class="flex items-center space-x-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Rendez-vous</span>
                             </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-white" :class="{'rotate-180': open}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-200" :class="{'rotate-180': open}" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div x-show="open"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 max-h-0"
+                             x-transition:enter-end="opacity-100 max-h-40"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 max-h-40"
+                             x-transition:leave-end="opacity-0 max-h-0"
+                             class="bg-white text-gray-800 overflow-hidden">
+                            <a href="{{ path('app_patient_rdv') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 border-b border-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                </svg>
+                                Mes rendez-vous
+                            </a>
+                            <a href="{{ path('app_patient_prendrdv') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                </svg>
+                                Prendre rendez-vous
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- User profile dropdown for mobile -->
+                    <div x-data="{ open: false }" @click.away="open = false" class="relative mt-4">
+                        <button @click="open = !open"
+                                class="flex items-center justify-between w-full px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-500 rounded-lg shadow-md hover:from-blue-800 hover:to-blue-600 transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-900 flex items-center justify-center border-2 border-white shadow-inner">
+                                    <span class="text-lg font-bold text-white">{{ app.user.getPrenom|first|upper }}{{ app.user.getNom|first|upper }}</span>
+                                </div>
+                                <span class="text-white font-medium">{{ app.user.prenom }}</span>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5 text-white transition-transform" :class="{'rotate-180': open}">
                                 <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                             </svg>
                         </button>
 
                         <!-- Dropdown Menu -->
                         <div x-cloak x-show="open"
-                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 transform scale-95"
                              x-transition:enter-end="opacity-100 transform scale-100"
-                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave="transition ease-in duration-150"
                              x-transition:leave-start="opacity-100 transform scale-100"
                              x-transition:leave-end="opacity-0 transform scale-95"
-                             class="mt-2 w-full rounded-lg shadow-lg bg-white text-gray-800 z-10">
+                             class="mt-2 w-full rounded-lg shadow-lg bg-white text-gray-800 z-10 border border-gray-200">
                             <div class="py-1 divide-y divide-gray-100">
-                                <div class="p-3 border-b border-gray-200">
-                                    <p class="font-semibold">{{ app.user.prenom }} {{ app.user.nom }}</p>
+                                <div class="p-4 border-b border-gray-200">
+                                    <p class="font-semibold text-gray-800">{{ app.user.prenom }} {{ app.user.nom }}</p>
                                     <p class="text-sm text-gray-500">{{ app.user.email }}</p>
                                 </div>
 
                                 <!-- Profil Link -->
                                 <a href="{{ path('app_patient_profil') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-blue-600">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
                                     </svg>
                                     Profil
@@ -312,14 +425,14 @@
 
                                 <!-- Quitter l'espace Link -->
                                 <a href="{{ path('app_home') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-blue-600">
                                         <path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" />
                                     </svg>
                                     Quitter l'espace
                                 </a>
 
                                 <!-- Déconnexion Button -->
-                                <button @click="isModalOpen = true" class="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-gray-100">
+                                <button @click="isModalOpen = true" class="flex items-center w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-3 text-red-500">
                                         <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
                                         <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
