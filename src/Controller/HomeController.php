@@ -31,7 +31,6 @@ final class HomeController extends AbstractController
     {
         $users = $userRepository->findAll();
         return $this->json($users);
-
     }
 
 
