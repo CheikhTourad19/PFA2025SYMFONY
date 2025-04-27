@@ -20,10 +20,18 @@
             info: [{% for message in app.flashes('info') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}]
         };
     </script>
-    <div id="navigation-loader" class="fixed inset-0 bg-base-100/70 z-50 flex items-center justify-center hidden">
-        <span class="loading loading-xl loading-spinner text-accent"></span>
 
+    <div id="navigation-loader" class="fixed inset-0 bg-base-100/70 z-50 flex flex-col items-center justify-center hidden">
+        <div class="flex flex-col items-center bg-white/10 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+            <!-- Logo container with subtle animation -->
+            <div class="animate-pulse mb-4">
+                <img src="{{ asset('assets/img.jpg') }}" class="w-24 h-24 object-contain rounded-lg">
+            </div>
 
+            <span class="loading loading-spinner loading-xl text-accent"></span>
+
+            <p class="text-accent mt-4 font-medium">Chargement...</p>
+        </div>
     </div>
 
     <div class="min-h-screen flex flex-col bg-gray-50"
