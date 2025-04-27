@@ -33,6 +33,8 @@
 
 {% block body %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+
+    {% if not app.user %}
     <nav class="flex justify-end space-x-3 pr-4 pt-5">
         <!-- Login Button -->
         <a href="{{ path('app_login') }}" class="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-full text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md group">
@@ -52,7 +54,6 @@
             <div class="absolute inset-0 rounded-full border border-transparent group-hover:border-gray-100"></div>
         </a>
     </nav>
-    {% if not app.user %}
     <!-- Unauthenticated User View -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <!-- Hero Section avec animation -->
