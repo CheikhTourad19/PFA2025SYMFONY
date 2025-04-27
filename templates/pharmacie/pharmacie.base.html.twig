@@ -12,6 +12,10 @@
 {% endblock %}
 
 {% block body %}
+    <div id="navigation-loader" class="fixed inset-0 bg-base-100/70 z-50 flex items-center justify-center hidden">
+        <span class="loading loading-bars loading-xl"></span>
+
+    </div>
     {# Store flash messages in JavaScript variables #}
     <script>
         window.flashMessages = {
@@ -539,4 +543,67 @@
         </div>
         <!-- END Flash Messages Modal -->
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navigationLoader = document.getElementById('navigation-loader');
+
+            // Function to show the loading spinner
+            function showLoader() {
+                navigationLoader.classList.remove('hidden');
+            }
+
+            // Function to hide the loading spinner
+            function hideLoader() {
+                navigationLoader.classList.add('hidden');
+            }
+
+            // For traditional links/page navigation
+            document.addEventListener('click', function(e) {
+                // Only handle clicks on links that navigate to pages within your site
+                const target = e.target.closest('a');
+                if (target &&
+                    target.href &&
+                    target.href.startsWith(window.location.origin) &&
+                    !target.getAttribute('data-no-loader') &&
+                    !e.ctrlKey && !e.metaKey) {
+
+                    showLoader();
+                }
+            });
+
+            // Hide loader when page has loaded (for when back button is used)
+            window.addEventListener('pageshow', function() {
+                hideLoader();
+            });
+
+            // For AJAX requests (if you're using them)
+            // You can add this if you're using fetch or XMLHttpRequest for AJAX navigation
+            const originalFetch = window.fetch;
+            window.fetch = function() {
+                showLoader();
+                return originalFetch.apply(this, arguments)
+                    .then(response => {
+                        hideLoader();
+                        return response;
+                    })
+                    .catch(error => {
+                        hideLoader();
+                        throw error;
+                    });
+            };
+
+            // For Turbo/Turbolinks if you're using them
+            document.addEventListener('turbo:visit', showLoader);
+            document.addEventListener('turbo:load', hideLoader);
+            document.addEventListener('turbo:render', hideLoader);
+
+            // For Symfony UX Turbo
+            document.addEventListener('turbo:before-visit', showLoader);
+            document.addEventListener('turbo:load', hideLoader);
+
+            // Fallback for normal page loads
+            window.addEventListener('beforeunload', showLoader);
+        });
+    </script>
 {% endblock %}

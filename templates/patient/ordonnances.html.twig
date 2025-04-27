@@ -1,7 +1,9 @@
 {% extends 'patient/patient.base.html.twig' %}
 
 {% block title %}Mes Ordonnances Médicales{% endblock %}
+{% block head %}
 
+{% endblock %}
 {% block content %}
 
     <!-- Hero Header Section -->
@@ -80,14 +82,34 @@
             </div>
 
             <!-- Prescriptions Table -->
+
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0">
                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Historique des prescriptions</h2>
-                    <div class="relative">
-                        <input type="text" placeholder="Rechercher..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full md:w-auto">
+                        <!-- Search input -->
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Rechercher..." class="pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <!-- Doctor filter dropdown -->
+                        <div class="relative">
+                            <select id="doctorFilter" class="pl-4 pr-10 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="">Tous les médecins</option>
+                                {% set medecins = [] %}
+                                {% for ordonnance in ordonnances %}
+                                    {% if ordonnance.medecin.user.nom not in medecins %}
+                                        {% set medecins = medecins|merge([ordonnance.medecin.user.nom]) %}
+                                        <option value="{{ ordonnance.medecin.user.nom }}">Dr. {{ ordonnance.medecin.user.nom }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
@@ -114,7 +136,11 @@
                         {% set i = 1 %}
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {% for ordonnance in ordonnances %}
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 prescription-row"
+                                data-medecin="{{ ordonnance.medecin.user.nom }}"
+                                data-service="{{ ordonnance.medecin.service }}"
+                                data-date="{{ ordonnance.getDateCreation|date('d/m/Y') }}"
+                                data-email="{{ ordonnance.medecin.user.email }}">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
@@ -126,7 +152,6 @@
                                             <div class="text-sm font-medium text-gray-900 dark:text-white">
                                                 #{{ i }}
                                             </div>
-
                                         </div>
                                     </div>
                                 </td>
@@ -135,9 +160,9 @@
                                     <div class="text-sm text-gray-500 dark:text-gray-400">{{ ordonnance.medecin.user.email }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                        {{ ordonnance.medecin.service }}
-                                    </span>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            {{ ordonnance.medecin.service }}
+                        </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     <div class="flex items-center">
@@ -149,12 +174,12 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="/patient/ordonnance/{{ ordonnance.id }}" class="group relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-500 to-cyan-500 shadow-sm hover:from-blue-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
-                                        <span class="absolute left-0 inset-y-0 flex items-center pl-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        </span>
+                            <span class="absolute left-0 inset-y-0 flex items-center pl-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </span>
                                         <span class="pl-4 group-hover:pl-0 transition-all duration-200">Consulter</span>
                                     </a>
                                 </td>
@@ -164,20 +189,9 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                        Affichage de <span class="font-medium">1</span> à <span class="font-medium">{{ ordonnances|length }}</span> sur <span class="font-medium">{{ ordonnances|length }}</span> résultats
-                    </div>
-                    <div class="flex space-x-2">
-                        <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            Précédent
-                        </button>
-                        <button class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            Suivant
-                        </button>
-                    </div>
-                </div>
             </div>
+
+
         {% else %}
             <!-- Empty State -->
             <div class="max-w-3xl mx-auto">
@@ -203,5 +217,41 @@
             </div>
         {% endif %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const searchInput = document.getElementById('searchInput');
+            const doctorFilter = document.getElementById('doctorFilter');
+            const prescriptionRows = document.querySelectorAll('.prescription-row');
+
+            // Function to filter table rows
+            function filterTable() {
+                const searchText = searchInput.value.toLowerCase();
+                const selectedDoctor = doctorFilter.value;
+
+                prescriptionRows.forEach(row => {
+                    const medecin = row.getAttribute('data-medecin');
+                    const service = row.getAttribute('data-service');
+                    const date = row.getAttribute('data-date');
+                    const email = row.getAttribute('data-email');
+
+                    // Combine all searchable text
+                    const rowText = `${medecin} ${service} ${date} ${email}`.toLowerCase();
+
+                    // Check if row matches both search and filter criteria
+                    const matchesSearch = searchText === '' || rowText.includes(searchText);
+                    const matchesDoctor = selectedDoctor === '' || medecin === selectedDoctor;
+
+                    // Show/hide row based on match
+                    row.style.display = (matchesSearch && matchesDoctor) ? '' : 'none';
+                });
+            }
+
+            // Add event listeners
+            searchInput.addEventListener('input', filterTable);
+            doctorFilter.addEventListener('change', filterTable);
+        });
+    </script>
 
 {% endblock %}
