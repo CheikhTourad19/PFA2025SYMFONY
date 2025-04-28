@@ -4,79 +4,156 @@
 
 {% block content %}
 
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Ordonnance Médicale</h1>
-        <p class="text-gray-600 dark:text-gray-300">Liste des médicaments prescrits avec leurs détails</p>
-    </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="mb-10 text-center md:text-left">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-3">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
+                        Ordonnance Médicale
+                    </span>
+                    </h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
+                        Détails complets de votre prescription médicale
+                    </p>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de prescription</span>
+                    <span class="text-lg font-semibold text-gray-700 dark:text-gray-200">
+                    {{ medicaments[0].ordonnance.dateCreation|date('d/m/Y') }}
+                </span>
+                </div>
+            </div>
+            <div class="mt-4 w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-300 rounded-full"></div>
+        </div>
 
-    <div class="relative overflow-x-auto shadow-md rounded-lg">
+        <!-- Prescription Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden mb-8 border border-gray-200 dark:border-gray-700">
+            <div class="px-6 py-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 dark:text-white">Prescription #ORD-{{ medicaments[0].ordonnance.id }}</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                Prescrit par Dr. {{ medicaments[0].ordonnance.medecin.user.nom }}
+                                <span class="mx-2">•</span>
+                                {{ medicaments[0].ordonnance.medecin.service }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="hidden md:block">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        {{ medicaments|length }} médicaments
+                    </span>
+                    </div>
+                </div>
+            </div>
 
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    Nom Médicament
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Quantité
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Instructions
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Description
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Prix
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for med in medicaments %}
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {{ med.medicament.nom }}
-                    </th>
-                    <td class="px-6 py-4">
-                        {{ med.quantite }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ med.instructions }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ med.medicament.description }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ med.medicament.prix }}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
+            <!-- Medications Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Médicament
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Quantité
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Posologie
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Description
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            Prix
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for med in medicaments %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ med.medicament.nom }}
+                                        </div>
 
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                <th class="px-6 py-4" scope="row">
-                    <span class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Total</span>
-                </th>
-                <td class="px-6 py-4 font-semibold">
-                    {{ total }}
-                </td>
-            </tr>
-        </table>
-        <div class="flex items-center space-x-4">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                {{ med.quantite }}
+                            </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-900 dark:text-gray-200 max-w-xs">
+                                    {{ med.instructions }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-gray-500 dark:text-gray-400 max-w-xs">
+                                    {{ med.medicament.description }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <span class="font-semibold text-gray-900 dark:text-white">
+                                {{ med.medicament.prix }} DH
+                            </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    <tfoot class="bg-gray-50 dark:bg-gray-700/30 border-t border-gray-200 dark:border-gray-700">
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-sm font-medium text-gray-700 dark:text-gray-300 uppercase">
+                            Total
+                        </td>
+                        <td class="px-6 py-4 text-right text-lg font-bold text-blue-600 dark:text-blue-400">
+                            {{ total }} DT
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8">
             <a href="{{ path('ordonnance_pdf', { id: medicaments[0].ordonnance.getId }) }}"
-               class="inline-flex items-center px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-200 transition-all duration-200 ease-in-out shadow hover:shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               class="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 shadow-lg hover:shadow-xl">
+                <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
+                <span class="relative flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
-                Exporter PDF
+                Exporter en PDF
+            </span>
             </a>
 
             <a href="/patient/ordonnances"
-               class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-200 transition-all duration-200 ease-in-out shadow-sm hover:shadow">
-                <svg class="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+               class="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium text-gray-700 transition-all duration-300 rounded-xl border border-gray-300 hover:border-blue-300 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 shadow-sm hover:shadow-md">
+                <span class="absolute left-0 w-full h-0.5 bg-blue-600 bottom-0 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-in-out"></span>
+                <span class="relative flex items-center">
+                <svg class="w-5 h-5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0l4 4M1 5l4-4"/>
                 </svg>
                 Retour aux ordonnances
+            </span>
             </a>
         </div>
     </div>

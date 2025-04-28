@@ -8,10 +8,12 @@
     <style>
         [x-cloak] { display: none !important; }
     </style>
-    
+
 {% endblock %}
 
 {% block body %}
+
+
     {# Store flash messages in JavaScript variables #}
     <script>
         window.flashMessages = {
@@ -21,6 +23,7 @@
             info: [{% for message in app.flashes('info') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}]
         };
     </script>
+
 
     <div class="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900
 "
@@ -538,4 +541,5 @@
         </div>
         <!-- END Flash Messages Modal -->
     </div>
+
 {% endblock %}

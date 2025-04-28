@@ -43,15 +43,14 @@ final class PatientController extends AbstractController
 
         // Setup Dompdf
         $options = new Options();
-        $options->set('isRemoteEnabled', true); // ⚠️ OBLIGATOIRE pour les images avec URL absolue
+        $options->set('isRemoteEnabled', true);
 
         $options->set('defaultFont', 'Arial');
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        $signaturePath = $this->getParameter('kernel.project_dir') . '/public/assets/signature.png';
-        $signatureBase64 = base64_encode(file_get_contents($signaturePath));
+
 
         return new Response(
             $dompdf->output(),
@@ -120,7 +119,13 @@ final class PatientController extends AbstractController
     public function ordonnances(OrdonnanceRepository $ordonnanceRepository): Response
     {
         $mesordonnance = $ordonnanceRepository->findBy(['patient' => $this->getUser()]);
-        return $this->render('patient/ordonnances.html.twig', ['ordonnances' => $mesordonnance]);
+        $uniqueDoctors = array_unique(array_map(function($ordonnance) {
+            return $ordonnance->getMedecin()->getId();
+        }, $mesordonnance));
+        usort($mesordonnance, function ($a, $b) {
+            return $b->getDateCreation() <=> $a->getDateCreation();
+        });
+        return $this->render('patient/ordonnances.html.twig', ['ordonnances' => $mesordonnance,'uniqueDoctorsCount' => count($uniqueDoctors)]);
     }
     #[Route('/patient/ordonnance/{id}', name: 'app_ordonnance_patient')]
     public function ordonnance(OrdonnanceMedicamentRepository $myRepository, int $id): Response
