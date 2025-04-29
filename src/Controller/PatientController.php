@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PatientController extends AbstractController
 {
+
     #[Route('/patient/ordonnance/pdf/{id}', name: 'ordonnance_pdf')]
     public function exportOrdonnancePdf(int $id,OrdonnanceRepository $ordonnanceRepository,OrdonnanceMedicamentRepository $ordonnanceMedicamentRepository): Response
     {
@@ -70,6 +71,119 @@ final class PatientController extends AbstractController
         $em->persist($rdv);
         $em->flush();
         $this->addFlash('success','RDV Annule.');
+        return $this->redirectToRoute('app_patient_rdv');
+    }
+    #[Route('/patient/calendrier', name: 'app_patient_calendrier')]
+    public function calendrier(RdvRepository $rdvRepository): Response
+    {
+        // Récupérer les rendez-vous du patient connecté
+        $rdv = $rdvRepository->findBy(['patient' => $this->getUser()]);
+
+        return $this->render('patient/calendrier.html.twig', [
+            'rdv' => $rdv
+        ]);
+    }
+    #[Route('/patient/medecins-disponibles', name: 'app_patient_medecins_disponibles', methods: ['POST'])]
+    public function medecinsDisponibles(Request $request, RdvRepository $rdvRepository, EntityManagerInterface $em): Response
+    {
+        // Vérifier si la requête est une requête AJAX
+        if (!$request->isXmlHttpRequest()) {
+            return new Response('Requête non autorisée', 400);
+        }
+
+        // Récupérer la date et l'heure du rendez-vous demandé
+        $data = json_decode($request->getContent(), true);
+        $dateStr = $data['date'] ?? null;
+
+        if (!$dateStr) {
+            return $this->json(['error' => 'Date non spécifiée'], 400);
+        }
+
+        try {
+            $date = new \DateTime($dateStr);
+        } catch (\Exception $e) {
+            return $this->json(['error' => 'Format de date invalide'], 400);
+        }
+
+        // Récupérer tous les médecins
+        $medecins = $em->getRepository(Medecin::class)->findAll();
+
+        // Filtrer les médecins disponibles à la date demandée
+        $medecinsDispo = [];
+
+        foreach ($medecins as $medecin) {
+            // Vérifier si le médecin a déjà un rendez-vous à cette heure
+            $existingRdv = $rdvRepository->findBy([
+                'medecin' => $medecin,
+                'date' => $date,
+                'statut' => ['confirme', 'en_attente'] // Ne pas considérer les RDV annulés
+            ]);
+
+            if (empty($existingRdv)) {
+                // Le médecin est disponible
+                $medecinsDispo[] = [
+                    'id' => $medecin->getId(),
+                    'nom' => $medecin->getUser()->getNom(),
+                    'prenom' => $medecin->getUser()->getPrenom(),
+                    'service' => $medecin->getService()
+                ];
+            }
+        }
+
+        return $this->json([
+            'success' => true,
+            'medecins' => $medecinsDispo
+        ]);
+    }
+
+    #[Route('/patient/prendre-rdv/{id}/{date}', name: 'app_patient_prendre_rdv')]
+    public function prendreRdv(int $id, string $date, Request $request, EntityManagerInterface $em): Response
+    {
+        // Récupérer le médecin
+        $medecin = $em->getRepository(Medecin::class)->find($id);
+
+        if (!$medecin) {
+            $this->addFlash('error', 'Médecin introuvable.');
+            return $this->redirectToRoute('app_patient_calendrier');
+        }
+
+        try {
+            $dateRdv = new \DateTime($date);
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Format de date invalide.');
+            return $this->redirectToRoute('app_patient_calendrier');
+        }
+
+        // Vérifier si le patient est connecté
+        $user = $this->getUser();
+        if (!$user instanceof Patient) {
+            $this->addFlash('error', 'Vous devez être connecté en tant que patient pour prendre un rendez-vous.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Vérifier si le médecin est disponible à cette date/heure
+        $existingRdv = $em->getRepository(Rdv::class)->findOneBy([
+            'medecin' => $medecin,
+            'date' => $dateRdv,
+            'statut' => ['confirme', 'en_attente'] // Ne pas considérer les RDV annulés
+        ]);
+
+        if ($existingRdv) {
+            $this->addFlash('error', 'Le médecin a déjà un rendez-vous à cette heure.');
+            return $this->redirectToRoute('app_patient_calendrier');
+        }
+
+        // Créer un nouveau rendez-vous
+        $rdv = new Rdv();
+        $rdv->setMedecin($medecin);
+        $rdv->setPatient($user);
+        $rdv->setDate($dateRdv);
+        $rdv->setStatut('en_attente'); // Statut initial: en attente
+
+        $em->persist($rdv);
+        $em->flush();
+
+        $this->addFlash('success', 'Votre rendez-vous a été créé avec succès et est en attente de confirmation.');
         return $this->redirectToRoute('app_patient_rdv');
     }
     #[Route('/patient/prendrdv', name: 'app_patient_prendrdv')]
