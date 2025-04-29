@@ -73,66 +73,14 @@ final class PatientController extends AbstractController
         $this->addFlash('success','RDV Annule.');
         return $this->redirectToRoute('app_patient_rdv');
     }
-    #[Route('/patient/calendrier', name: 'app_patient_calendrier')]
-    public function calendrier(RdvRepository $rdvRepository): Response
+    #[Route('/patient/calendrier{id}', name: 'app_patient_calendrier')]
+    public function calendrier(RdvRepository $rdvRepository,int $id): Response
     {
         // Récupérer les rendez-vous du patient connecté
-        $rdv = $rdvRepository->findBy(['patient' => $this->getUser()]);
+        $rdv = $rdvRepository->findBy(['medecin' => $id]);
 
         return $this->render('patient/calendrier.html.twig', [
             'rdv' => $rdv
-        ]);
-    }
-    #[Route('/patient/medecins-disponibles', name: 'app_patient_medecins_disponibles', methods: ['POST'])]
-    public function medecinsDisponibles(Request $request, RdvRepository $rdvRepository, EntityManagerInterface $em): Response
-    {
-        // Vérifier si la requête est une requête AJAX
-        if (!$request->isXmlHttpRequest()) {
-            return new Response('Requête non autorisée', 400);
-        }
-
-        // Récupérer la date et l'heure du rendez-vous demandé
-        $data = json_decode($request->getContent(), true);
-        $dateStr = $data['date'] ?? null;
-
-        if (!$dateStr) {
-            return $this->json(['error' => 'Date non spécifiée'], 400);
-        }
-
-        try {
-            $date = new \DateTime($dateStr);
-        } catch (\Exception $e) {
-            return $this->json(['error' => 'Format de date invalide'], 400);
-        }
-
-        // Récupérer tous les médecins
-        $medecins = $em->getRepository(Medecin::class)->findAll();
-
-        // Filtrer les médecins disponibles à la date demandée
-        $medecinsDispo = [];
-
-        foreach ($medecins as $medecin) {
-            // Vérifier si le médecin a déjà un rendez-vous à cette heure
-            $existingRdv = $rdvRepository->findBy([
-                'medecin' => $medecin,
-                'date' => $date,
-                'statut' => ['confirme', 'en_attente'] // Ne pas considérer les RDV annulés
-            ]);
-
-            if (empty($existingRdv)) {
-                // Le médecin est disponible
-                $medecinsDispo[] = [
-                    'id' => $medecin->getId(),
-                    'nom' => $medecin->getUser()->getNom(),
-                    'prenom' => $medecin->getUser()->getPrenom(),
-                    'service' => $medecin->getService()
-                ];
-            }
-        }
-
-        return $this->json([
-            'success' => true,
-            'medecins' => $medecinsDispo
         ]);
     }
 
@@ -162,16 +110,7 @@ final class PatientController extends AbstractController
         }
 
         // Vérifier si le médecin est disponible à cette date/heure
-        $existingRdv = $em->getRepository(Rdv::class)->findOneBy([
-            'medecin' => $medecin,
-            'date' => $dateRdv,
-            'statut' => ['confirme', 'en_attente'] // Ne pas considérer les RDV annulés
-        ]);
 
-        if ($existingRdv) {
-            $this->addFlash('error', 'Le médecin a déjà un rendez-vous à cette heure.');
-            return $this->redirectToRoute('app_patient_calendrier');
-        }
 
         // Créer un nouveau rendez-vous
         $rdv = new Rdv();
