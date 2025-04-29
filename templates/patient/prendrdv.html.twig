@@ -6,10 +6,8 @@
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-user-md me-2"></i>Liste des Médecins</h5>
                 <div class="input-group input-group-sm w-auto">
-                    <input type="text" class="form-control" placeholder="Rechercher un médecin..." id="searchDoctor">
-                    <button class="btn btn-light" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <input type="text" class="form-control" placeholder="Rechercher par nom ou spécialité..." id="searchDoctor">
+
                 </div>
             </div>
             <div class="card-body">
@@ -19,9 +17,11 @@
                         <div>Aucun médecin disponible pour le moment.</div>
                     </div>
                 {% else %}
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="doctorsContainer">
                         {% for rdvv in rdv %}
-                            <div class="col">
+                            <div class="col doctor-card"
+                                 data-name="Dr. {{ rdvv.medecin.user.nom|lower }}"
+                                 data-specialite="{{ rdvv.medecin.service|default('médecine générale')|lower }}">
                                 <div class="card h-100 border-0 shadow-sm hover-card">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-3">
@@ -29,8 +29,8 @@
                                                 {{ rdvv.medecin.user.nom|first }}
                                             </div>
                                             <div>
-                                                <h6 class="fw-bold mb-0">Dr. {{ rdvv.medecin.user.nom }}</h6>
-                                                <span class="badge bg-light text-primary">{{ rdvv.medecin.service|default('Médecin') }}</span>
+                                                <h6 class="fw-bold mb-0 doctor-name">Dr. {{ rdvv.medecin.user.nom }}</h6>
+                                                <span class="badge bg-light text-primary doctor-specialty">{{ rdvv.medecin.service|default('Médecin') }}</span>
                                             </div>
                                         </div>
                                         <div class="doctor-info">
@@ -61,7 +61,6 @@
                     </div>
                 {% endif %}
             </div>
-
         </div>
     </div>
 
@@ -100,5 +99,69 @@
             background-color: var(--bs-primary);
             border-color: var(--bs-primary);
         }
+
+        /* Style pour les éléments cachés */
+        .doctor-card.hidden {
+            display: none;
+        }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchDoctor');
+            const searchButton = document.getElementById('searchButton');
+            const doctorCards = document.querySelectorAll('.doctor-card');
+
+            // Fonction de recherche
+            function filterDoctors() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+
+                doctorCards.forEach(card => {
+                    const name = card.dataset.name;
+                    const specialite = card.dataset.specialite;
+
+                    if (searchTerm === '' ||
+                        name.includes(searchTerm) ||
+                        specialite.includes(searchTerm)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // Vérifier si aucun résultat n'est trouvé
+                const visibleCards = document.querySelectorAll('.doctor-card:not(.hidden)');
+                if (visibleCards.length === 0 && searchTerm !== '') {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'col-12 text-center py-4';
+                    noResults.innerHTML = `
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Aucun médecin trouvé pour "${searchTerm}"
+                        </div>
+                    `;
+
+                    const container = document.getElementById('doctorsContainer');
+                    const existingNoResults = container.querySelector('.no-results');
+
+                    if (!existingNoResults) {
+                        noResults.classList.add('no-results');
+                        container.appendChild(noResults);
+                    }
+                } else {
+                    const existingNoResults = document.querySelector('.no-results');
+                    if (existingNoResults) {
+                        existingNoResults.remove();
+                    }
+                }
+            }
+
+            // Écouteurs d'événements
+            searchInput.addEventListener('input', filterDoctors);
+            searchButton.addEventListener('click', filterDoctors);
+
+            // Recherche initiale au chargement (au cas où il y aurait un terme dans l'URL)
+            filterDoctors();
+        });
+    </script>
 {% endblock content %}

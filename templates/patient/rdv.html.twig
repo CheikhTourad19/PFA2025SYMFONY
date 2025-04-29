@@ -56,7 +56,7 @@
                                     </td>
                                     <td class="text-center">
                                         {% if rdvv.statut != 'annule' %}
-                                            <a href="{{ path('app_patient_annuler_rdv', {id: rdvv.id}) }}" class="btn btn-sm btn-outline-danger rounded-pill">
+                                            <a href="{{ path('app_patient_annuler_rdv', {id: rdvv.id}) }}" class="btn btn-soft btn-warning">
 
                                                 <i class="fas fa-times-circle me-1"></i>Annuler
                                             </a>
@@ -64,8 +64,8 @@
                                             <span class="text-muted fst-italic small">Aucune action</span>
                                         {% endif %}
                                         <div>
-                                            <a href="{{ path('app_patient_supprimer_rdv', {id: rdvv.id}) }}" class="btn btn-sm btn-outline-danger ms-3" title="Supprimer ce rond-vous">
-                                                <i class="fas fa-trash-alt">supprimer rdv</i>
+                                            <a href="{{ path('app_patient_supprimer_rdv', {id: rdvv.id}) }}"  title="Supprimer ce rond-vous">
+                                                <i class="btn btn-soft btn-error">supprimer rdv</i>
                                             </a>
                                         </div>
                                     </td>
