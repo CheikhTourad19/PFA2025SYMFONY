@@ -10,10 +10,10 @@
                 </div>
                 <div class="filter-controls d-flex align-items-center">
                     <div class="input-group input-group-sm me-2">
-                        <span class="input-group-text bg-transparent border-light">
-                            <i class="fas fa-filter text-white"></i>
-                        </span>
-                        <select id="statusFilter" class="form-select form-select-sm bg-transparent text-white border-light">
+                     <span class="input-group-text bg-transparent border-light">
+                         <i class="fas fa-filter text-white"></i>
+                     </span>
+                        <select id="statusFilter" class="form-select form-select-sm bg-transparent text-white border-light visible-options">
                             <option value="all" selected>Tous les statuts</option>
                             <option value="confirme">Confirmés</option>
                             <option value="attente">En attente</option>
@@ -215,7 +215,10 @@
             background-color: rgba(220, 53, 69, 0.2);
             color: #c82333;
         }
-
+        .visible-options option {
+            color: black;
+            background: white;
+        }
         @media (max-width: 576px) {
             .btn-text {
                 display: none;
