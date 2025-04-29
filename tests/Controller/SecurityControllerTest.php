@@ -6,7 +6,7 @@ use App\Repository\UserRepository;
 
 class SecurityControllerTest extends WebTestCase
 {
-    public function testLoginWithValidCredentials(): void
+    public function testLoginAvecBonneInfo(): void
     {
         $client = static::createClient();
 
@@ -24,22 +24,18 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('a:contains("Accueil")');
     }
 
-    public function testLoginWithInvalidPassword(): void
+    public function testLoginAvecInvalidMDP(): void
     {
-        // Create client with reboot
         $client = static::createClient();
 
-        // Access login page
         $client->request('GET', '/login');
         $this->assertResponseIsSuccessful();
 
-        // Submit form with invalid credentials
-        $client->submitForm('Se connecter', [ // Changed to match the button text in first test
+        $client->submitForm('Se connecter', [
             '_username' => 'ali@gmail.com',
             '_password' => 'wrong_password'
         ]);
 
-        // Verify redirect after failed login
         $this->assertResponseRedirects('/login');
         $crawler = $client->followRedirect();
         $this->assertSelectorTextContains('.error-m', 'Identifiants invalides.');

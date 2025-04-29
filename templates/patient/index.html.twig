@@ -3,14 +3,14 @@
 {% block content %}
     <div class="min-h-screen bg-gray-50">
         <!-- Hero Section -->
-        <section class="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-16 md:py-24 overflow-hidden">
+        <section class="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-16 md:py-24 overflow-hidden rounded-xl shadow-xl">
             <div class="absolute inset-0 opacity-10">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4yIj48cGF0aCBkPSJNMzYgMzRjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkgzOGMtMS4xIDAtMi0uOS0yLTJWMzR6TTIgMzRjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkg0Yy0xLjEgMC0yLS45LTItMlYzNHpNMzYgMmMwLTEuMS45LTIgMi0yaDE2YzEuMSAwIDIgLjkgMiAydjE2YzAgMS4xLS45IDItMiAySDM4Yy0xLjEgMC0yLS45LTItMlYyek0yIDJjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkg0Yy0xLjEgMC0yLS45LTItMlYyeiIvPjwvZz48L2c+PC9zdmc+')]"></div>
             </div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="md:flex md:items-center md:justify-between">
                     <div class="md:w-1/2">
-                        <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Bienvenue, {{ app.user.prenom }}</h1>
+                        <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Bienvenue, {{ app.user.nom }} {{ app.user.prenom }}</h1>
                         <p class="text-xl md:text-2xl text-blue-100 max-w-lg mb-8">
                             Votre santé simplifiée. Accédez à vos ordonnances, rendez-vous et bien plus en quelques clics.
                         </p>
@@ -34,7 +34,7 @@
                             <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
                             <div class="absolute -bottom-8 left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
                             <div class="relative">
-                                <img src="{{ asset('assets/img.jpg') }}" alt="Équipe médicale" class="w-full max-w-md mx-auto">
+                                <img src="{{ asset('assets/img.jpg') }}" alt="Équipe médicale" class="w-full max-w-md mx-auto rounded-xl shadow-xl">
                             </div>
                         </div>
                     </div>
