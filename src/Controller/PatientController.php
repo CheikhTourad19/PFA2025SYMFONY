@@ -22,6 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class PatientController extends AbstractController
 {
+
     #[Route('/patient/ordonnance/pdf/{id}', name: 'ordonnance_pdf')]
     public function exportOrdonnancePdf(int $id,OrdonnanceRepository $ordonnanceRepository,OrdonnanceMedicamentRepository $ordonnanceMedicamentRepository): Response
     {
@@ -71,6 +72,16 @@ final class PatientController extends AbstractController
         $em->flush();
         $this->addFlash('success','RDV Annule.');
         return $this->redirectToRoute('app_patient_rdv');
+    }
+    #[Route('/patient/calendrier', name: 'app_patient_calendrier')]
+    public function calendrier(RdvRepository $rdvRepository): Response
+    {
+        // Récupérer les rendez-vous du patient connecté
+        $rdv = $rdvRepository->findBy(['patient' => $this->getUser()]);
+
+        return $this->render('patient/calendrier.html.twig', [
+            'rdv' => $rdv  // Passer la variable 'rdv' au template
+        ]);
     }
     #[Route('/patient/prendrdv', name: 'app_patient_prendrdv')]
     public function prendrdv(RdvRepository $rdvRepository)
