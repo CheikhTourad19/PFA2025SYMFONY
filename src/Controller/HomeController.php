@@ -10,9 +10,12 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 final class HomeController extends AbstractController
 {
+
     #[Route('/', name: 'app_home')]
     public function home(MailerInterface $mailer): Response
     {
@@ -43,5 +46,65 @@ final class HomeController extends AbstractController
         $nom=$this->getUser()->getNom();
         return $this->render('medecin/index.html.twig', ['nom'=>$nom]);
     }
+
+    #[Route('/sitemap.xml', name: 'sitemap', methods: ['GET'])]
+    public function sitemap(RouterInterface $router): Response
+    {
+        $urls = [];
+
+        // Routes statiques
+        $urls[] = [
+            'loc' => $router->generate('app_home', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'lastmod' => date('Y-m-d'),
+            'changefreq' => 'weekly',
+            'priority' => '1.0',
+        ];
+        $urls[] = [
+            'loc' => $router->generate('app_home_patient', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'lastmod' => date('Y-m-d'),
+            'changefreq' => 'weekly',
+            'priority' => '0.8',
+        ];
+        $urls[] = [
+            'loc' => $router->generate('app_patient_pharmacie', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'lastmod' => date('Y-m-d'),
+            'changefreq' => 'monthly',
+            'priority' => '0.6',
+        ];
+        $urls[] = [
+            'loc' => $router->generate('app_ordonnances_patient', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'lastmod' => date('Y-m-d'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+        ];
+
+        // Routes dynamiques : exemple pour les PDF d'ordonnances
+        // Tu dois avoir une méthode pour récupérer les IDs des ordonnances
+        $ordonnances = $this->getDoctrine()->getRepository(Ordonnance::class)->findAll();
+        foreach ($ordonnances as $ordonnance) {
+            $urls[] = [
+                'loc' => $router->generate('ordonnance_pdf', ['id' => $ordonnance->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
+                'lastmod' => $ordonnance->getUpdatedAt()->format('Y-m-d'), // si tu as un champ updatedAt
+                'changefreq' => 'never',
+                'priority' => '0.3',
+            ];
+        }
+
+
+        // Génération du XML
+        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
+        $xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+
+        foreach ($urls as $urlData) {
+            $url = $xml->addChild('url');
+            $url->addChild('loc', htmlspecialchars($urlData['loc']));
+            $url->addChild('lastmod', $urlData['lastmod']);
+            $url->addChild('changefreq', $urlData['changefreq']);
+            $url->addChild('priority', $urlData['priority']);
+        }
+
+        return new Response($xml->asXML(), 200, ['Content-Type' => 'application/xml']);
+    }
+
 
 }
