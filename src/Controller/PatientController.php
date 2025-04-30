@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Medecin;
 use App\Entity\Patient;
 use App\Entity\User;
 use App\Enum\Role;
@@ -78,7 +79,7 @@ final class PatientController extends AbstractController
     {
         // Récupérer les rendez-vous du patient connecté
         $rdv = $rdvRepository->findBy(['medecin' => $id]);
-
+        $this->addFlash('error','RDV Annule.');
         return $this->render('patient/calendrier.html.twig', [
             'rdv' => $rdv
         ]);
