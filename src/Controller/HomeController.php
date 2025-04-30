@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Entity\Ordonnance;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -78,17 +79,7 @@ final class HomeController extends AbstractController
             'priority' => '0.7',
         ];
 
-        // Routes dynamiques : exemple pour les PDF d'ordonnances
-        // Tu dois avoir une méthode pour récupérer les IDs des ordonnances
-        $ordonnances = $this->getDoctrine()->getRepository(Ordonnance::class)->findAll();
-        foreach ($ordonnances as $ordonnance) {
-            $urls[] = [
-                'loc' => $router->generate('ordonnance_pdf', ['id' => $ordonnance->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
-                'lastmod' => $ordonnance->getUpdatedAt()->format('Y-m-d'), // si tu as un champ updatedAt
-                'changefreq' => 'never',
-                'priority' => '0.3',
-            ];
-        }
+
 
 
         // Génération du XML
