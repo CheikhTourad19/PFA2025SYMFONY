@@ -92,6 +92,18 @@
                     <div class="hidden md:block">
                         <div class="flex items-center space-x-4">
                             {% set currentRoute = app.request.attributes.get('_route') %}
+                            <a href="{{ path('app_home_pharmacie') }}"
+                               class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
+                                {{ currentRoute == 'app_home_pharmacie' ? 'bg-indigo-700 text-white' : 'text-white hover:bg-indigo-700/80' }}">
+                                <div class="flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+                                    </svg>
+                                    <span>Accueil</span>
+
+                                </div>
+
+                            </a>
 
                             <a href="{{ path('app_pharma_stock') }}"
                                class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
@@ -116,16 +128,7 @@
                                 </div>
                             </a>
 
-                            <a href="{{ path('app_home_pharmacie') }}"
-                               class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200
-                        {{ currentRoute == 'app_home_pharmacie' ? 'bg-indigo-700 text-white' : 'text-white hover:bg-indigo-700/80' }}">
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                    </svg>
-                                    <span>Accueil</span>
-                                </div>
-                            </a>
+
 
                             <a href="{{ path('app_pharma_contact') }}"
                                class="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200

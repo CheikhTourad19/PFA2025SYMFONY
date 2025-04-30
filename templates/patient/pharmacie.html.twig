@@ -2,61 +2,93 @@
 {% block title %}Liste des pharmacies{% endblock %}
 
 {% block content %}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header Section -->
-        <div class="mb-10 text-center">
-            <h1 class="text-4xl font-bold text-gray-800 dark:text-white mb-3">Nos Pharmacies Partenaires</h1>
-            <p class="text-xl text-gray-600 dark:text-gray-300 mb-6">Trouvez la pharmacie la plus proche de vous</p>
-            <div class="w-24 h-1.5 bg-gradient-to-r from-blue-500 to-teal-400 mx-auto rounded-full"></div>
-        </div>
 
-        <!-- Search Section -->
-        <div class="mb-10 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Header Section avec animation et design moderne -->
+
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-700 via-blue-600 to-cyan-500 rounded-2xl shadow-xl mb-12 group hover:shadow-2xl transition-all duration-300">
+            <!-- Fond avec effet glassmorphism -->
+            <!-- Effet d'overlay au survol -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-800/30 to-cyan-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <!-- Motif décoratif -->
+            <div class="absolute right-0 bottom-0 w-32 h-32 md:w-48 md:h-48 bg-white/5 rounded-full -mr-16 -mb-16"></div>
+
+            <!-- Contenu principal -->
+            <div class="relative px-6 py-12 md:py-16 lg:px-16">
+                <div class="max-w-3xl">
+                    <div class="flex items-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 text-white  transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-cyan-100 text-sm font-medium tracking-wider uppercase">Localisation</span>
+                    </div>
+
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight tracking-tight">
+                        Nos Pharmacies Partenaires
+                    </h1>
+
+                    <p class="text-xl text-blue-100 opacity-90 mb-8 font-light">
+                        Trouvez la pharmacie la plus proche de vous
+                    </p>
+
+
+                </div>
+            </div>
+        </div>
+        <!-- Search Section avec design moderne et animations -->
+        <div class="mb-12 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90 border border-gray-100 dark:border-gray-700 transform transition-all duration-300 hover:shadow-2xl">
             <p class="text-gray-700 dark:text-gray-300 mb-4 font-medium">Recherchez par adresse ou nom de pharmacie</p>
             <div class="relative max-w-2xl mx-auto">
                 <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5 text-blue-500 dark:text-blue-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
                 </div>
-                <input type="search" id="searchInput" class="block w-full p-4 ps-12 text-base text-gray-900 border border-gray-200 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 transition-all duration-200" placeholder="Entrez un nom ou une adresse..." />
+                <input type="search" id="searchInput" class="block w-full p-4 ps-12 text-base text-gray-900 border-none ring-2 ring-gray-200 rounded-xl bg-gray-50 focus:ring-4 focus:ring-blue-500 dark:bg-gray-700 dark:ring-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 transition-all duration-300" placeholder="Entrez un nom ou une adresse..." />
             </div>
         </div>
 
-        <!-- Pharmacy Cards (Mobile) -->
+        <!-- Pharmacy Cards (Mobile) avec design moderne et animations -->
         <div id="mobilePharmaciesList" class="grid grid-cols-1 gap-6 md:hidden">
             {% for pharmacie in pharmacies %}
-                <div class="pharmacy-card bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-100 dark:border-gray-700 transition-transform duration-200 hover:scale-[1.02]"
+                <div class="pharmacy-card bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:scale-[1.03] hover:shadow-xl"
                      data-name="{{ (pharmacie.user.nom ~ ' ' ~ pharmacie.user.prenom)|lower }}"
                      data-address="{% if pharmacie.adresse %}{{ (pharmacie.adresse.ville ~ ' ' ~ pharmacie.adresse.quartier ~ ' ' ~ pharmacie.adresse.rue)|lower }}{% endif %}">
                     <div class="p-6">
                         <div class="flex items-start space-x-4">
-                            <div class="flex-shrink-0 bg-blue-100 dark:bg-blue-900 p-3 rounded-lg">
+                            <div class="flex-shrink-0 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 p-3 rounded-xl">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                 </svg>
                             </div>
                             <div class="flex-1">
                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white">{{ pharmacie.user.nom }} {{ pharmacie.user.prenom }}</h3>
-                                <div class="mt-2 space-y-1 text-sm text-gray-600 dark:text-gray-300">
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                                        </svg>
+                                <div class="mt-3 space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                    <div class="flex items-center group">
+                                        <div class="bg-blue-50 dark:bg-gray-700 p-1.5 rounded-lg mr-2 group-hover:bg-blue-100 dark:group-hover:bg-gray-600 transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                            </svg>
+                                        </div>
                                         {{ pharmacie.user.numero }}
                                     </div>
-                                    <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                        </svg>
+                                    <div class="flex items-center group">
+                                        <div class="bg-blue-50 dark:bg-gray-700 p-1.5 rounded-lg mr-2 group-hover:bg-blue-100 dark:group-hover:bg-gray-600 transition-colors duration-200">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
                                         {{ pharmacie.user.email }}
                                     </div>
                                     {% if pharmacie.adresse %}
-                                        <div class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                            </svg>
+                                        <div class="flex items-start group">
+                                            <div class="bg-blue-50 dark:bg-gray-700 p-1.5 rounded-lg mr-2 mt-0.5 flex-shrink-0 group-hover:bg-blue-100 dark:group-hover:bg-gray-600 transition-colors duration-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                </svg>
+                                            </div>
                                             <span>{{ pharmacie.adresse.ville }}, {{ pharmacie.adresse.quartier }}, {{ pharmacie.adresse.rue }}</span>
                                         </div>
                                     {% endif %}
@@ -68,41 +100,49 @@
             {% endfor %}
         </div>
 
-        <!-- Pharmacy Table (Desktop) -->
-        <div id="desktopPharmaciesTable" class="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+        <!-- Pharmacy Table (Desktop) avec design moderne et animations -->
+        <div id="desktopPharmaciesTable" class="hidden md:block bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 dark:text-gray-300">
                 <tr>
                     <th scope="col" class="px-6 py-4 font-medium">
                         <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
+                            <div class="bg-blue-100 dark:bg-blue-900/70 p-2 rounded-lg mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                            </div>
                             Nom de Pharmacie
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-4 font-medium">
                         <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
-                            </svg>
+                            <div class="bg-blue-100 dark:bg-blue-900/70 p-2 rounded-lg mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                </svg>
+                            </div>
                             Numéro
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-4 font-medium">
                         <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
+                            <div class="bg-blue-100 dark:bg-blue-900/70 p-2 rounded-lg mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
                             E-mail
                         </div>
                     </th>
                     <th scope="col" class="px-6 py-4 font-medium">
                         <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
+                            <div class="bg-blue-100 dark:bg-blue-900/70 p-2 rounded-lg mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                            </div>
                             Adresse
                         </div>
                     </th>
@@ -110,7 +150,7 @@
                 </thead>
                 <tbody id="pharmaciesTableBody">
                 {% for pharmacie in pharmacies %}
-                    <tr class="pharmacy-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
+                    <tr class="pharmacy-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer transition-colors duration-200"
                         data-name="{{ (pharmacie.user.nom ~ ' ' ~ pharmacie.user.prenom)|lower }}"
                         data-address="{% if pharmacie.adresse %}{{ (pharmacie.adresse.ville ~ ' ' ~ pharmacie.adresse.quartier ~ ' ' ~ pharmacie.adresse.rue)|lower }}{% endif %}">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -133,91 +173,100 @@
             </table>
         </div>
 
-        <!-- No Results Message (Hidden by default) -->
-        <div id="noResults" class="hidden text-center py-10">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <h3 class="text-xl font-medium text-gray-700 dark:text-gray-300">Aucun résultat trouvé</h3>
-            <p class="text-gray-500 dark:text-gray-400 mt-2">Aucune pharmacie ne correspond à votre recherche.</p>
+        <!-- No Results Message avec design moderne et animations -->
+        <div id="noResults" class="hidden text-center py-16">
+            <div class="animate-bounce mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h3 class="text-2xl font-medium text-gray-700 dark:text-gray-300">Aucun résultat trouvé</h3>
+            <p class="text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">Nous n'avons trouvé aucune pharmacie correspondant à votre recherche. Essayez d'autres termes.</p>
+            <button id="resetSearch" class="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-all duration-200 transform hover:scale-105">
+                Réinitialiser la recherche
+            </button>
         </div>
+
+        <!-- JavaScript pour le comportement de recherche et de réinitialisation -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('searchInput');
+                const pharmacyCards = document.querySelectorAll('.pharmacy-card');
+                const pharmacyRows = document.querySelectorAll('.pharmacy-row');
+                const noResultsDiv = document.getElementById('noResults');
+                const resetButton = document.getElementById('resetSearch');
+
+                // Fonction de recherche
+                function filterPharmacies() {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    let hasResults = false;
+
+                    // Filtrer les cartes pour mobile
+                    pharmacyCards.forEach(card => {
+                        const nameMatch = card.dataset.name.includes(searchTerm);
+                        const addressMatch = card.dataset.address.includes(searchTerm);
+
+                        if (nameMatch || addressMatch || searchTerm === '') {
+                            card.classList.remove('hidden');
+                            hasResults = true;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+
+                    // Filtrer les lignes de tableau pour desktop
+                    pharmacyRows.forEach(row => {
+                        const nameMatch = row.dataset.name.includes(searchTerm);
+                        const addressMatch = row.dataset.address.includes(searchTerm);
+
+                        if (nameMatch || addressMatch || searchTerm === '') {
+                            row.classList.remove('hidden');
+                            hasResults = true;
+                        } else {
+                            row.classList.add('hidden');
+                        }
+                    });
+
+                    // Afficher/masquer le message "pas de résultats"
+                    if (!hasResults && searchTerm !== '') {
+                        noResultsDiv.classList.remove('hidden');
+                        if (window.innerWidth >= 768) {
+                            document.getElementById('desktopPharmaciesTable').classList.add('hidden');
+                        } else {
+                            document.getElementById('mobilePharmaciesList').classList.add('hidden');
+                        }
+                    } else {
+                        noResultsDiv.classList.add('hidden');
+                        if (window.innerWidth >= 768) {
+                            document.getElementById('desktopPharmaciesTable').classList.remove('hidden');
+                        } else {
+                            document.getElementById('mobilePharmaciesList').classList.remove('hidden');
+                        }
+                    }
+                }
+
+                // Écouteurs d'événements
+                searchInput.addEventListener('input', filterPharmacies);
+
+                resetButton.addEventListener('click', function() {
+                    searchInput.value = '';
+                    filterPharmacies();
+                    searchInput.focus();
+                });
+
+                // Animation du placeholder
+                let placeholders = [
+                    "Rechercher par nom...",
+                    "Rechercher par ville...",
+                    "Rechercher par quartier..."
+                ];
+                let currentPlaceholder = 0;
+
+                setInterval(() => {
+                    searchInput.placeholder = placeholders[currentPlaceholder];
+                    currentPlaceholder = (currentPlaceholder + 1) % placeholders.length;
+                }, 1000);
+            });
+        </script>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchInput');
-            const mobilePharmaciesList = document.getElementById('mobilePharmaciesList');
-            const desktopPharmaciesTable = document.getElementById('desktopPharmaciesTable');
-            const noResultsMessage = document.getElementById('noResults');
-            const pharmacyCards = document.querySelectorAll('.pharmacy-card');
-            const pharmacyRows = document.querySelectorAll('.pharmacy-row');
-
-            // Function to check if mobile view
-            function isMobileView() {
-                return window.matchMedia('(max-width: 767px)').matches;
-            }
-
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.trim().toLowerCase();
-                let hasResults = false;
-
-                // Filter mobile cards
-                pharmacyCards.forEach(card => {
-                    const name = card.getAttribute('data-name');
-                    const address = card.getAttribute('data-address');
-
-                    if (name.includes(searchTerm) || (address && address.includes(searchTerm))) {
-                        card.style.display = 'block';
-                        hasResults = true;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-
-                // Filter desktop rows
-                pharmacyRows.forEach(row => {
-                    const name = row.getAttribute('data-name');
-                    const address = row.getAttribute('data-address');
-
-                    if (name.includes(searchTerm) || (address && address.includes(searchTerm))) {
-                        row.style.display = '';
-                        hasResults = true;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Show/hide no results message and appropriate view
-                if (searchTerm.length > 0 && !hasResults) {
-                    noResultsMessage.classList.remove('hidden');
-                    mobilePharmaciesList.classList.add('hidden');
-                    desktopPharmaciesTable.classList.add('hidden');
-                } else {
-                    noResultsMessage.classList.add('hidden');
-
-                    // Show only the appropriate view based on screen size
-                    if (isMobileView()) {
-                        mobilePharmaciesList.classList.remove('hidden');
-                        desktopPharmaciesTable.classList.add('hidden');
-                    } else {
-                        mobilePharmaciesList.classList.add('hidden');
-                        desktopPharmaciesTable.classList.remove('hidden');
-                    }
-                }
-            });
-
-            // Handle window resize to maintain correct view
-            window.addEventListener('resize', function() {
-                if (searchInput.value.trim().length > 0) {
-                    if (isMobileView()) {
-                        mobilePharmaciesList.classList.remove('hidden');
-                        desktopPharmaciesTable.classList.add('hidden');
-                    } else {
-                        mobilePharmaciesList.classList.add('hidden');
-                        desktopPharmaciesTable.classList.remove('hidden');
-                    }
-                }
-            });
-        });
-    </script>
 {% endblock %}

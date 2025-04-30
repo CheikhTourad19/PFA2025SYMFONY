@@ -1,45 +1,108 @@
 {% extends 'patient/patient.base.html.twig' %}
+{% block stylesheets %}
+    <!-- Custom Animation Styles -->
+    <style>
+        .bg-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M36 34c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H38c-1.1 0-2-.9-2-2V34zM2 34c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V34zM36 2c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H38c-1.1 0-2-.9-2-2V2zM2 2c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v16c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
 
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        @keyframes blob {
+            0% { transform: scale(1) translate(0px, 0px); }
+            33% { transform: scale(1.1) translate(20px, -20px); }
+            66% { transform: scale(0.9) translate(-20px, 20px); }
+            100% { transform: scale(1) translate(0px, 0px); }
+        }
+
+        .animate-blob {
+            animation: blob 12s infinite linear alternate;
+        }
+
+        .animation-delay-2000 {
+            animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+            animation-delay: 4s;
+        }
+    </style>
+
+{% endblock %}
 {% block content %}
     <div class="min-h-screen bg-gray-50">
         <!-- Hero Section -->
-        <section class="relative bg-gradient-to-r from-blue-700 to-blue-500 text-white py-16 md:py-24 overflow-hidden rounded-xl shadow-xl">
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4yIj48cGF0aCBkPSJNMzYgMzRjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkgzOGMtMS4xIDAtMi0uOS0yLTJWMzR6TTIgMzRjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkg0Yy0xLjEgMC0yLS45LTItMlYzNHpNMzYgMmMwLTEuMS45LTIgMi0yaDE2YzEuMSAwIDIgLjkgMiAydjE2YzAgMS4xLS45IDItMiAySDM4Yy0xLjEgMC0yLS45LTItMlYyek0yIDJjMC0xLjEuOS0yIDItMmgxNmMxLjEgMCAyIC45IDIgMnYxNmMwIDEuMS0uOSAyLTIgMkg0Yy0xLjEgMC0yLS45LTItMlYyeiIvPjwvZz48L2c+PC9zdmc+')]"></div>
+        <section class="relative bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 text-white py-5 md:py-10 overflow-hidden rounded-2xl shadow-2xl">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 opacity-15">
+                <div class="absolute inset-0 bg-pattern"></div>
             </div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="md:flex md:items-center md:justify-between">
-                    <div class="md:w-1/2">
-                        <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Bienvenue, {{ app.user.nom }} {{ app.user.prenom }}</h1>
-                        <p class="text-xl md:text-2xl text-blue-100 max-w-lg mb-8">
+
+            <!-- Animated Blobs -->
+            <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+                <div class="absolute top-1/4 -left-10 w-72 h-72 bg-blue-300 rounded-full mix-blend-overlay filter blur-3xl opacity-30 animate-blob"></div>
+                <div class="absolute bottom-1/4 right-0 w-80 h-80 bg-indigo-300 rounded-full mix-blend-overlay filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+                <div class="absolute top-2/3 left-1/3 w-64 h-64 bg-blue-400 rounded-full mix-blend-overlay filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 relative z-10">
+                <div class="md:flex md:items-center md:justify-between gap-12">
+                    <!-- Text Content -->
+                    <div class="md:w-1/2 mb-10 md:mb-0">
+                        <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6">
+                            <span class="inline-block transform transition-all duration-700 translate-y-0 opacity-100">Bienvenue,</span>
+                            <span class="inline-block text-blue-100 ml-2">{{ app.user.nom }} {{ app.user.prenom }}</span>
+                        </h2>
+
+                        <p class="text-lg md:text-xl text-blue-50 font-light max-w-lg mb-10 leading-relaxed">
                             Votre santé simplifiée. Accédez à vos ordonnances, rendez-vous et bien plus en quelques clics.
                         </p>
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="{{ path('app_patient_prendrdv') }}" class="bg-white text-blue-700 hover:bg-blue-50 px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+
+                        <div class="flex flex-col sm:flex-row gap-5">
+                            <a href="{{ path('app_patient_prendrdv') }}" class="bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-xl font-medium shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 group">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
                                 </svg>
-                                Prendre rendez-vous
+                                <span>Prendre rendez-vous</span>
                             </a>
-                            <a href="{{ path('app_ordonnances_patient') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium shadow-lg transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+
+                            <a href="{{ path('app_ordonnances_patient') }}" class="bg-blue-600 hover:bg-blue-700 border border-blue-400 hover:border-blue-300 text-white px-8 py-4 rounded-xl font-medium shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 group">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                                 </svg>
-                                Mes ordonnances
+                                <span>Mes ordonnances</span>
                             </a>
                         </div>
                     </div>
+
+                    <!-- Image Container -->
                     <div class="hidden md:block md:w-1/2">
                         <div class="relative">
-                            <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-                            <div class="absolute -bottom-8 left-20 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-                            <div class="relative">
-                                <img src="{{ asset('assets/img.jpg') }}" alt="Équipe médicale" class="w-full max-w-md mx-auto rounded-xl shadow-xl">
+                            <!-- Background Glows -->
+                            <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+                            <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
+
+                            <!-- Image with Floating Animation -->
+                            <div class="relative transform transition-all duration-1000 hover:scale-105 hover:rotate-1">
+                                <div class="absolute inset-0 bg-gradient-to-b from-blue-600 to-transparent opacity-20 rounded-full"></div>
+                                <div class="p-2 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md rounded-full shadow-2xl">
+                                    <img src="{{ asset('assets/img.jpg') }}" alt="Équipe médicale" class="w-full max-w-md mx-auto rounded-full shadow-lg animate-float">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+
         </section>
 
         <!-- Quick Actions -->
