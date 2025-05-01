@@ -21,14 +21,14 @@
         <style>
             /* From Uiverse.io by SouravBandyopadhyay */
             /* From Uiverse.io by JaydipPrajapati1910 */
-            .loader {
+            .loader1 {
                 width: 48px;
                 height: 48px;
                 margin: auto;
                 position: relative;
             }
 
-            .loader:before {
+            .loader1:before {
                 content: '';
                 width: 48px;
                 height: 5px;
@@ -40,11 +40,11 @@
                 animation: shadow324 0.5s linear infinite;
             }
 
-            .loader:after {
+            .loader1:after {
                 content: '';
                 width: 100%;
                 height: 100%;
-                background: rgb(61, 106, 255);
+                background-image: url("{{ asset('assets/img.jpg') }}");
                 position: absolute;
                 top: 0;
                 left: 0;
@@ -99,14 +99,9 @@
 </head>
 <body class="min-h-screen bg-gray-50">
 <div id="navigation-loader" class="fixed inset-0 bg-base-100/30 z-50 flex flex-col items-center justify-center hidden">
-{#    <div class="flex flex-col items-center bg-white backdrop-blur-sm p-8 rounded-2xl shadow-lg ">#}
-        <!-- Logo container with subtle animation -->
-{#        <div class="animate-pulse mb-4">#}
-{#            <img class="mask mask-circle size-25" src="{{ asset('assets/img.jpg') }}" alt="mask image" />#}
-{#        </div>#}
-    <!-- From Uiverse.io by JaydipPrajapati1910 -->
-    <div class="loader"></div>
-{#    </div>#}
+    <div class="loader1">
+
+    </div>
 </div>
 {% block body %}{% endblock %}
 
