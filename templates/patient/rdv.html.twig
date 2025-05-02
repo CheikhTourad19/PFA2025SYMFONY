@@ -1,253 +1,141 @@
 {% extends 'patient/patient.base.html.twig' %}
 
-{% block content %}
-    <div class="container py-4">
-        <div class="card shadow-lg border-0 rounded-lg">
-            <div class="card-header bg-gradient-primary text-white d-flex align-items-center">
-                <i class="fas fa-calendar-check fs-4 me-2"></i>
-                <div class="d-flex align-items-center">
-                    <h5 class="mb-0 flex-grow-1">Mes Rendez-vous</h5>
-                </div>
-                <div class="filter-controls d-flex align-items-center">
-                    <div class="input-group input-group-sm me-2">
-                     <span class="input-group-text bg-transparent border-light">
-                         <i class="fas fa-filter text-white"></i>
-                     </span>
-                        <select id="statusFilter" class="form-select form-select-sm bg-transparent text-white border-light visible-options">
-                            <option value="all" selected>Tous les statuts</option>
-                            <option value="confirme">Confirmés</option>
-                            <option value="attente">En attente</option>
-                            <option value="refuse">Refusés</option>
-                            <option value="annule">Annulés</option>
-                            <option value="termine">Terminés</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                {% if rdv is empty %}
-                    <div class="alert alert-info d-flex align-items-center border-0 shadow-sm">
-                        <i class="fas fa-info-circle me-3 fs-4"></i>
-                        <div>Aucun rendez-vous programmé pour le moment.</div>
-                    </div>
-                {% else %}
-                    <div class="table-responsive">
-                        <table id="rdvTable" class="table table-hover align-middle">
-                            <thead>
-                            <tr class="table-light">
-                                <th scope="col">Médecin</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Statut</th>
-                                <th scope="col" class="text-center">Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {# Trier les rendez-vous par statut dans l'ordre souhaité #}
-                            {% set statut_ordre = {'confirme': 1, 'attente': 2, 'refuse': 3, 'annule': 4, 'termine': 5} %}
-                            {% set rdv_tries = rdv|sort((a, b) => statut_ordre[a.statut]|default(99) <=> statut_ordre[b.statut]|default(99)) %}
+{% block title %}Mes Rendez-vous{% endblock %}
 
-                            {% for rdvv in rdv_tries %}
-                                <tr class="rdv-row" data-status="{{ rdvv.statut }}">
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="doctor-avatar shadow-sm me-3">
-                                                {{ rdvv.medecin.user.nom|first }}
-                                            </div>
-                                            <div>
-                                                <span class="fw-bold">Dr. {{ rdvv.medecin.user.nom }}</span>
-                                                <div class="text-muted small">{{ rdvv.medecin.service|default('Médecin') }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex flex-column">
-                                            <span><i class="far fa-calendar-alt me-1 text-primary"></i> {{ rdvv.date|date('d/m/Y') }}</span>
-                                            <span class="text-muted small"><i class="far fa-clock me-1"></i> {{ rdvv.date|date('H:i') }}</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {% if rdvv.statut == 'confirme' %}
-                                            <span class="status-badge confirmed">Confirmé</span>
-                                        {% elseif rdvv.statut == 'attente' %}
-                                            <span class="status-badge pending">En attente</span>
-                                        {% elseif rdvv.statut == 'refuse' %}
-                                            <span class="status-badge refused">Refusé</span>
-                                        {% elseif rdvv.statut == 'annule' %}
-                                            <span class="status-badge cancelled">Annulé</span>
-                                        {% elseif rdvv.statut == 'termine' %}
-                                            <span class="status-badge completed">Terminé</span>
-                                        {% else %}
-                                            <span class="status-badge other">{{ rdvv.statut }}</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="action-buttons">
-                                            {% if rdvv.statut == 'confirme' or rdvv.statut == 'attente' %}
-                                                <a href="{{ path('app_patient_annuler_rdv', {id: rdvv.id}) }}" class="btn btn-action btn-cancel" data-bs-toggle="tooltip" data-bs-title="Annuler ce rendez-vous">
-                                                    <i class="fas fa-times-circle"></i>
-                                                    <span class="btn-text">Annuler</span>
-                                                </a>
-                                            {% endif %}
-                                            <a href="{{ path('app_patient_supprimer_rdv', {id: rdvv.id}) }}" class="btn btn-action btn-delete" data-bs-toggle="tooltip" data-bs-title="Supprimer ce rendez-vous">
-                                                <i class="fas fa-trash-alt"></i>
-                                                <span class="btn-text">Supprimer</span>
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="noResultsMessage" class="alert alert-info d-none">
-                        <i class="fas fa-filter me-2"></i>Aucun rendez-vous ne correspond à votre filtre.
-                    </div>
-                {% endif %}
+{% block content %}
+    <div class="container mx-auto px-4 py-8">
+        {# Page Header - Identique à la page Ordonnance #}
+        <div class="text-center mb-8">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Mes Rendez-vous</h1>
+            <p class="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300">Consultez et gérez vos rendez-vous médicaux.</p>
+        </div>
+
+        {# Search Form - Même structure que la page Ordonnance mais adaptée aux RDV #}
+        <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 mb-8">
+            <div class="space-y-4">
+                <div>
+                    <label for="statusFilter" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Filtrer par statut</label>
+                    <select
+                            id="statusFilter"
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+                    >
+                        <option value="all" selected>Tous les statuts</option>
+                        <option value="confirme">Confirmés</option>
+                        <option value="attente">En attente</option>
+                        <option value="refuse">Refusés</option>
+                        <option value="annule">Annulés</option>
+                        <option value="termine">Terminés</option>
+                    </select>
+                </div>
             </div>
         </div>
+
+        {# Results Section - Même structure que la page Ordonnance #}
+        {% if rdv is empty %}
+            <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 rounded-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                            Aucun rendez-vous programmé pour le moment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 overflow-hidden">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4">Liste des Rendez-vous</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Médecin</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date et Heure</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Statut</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {% set statut_ordre = {'confirme': 1, 'attente': 2, 'refuse': 3, 'annule': 4, 'termine': 5} %}
+                        {% set rdv_tries = rdv|sort((a, b) => statut_ordre[a.statut]|default(99) <=> statut_ordre[b.statut]|default(99)) %}
+
+                        {% for rdvv in rdv_tries %}
+                            <tr class="rdv-row hover:bg-gray-50 dark:hover:bg-gray-700" data-status="{{ rdvv.statut }}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                                            {{ rdvv.medecin.user.nom|first }}
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-200">Dr. {{ rdvv.medecin.user.nom }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ rdvv.medecin.service|default('Médecin') }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-gray-200">{{ rdvv.date|date('d/m/Y') }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ rdvv.date|date('H:i') }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if rdvv.statut == 'confirme' %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Confirmé</span>
+                                    {% elseif rdvv.statut == 'attente' %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">En attente</span>
+                                    {% elseif rdvv.statut == 'refuse' %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Refusé</span>
+                                    {% elseif rdvv.statut == 'annule' %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Annulé</span>
+                                    {% elseif rdvv.statut == 'termine' %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Terminé</span>
+                                    {% else %}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">{{ rdvv.statut }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                    <div class="flex space-x-2">
+                                        {% if rdvv.statut == 'confirme' or rdvv.statut == 'attente' %}
+                                            <a href="{{ path('app_patient_annuler_rdv', {id: rdvv.id}) }}"
+                                               class="px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                                               onclick="return confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')">
+                                                Annuler
+                                            </a>
+                                        {% endif %}
+                                        <a href="{{ path('app_patient_supprimer_rdv', {id: rdvv.id}) }}"
+                                           class="px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">
+                                            Supprimer
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noResultsMessage" class="hidden mt-4 bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 rounded-md">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700 dark:text-yellow-200">
+                                Aucun rendez-vous ne correspond à votre filtre.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
-
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-        }
-
-        .doctor-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: white;
-            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-            transition: transform 0.2s ease;
-        }
-
-        .rdv-row:hover .doctor-avatar {
-            transform: scale(1.1);
-        }
-
-        .table tbody tr {
-            border-bottom: 1px solid rgba(0,0,0,.05);
-            transition: all 0.2s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: rgba(78, 115, 223, 0.05);
-            transform: translateX(5px);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.4em 0.8em;
-            font-size: 0.8rem;
-            font-weight: 600;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .status-badge.confirmed {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: #28a745;
-            border: 1px solid rgba(40, 167, 69, 0.2);
-        }
-
-        .status-badge.pending {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-            border: 1px solid rgba(255, 193, 7, 0.2);
-        }
-
-        .status-badge.refused, .status-badge.cancelled {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.2);
-        }
-
-        .status-badge.completed {
-            background-color: rgba(23, 162, 184, 0.1);
-            color: #17a2b8;
-            border: 1px solid rgba(23, 162, 184, 0.2);
-        }
-
-        .status-badge.other {
-            background-color: rgba(108, 117, 125, 0.1);
-            color: #6c757d;
-            border: 1px solid rgba(108, 117, 125, 0.2);
-        }
-
-        .btn-action {
-            font-size: 0.85rem;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            margin: 0.2rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-        }
-
-        .btn-action i {
-            margin-right: 0.5rem;
-        }
-
-        .btn-cancel {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #e8a800;
-        }
-
-        .btn-cancel:hover {
-            background-color: rgba(255, 193, 7, 0.2);
-            color: #d69e00;
-        }
-
-        .btn-delete {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-        }
-
-        .btn-delete:hover {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: #c82333;
-        }
-        .visible-options option {
-            color: black;
-            background: white;
-        }
-        @media (max-width: 576px) {
-            .btn-text {
-                display: none;
-            }
-
-            .btn-action {
-                padding: 0.4rem;
-            }
-
-            .btn-action i {
-                margin-right: 0;
-            }
-
-            .doctor-avatar {
-                width: 36px;
-                height: 36px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialiser les tooltips Bootstrap
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-
             // Filtrage des rendez-vous par statut
             const statusFilter = document.getElementById('statusFilter');
             const rdvRows = document.querySelectorAll('.rdv-row');
@@ -261,51 +149,19 @@
                     const rowStatus = row.getAttribute('data-status');
 
                     if (selectedStatus === 'all' || rowStatus === selectedStatus) {
-                        row.classList.remove('d-none');
+                        row.classList.remove('hidden');
                         visibleCount++;
                     } else {
-                        row.classList.add('d-none');
+                        row.classList.add('hidden');
                     }
                 });
 
                 // Afficher un message si aucun résultat
                 if (visibleCount === 0 && rdvRows.length > 0) {
-                    noResultsMessage.classList.remove('d-none');
+                    noResultsMessage.classList.remove('hidden');
                 } else {
-                    noResultsMessage.classList.add('d-none');
+                    noResultsMessage.classList.add('hidden');
                 }
-            });
-
-            // Animation des lignes au chargement
-            rdvRows.forEach((row, index) => {
-                row.style.opacity = '0';
-                row.style.transform = 'translateY(20px)';
-
-                setTimeout(() => {
-                    row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                    row.style.opacity = '1';
-                    row.style.transform = 'translateY(0)';
-                }, 100 + (index * 50));
-            });
-
-            // Confirmation avant suppression
-            const deleteButtons = document.querySelectorAll('.btn-delete');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    if (!confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')) {
-                        e.preventDefault();
-                    }
-                });
-            });
-
-            // Confirmation avant annulation
-            const cancelButtons = document.querySelectorAll('.btn-cancel');
-            cancelButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    if (!confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')) {
-                        e.preventDefault();
-                    }
-                });
             });
         });
     </script>

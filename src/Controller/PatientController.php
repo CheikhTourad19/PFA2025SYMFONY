@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Medecin;
 use App\Entity\Patient;
+use App\Entity\Rdv;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Form\UserType;
+use App\Repository\MedecinRepository;
 use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\OrdonnanceRepository;
 use App\Repository\PharmacieRepository;
@@ -18,6 +20,9 @@ use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -79,33 +84,32 @@ final class PatientController extends AbstractController
     {
         // Récupérer les rendez-vous du patient connecté
         $rdv = $rdvRepository->findBy(['medecin' => $id]);
-        $this->addFlash('error','RDV Annule.');
         return $this->render('patient/calendrier.html.twig', [
             'rdv' => $rdv
         ]);
     }
 
     #[Route('/patient/prendre-rdv/{id}/{date}', name: 'app_patient_prendre_rdv')]
-    public function prendreRdv(int $id, string $date, Request $request, EntityManagerInterface $em): Response
+    public function prendreRdv(int $id, string $date, EntityManagerInterface $em,MailerInterface $mailer): Response
     {
         // Récupérer le médecin
         $medecin = $em->getRepository(Medecin::class)->find($id);
 
         if (!$medecin) {
             $this->addFlash('error', 'Médecin introuvable.');
-            return $this->redirectToRoute('app_patient_calendrier');
+            return $this->redirectToRoute('app_patient_rdv');
         }
 
         try {
             $dateRdv = new \DateTime($date);
         } catch (\Exception $e) {
             $this->addFlash('error', 'Format de date invalide.');
-            return $this->redirectToRoute('app_patient_calendrier');
+            return $this->redirectToRoute('app_patient_rdv');
         }
 
         // Vérifier si le patient est connecté
         $user = $this->getUser();
-        if (!$user instanceof Patient) {
+        if (!$user) {
             $this->addFlash('error', 'Vous devez être connecté en tant que patient pour prendre un rendez-vous.');
             return $this->redirectToRoute('app_login');
         }
@@ -115,6 +119,7 @@ final class PatientController extends AbstractController
 
         // Créer un nouveau rendez-vous
         $rdv = new Rdv();
+
         $rdv->setMedecin($medecin);
         $rdv->setPatient($user);
         $rdv->setDate($dateRdv);
@@ -124,14 +129,33 @@ final class PatientController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Votre rendez-vous a été créé avec succès et est en attente de confirmation.');
+        $email = (new Email())
+            ->from('noreply@e-medical.com')  // Adresse d'envoi
+            ->to($medecin->getUser()->getEmail())      // Votre adresse admin
+            ->subject('Nouveau Rendez-Vous - ')
+            ->html($this->renderView(
+                'emails/rendez-vous.html.twig',
+                ['patient' => $user,'date'=>$dateRdv,'medecin'=>$medecin]
+
+            ));
+
+
+        try {
+
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('error', 'Une erreur est survenue lors de l\'envoi du message.');
+
+
+        }
         return $this->redirectToRoute('app_patient_rdv');
     }
     #[Route('/patient/prendrdv', name: 'app_patient_prendrdv')]
-    public function prendrdv(RdvRepository $rdvRepository)
+    public function prendrdv(MedecinRepository $medecinRepository)
     {
-        $rdv = $rdvRepository->findBy(['patient'=>$this->getUser()]);
+        $medecins=$medecinRepository->findAll();
 
-        return $this->render('patient/prendrdv.html.twig', ['rdv' => $rdv]);
+        return $this->render('patient/prendrdv.html.twig', ['medecins' => $medecins]);
     }
     #[Route('/patient/supprimer/rdv/{id}', name: 'app_patient_supprimer_rdv')]
     public function supprimer_rdv(int $id,RdvRepository $rdvRepository,EntityManagerInterface $em)
