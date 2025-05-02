@@ -7,6 +7,7 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-simplexml": "*",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.4",
@@ -49,7 +50,7 @@
         "symfonycasts/reset-password-bundle": "^1.23",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0",
-        "ext-simplexml": "*"
+        "twilio/sdk": "^8.5"
     },
     "config": {
         "allow-plugins": {

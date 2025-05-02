@@ -25,7 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\Form\FormTypeInterface;
+use App\Service\TwilioService;
 #[Route('/admin', name: 'app_admin')]
 final class AdminController extends AbstractController
 {
@@ -84,7 +85,6 @@ final class AdminController extends AbstractController
                 $entity = $em->getRepository(Patient::class)->find($id);
                 $templateVariable = 'patient';
                 break;
-
             default:
                 throw $this->createNotFoundException('Type utilisateur invalide');
         }
@@ -191,6 +191,7 @@ final class AdminController extends AbstractController
                 break;
             case 'patient':
                 $form = $this->createForm(PatientType::class, new Patient());
+                break;
             default:
                 throw $this->createNotFoundException('Invalid user type');
         }
@@ -209,6 +210,7 @@ final class AdminController extends AbstractController
                 case 'infermier': $user->setRole(Role::INFERMIER);
                 break;
                 case 'patient': $user->setRole(Role::PATIENT);
+                break;
             }
 
             // Hash password
@@ -237,9 +239,7 @@ final class AdminController extends AbstractController
                 $infermier->setService($entity->getService());
                 $em->persist($infermier);
                 break;
-                case 'patient':
-
-                    $patient=new Patient();$patient->setUser($user);$patient->setCin($entity->getPatient()->getCin());
+                case 'patient':$patient=new Patient();$patient->setUser($user);$patient->setCin($entity->getCin());
                 $em->persist($patient);
                 break;
             }
@@ -257,15 +257,138 @@ final class AdminController extends AbstractController
         ]);
     }
     #[Route('/users/{type}/delete/{id}', name: '_user_delete')]
-    public function deleteUser(int $id,UserRepository $userRepository):Response{
-        $user=$userRepository->find($id);
-//        UserRepository::class->remove($user);
-        $this->addFlash('success', 'User deleted successfully');
-        return $this->redirectToRoute('app_admin_users');
+    public function deleteUser(int $id,UserRepository $userRepository,EntityManagerInterface $em):Response{
+        try {
+            $user=$em->getRepository(User::class)->find($id);
+
+            if (!$user) {
+                throw $this->createNotFoundException('Utilisateur non trouvé');
+            }
+
+            $em->remove($user);
+            $em->flush();
+            $this->addFlash('success', $user->getNom() . ' supprimé(e) avec succès.');
+            return $this->redirectToRoute('app_admin_users');
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'error:' . $e->getMessage());
+            return $this->redirectToRoute('app_admin_users');
+        }
     }
     #[Route('/users/{type}/edit/{id}', name: '_user_edit')]
-    public function editUser():Response{
-        return $this->render('admin/user.html.twig');
+    public function editUser(string $type, int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        // Retrieve the appropriate entity based on the user type
+        $entityMap = [
+            'medecin' => Medecin::class,
+            'pharmacie' => Pharmacie::class,
+            'infermier' => Infermier::class,
+            'patient' => Patient::class,
+        ];
+        if (!array_key_exists($type, $entityMap)) {
+            throw $this->createNotFoundException('Type utilisateur invalide: ' . $type);
+        }
+        $entityClass = $entityMap[$type];
+
+        $entity = $em->getRepository($entityClass)->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException('Entité introuvable pour le type et ID spécifiés.');
+        }
+
+        $user = $entity->getUser();
+
+        $formMap = [
+            'medecin' => MedecinType::class,
+            'pharmacie' => PharmacieType::class,
+            'infermier' => InfermierType::class,
+            'patient' => PatientType::class,
+        ];
+        $formClass = $formMap[$type];
+        $form = $this->createForm($formClass, $entity);
+        $form->handleRequest($request);
+            if( $form->isSubmitted() && $form->isValid()){
+                try {
+                    switch ($type) {
+                        case 'medecin':
+                            $entity->setService($form->get('service')->getData());
+                            break;
+                        case 'pharmacie':
+                            $adresse = $entity->getAdresse();
+                            if (!$adresse) {
+                                throw new \InvalidArgumentException('Adresse introuvable pour la pharmacie.');
+                            }
+                            $adresse->setRue($form->get('adresse')->get('rue')->getData());
+                            $adresse->setVille($form->get('adresse')->get('ville')->getData());
+                            $adresse->setQuartier($form->get('adresse')->get('quartier')->getData());
+                            $entity->setAdresse($adresse);
+                            $entity->setCin($form->get('cin')->getData());
+                            break;
+                        case 'infermier':
+                            $entity->setService($form->get('service')->getData());
+                            break;
+                        case 'patient':
+                            $entity->setCin($form->get('cin')->getData());
+                            break;
+                    }
+                    $em->persist($entity);
+                    $em->flush();
+
+                    $this->addFlash('success', ucfirst($type) . ' mis à jour avec succès.');
+                    return $this->redirectToRoute('app_admin_users');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Erreur lors de la mise à jour de l\'utilisateur : ' . $e->getMessage());
+                }
+            }
+
+
+        return $this->render('admin/add_user.html.twig', [
+            'form' => $form->createView(),
+            'type' => $type,
+            'entityId' => $entity ? $entity->getId() : null,
+        ]);
+    }
+    #[Route('/init/password/{id}', name: '_init_password')]
+    public function initPassword(
+        int $id,
+        EntityManagerInterface $entityManager,
+        TwilioService $twilioService,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        // Find the user by ID
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            $this->addFlash('danger', 'User not found.');
+            return $this->redirectToRoute('app_admin_users');
+        }
+
+        // Initialize the password to 'changeme'
+        $newPassword = 'changeme';
+        $user->setPassword(
+            $passwordHasher->hashPassword(
+                $user,
+                $newPassword
+            )
+        );
+
+        // Save the updated user
+
+        $entityManager->flush();
+
+        // Send SMS using Twilio
+        $twilioService=new TwilioService();
+        try {
+            $twilioService->sendSms(
+                $user->getNumero(),
+                "Bonjour, votre nouveau mot de passe est: changeme"
+            );
+
+            $this->addFlash('success', "Mot de passe réinitialisé et message envoyé.");
+        } catch (\Exception $e) {
+            $this->addFlash('danger', 'Erreur lors de l\'envoi du SMS : ' . $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_admin_users');
     }
 }
 

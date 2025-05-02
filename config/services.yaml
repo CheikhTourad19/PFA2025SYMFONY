@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    twilio.account_sid: 'AC825d525cdf9f2f46b043243099abbb79'
+    twilio.auth_token: 'bc5f3c4a32f604bf1b4c9e4866cc85d3'
+    twilio.from_number: '+19043641046'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -14,6 +16,11 @@ services:
         arguments:
             $router: '@router'
     # makes classes in src/ available to be used as services
+    App\Service\TwilioService:
+        arguments:
+            $accountSid: '%env(TWILIO_ACCOUNT_SID)%'
+            $authToken: '%env(TWILIO_AUTH_TOKEN)%'
+            $twilioPhoneNumber: '%env(TWILIO_PHONE_NUMBER)%'
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'

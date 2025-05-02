@@ -93,10 +93,29 @@
                        class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
                         Retour
                     </a>
-                    <a href="{{ path('app_admin_user_edit', {type: userType, id: entity.id}) }}"
+                    {% if userType == 'medecin' %}
+
+                      <a href="{{ path('app_admin_init_password', { id: medecin.user.id }) }}"
+                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                          initialiser mot de passe
+                      </a>
+                    {% elseif userType =='pharmacie' %}
+                      <a href="{{ path('app_admin_init_password', { id: pharmacie.user.id }) }}"
+                         class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                          initialiser mot de passe
+                      </a>
+                    {% elseif userType =='infermier' %}
+                     <a href="{{ path('app_admin_init_password', { id: infermier.user.id }) }}"
                        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                        Modifier
+                        initialiser mot de passe
+                     </a>
+                    {% elseif userType =='patient' %}
+                    <a href="{{ path('app_admin_init_password', { id: patient.user.id }) }}"
+                       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        initialiser mot de passe
                     </a>
+                    {% endif %}
+
                 </div>
             </div>
         </div>
