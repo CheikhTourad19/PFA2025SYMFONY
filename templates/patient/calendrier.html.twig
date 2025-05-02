@@ -1,14 +1,320 @@
 {% extends 'patient/patient.base.html.twig' %}
 
+{% block title %}Calendrier du Médecin{% endblock %}
+
 {% block stylesheets %}
     {{ parent() }}
+    <style>
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .calendar-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        .calendar-day {
+            min-height: 80px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .calendar-day.empty {
+            background-color: #f9f9f9;
+        }
+        .day-number {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .time-slot {
+            margin: 2px 0;
+            padding: 3px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+        .time-slot.available {
+            background-color: #d4edda;
+            color: #155724;
+            cursor: pointer;
+        }
+        .time-slot.booked {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .time-slot.available:hover {
+            background-color: #c3e6cb;
+        }
+        .month-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .month-selector h2 {
+            margin: 0;
+        }
+        .btn-month {
+            padding: 5px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-month:hover {
+            background-color: #0069d9;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+        .available-box {
+            background-color: #d4edda;
+        }
+        .booked-box {
+            background-color: #f8d7da;
+        }
+        .holiday-box {
+            background-color: #f0f0f0;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
+    <div class="container mt-4">
+        <h1>Calendrier du Dr. {{ rdv[0].medecin.user.nom }} {{ rdv[0].medecin.user.prenom }}</h1>
 
-{% endblock content %}
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-box available-box"></div>
+                <span>Disponible</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box booked-box"></div>
+                <span>Occupé</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box holiday-box"></div>
+                <span>Non disponible</span>
+            </div>
+        </div>
+
+        <div class="month-selector">
+            <button class="btn-month prev-month">&laquo; Mois précédent</button>
+            <h2 id="current-month">Mai 2025</h2>
+            <button class="btn-month next-month">Mois suivant &raquo;</button>
+        </div>
+
+        <div class="calendar">
+
+            <div class="calendar-header">Dimanche</div>
+            <div class="calendar-header">Lundi</div>
+            <div class="calendar-header">Mardi</div>
+            <div class="calendar-header">Mercredi</div>
+            <div class="calendar-header">Jeudi</div>
+            <div class="calendar-header">Vendredi</div>
+            <div class="calendar-header">Samedi</div>
+
+
+
+            <!-- Le calendrier sera généré dynamiquement via JavaScript -->
+        </div>
+
+        <!-- No modal needed with alert approach -->
+    </div>
+{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables pour le calendrier
+            const medecinId = {{ rdv[0].medecin.id }};
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
 
+            // Rendez-vous existants
+            const existingAppointments = [
+                {% for appointment in rdv %}
+                {
+                    date: new Date("{{ appointment.date|date('Y-m-d H:i:s') }}"),
+                    status: "{{ appointment.statut }}"
+                },
+                {% endfor %}
+            ];
+
+            // Jours fériés en France pour 2025 (à adapter selon les besoins)
+            const holidays = [
+                new Date(2025, 0, 1),  // Jour de l'An
+                new Date(2025, 3, 21), // Lundi de Pâques (approximatif)
+                new Date(2025, 4, 1),  // Fête du Travail
+
+            ];
+
+            // Fonction pour vérifier si une date est un jour férié
+            function isHoliday(date) {
+                return holidays.some(holiday =>
+                    holiday.getDate() === date.getDate() &&
+                    holiday.getMonth() === date.getMonth() &&
+                    holiday.getFullYear() === date.getFullYear()
+                );
+            }
+
+            // Jours de travail (tous les jours sauf dimanche)
+            // 0 = Dimanche, 1 = Lundi, ..., 6 = Samedi
+            const workingDays = [1, 2, 3, 4, 5, 6]; // Lundi au Samedi
+
+            // Fonction pour générer le calendrier
+            function generateCalendar(month, year) {
+                const calendarElement = document.querySelector('.calendar');
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const firstDay = new Date(year, month, 1).getDay();
+
+                // Ajuster pour que la semaine commence par lundi (0 = lundi)
+                const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+
+                // Nettoyer le calendrier précédent (sauf les en-têtes)
+                while (calendarElement.children.length > 7) {
+                    calendarElement.removeChild(calendarElement.lastChild);
+                }
+
+                // Ajouter les jours vides avant le premier jour du mois
+                for (let i = 0; i < adjustedFirstDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'calendar-day empty';
+                    calendarElement.appendChild(emptyDay);
+                }
+
+                // Ajouter les jours du mois
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+
+                    const dayNumber = document.createElement('div');
+                    dayNumber.className = 'day-number';
+                    dayNumber.textContent = day;
+                    dayElement.appendChild(dayNumber);
+
+                    const currentDayDate = new Date(year, month, day);
+                    const dayOfWeek = currentDayDate.getDay();
+                    const adjustedDayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+                    // Vérifier si c'est un jour de travail et pas un jour férié
+                    if (workingDays.includes(adjustedDayOfWeek) && !isHoliday(currentDayDate)) {
+                        // Déterminer les heures de travail en fonction du jour
+                        let workEndHour = 17; // Par défaut jusqu'à 17h
+
+                        // Vendredi et Samedi: jusqu'à 14h seulement
+                        if (adjustedDayOfWeek === 5 || adjustedDayOfWeek === 6) { // Vendredi (4) ou Samedi (5)
+                            workEndHour = 14;
+                        }
+
+                        // Afficher les créneaux horaires pour ce jour
+                        for (let hour = 9; hour < workEndHour; hour++) {
+                            for (let min = 0; min < 60; min += 60) { // Créneau de 60 minutes
+                                const slotDate = new Date(year, month, day, hour, min);
+
+                                // Ne pas afficher les créneaux passés
+                                if (slotDate < new Date()) continue;
+
+                                // Vérifier si le créneau est déjà réservé
+                                const isBooked = existingAppointments.some(appointment => {
+                                    const appointmentDate = appointment.date;
+                                    return appointmentDate.getFullYear() === slotDate.getFullYear() &&
+                                        appointmentDate.getMonth() === slotDate.getMonth() &&
+                                        appointmentDate.getDate() === slotDate.getDate() &&
+                                        appointmentDate.getHours() === slotDate.getHours() &&
+                                        appointmentDate.getMinutes() === slotDate.getMinutes();
+                                });
+
+                                const timeSlot = document.createElement('div');
+                                const formattedHours = hour.toString().padStart(2, '0');
+                                const formattedMinutes = min.toString().padStart(2, '0');
+                                timeSlot.textContent = `${formattedHours}:${formattedMinutes}`;
+
+                                if (isBooked) {
+                                    timeSlot.className = 'time-slot booked';
+                                } else {
+                                    timeSlot.className = 'time-slot available';
+                                    timeSlot.dataset.date = slotDate.toISOString();
+                                    timeSlot.addEventListener('click', function() {
+                                        selectTimeSlot(slotDate);
+                                    });
+                                }
+
+                                dayElement.appendChild(timeSlot);
+                            }
+                        }
+                    } else {
+                        // Jour non travaillé (dimanche ou jour férié)
+                        const nonWorkingMessage = document.createElement('div');
+                        nonWorkingMessage.textContent = isHoliday(currentDayDate) ? 'Jour férié' : 'Fermé';
+                        nonWorkingMessage.style.marginTop = '20px';
+                        nonWorkingMessage.style.color = '#777';
+                        dayElement.appendChild(nonWorkingMessage);
+                    }
+
+                    calendarElement.appendChild(dayElement);
+                }
+
+                // Mettre à jour l'affichage du mois et de l'année
+                const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                document.getElementById('current-month').textContent = `${months[month]} ${year}`;
+            }
+
+            // Fonction pour sélectionner un créneau horaire
+            function selectTimeSlot(date) {
+                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} à ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+                // Format de date pour l'URL: YYYY-MM-DD HH:MM:SS
+                const urlDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:00`;
+                // Encoder la date pour l'URL
+                const encodedDate = encodeURIComponent(urlDate);
+
+                // Utiliser confirm au lieu d'une modal
+                if (confirm(`Souhaitez-vous prendre rendez-vous le ${formattedDate} ?`)) {
+                    // Rediriger vers la route de prise de rendez-vous
+                    window.location.href = `/patient/prendre-rdv/${medecinId}/${encodedDate}`;
+                }
+            }
+
+            // Générer le calendrier initial
+            generateCalendar(currentMonth, currentYear);
+
+            // Gestion des boutons pour changer de mois
+            document.querySelector('.prev-month').addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+
+            document.querySelector('.next-month').addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                generateCalendar(currentMonth, currentYear);
+            });
+        });
+    </script>
 {% endblock %}
