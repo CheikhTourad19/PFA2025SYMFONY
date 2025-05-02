@@ -89,6 +89,13 @@
                 </div>
             </div>
         </div>
+        <div id="medical-3d-container" class="w-full bg-gray-100 rounded-3xl overflow-hidden shadow-lg mb-12">
+            <div id="medical-3d-canvas" class="w-full h-64 md:h-96"></div>
+            <div class="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-center">
+                <h3 class="text-xl font-bold mb-2">Une nouvelle dimension dans la santé</h3>
+                <p class="text-blue-100">Notre technologie au service de votre bien-être</p>
+            </div>
+        </div>
 
         <!-- Vidéo Présentation -->
         <div class="mb-20 rounded-3xl overflow-hidden shadow-2xl">
@@ -546,6 +553,155 @@
         </nav>
 
     </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get container dimensions
+            const container = document.getElementById('medical-3d-canvas');
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // Scene setup
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color('#f3f4f6');
+
+            // Camera setup
+            const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+            camera.position.z = 5;
+
+            // Renderer setup
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(width, height);
+            container.appendChild(renderer.domElement);
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                const newWidth = container.clientWidth;
+                const newHeight = container.clientHeight;
+
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, newHeight);
+            });
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            const pointLight = new THREE.PointLight(0x4f46e5, 1);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            // Create Medical Cross
+            const crossGroup = new THREE.Group();
+
+            // Vertical part of cross
+            const vertGeometry = new THREE.BoxGeometry(0.5, 2, 0.5);
+            const material = new THREE.MeshPhongMaterial({ color: 0x3b82f6 });
+            const verticalPart = new THREE.Mesh(vertGeometry, material);
+            crossGroup.add(verticalPart);
+
+            // Horizontal part of cross
+            const horizGeometry = new THREE.BoxGeometry(2, 0.5, 0.5);
+            const horizontalPart = new THREE.Mesh(horizGeometry, material);
+            crossGroup.add(horizontalPart);
+
+            // Create circular ring around the cross
+            const ringGeometry = new THREE.TorusGeometry(1.5, 0.1, 16, 100);
+            const ringMaterial = new THREE.MeshPhongMaterial({ color: 0x4f46e5 });
+            const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+            ring.rotation.x = Math.PI / 2;
+            crossGroup.add(ring);
+
+            // Create DNA helix
+            const dnaGroup = new THREE.Group();
+            dnaGroup.position.set(0, 0, -1.5);
+
+            // Create the strands
+            const strandGeometry = new THREE.CylinderGeometry(0.05, 0.05, 4, 8);
+            const strandMaterial1 = new THREE.MeshPhongMaterial({ color: 0x60a5fa });
+            const strandMaterial2 = new THREE.MeshPhongMaterial({ color: 0x93c5fd });
+
+            const strand1 = new THREE.Mesh(strandGeometry, strandMaterial1);
+            const strand2 = new THREE.Mesh(strandGeometry, strandMaterial2);
+
+            strand1.position.x = 0.3;
+            strand2.position.x = -0.3;
+
+            dnaGroup.add(strand1);
+            dnaGroup.add(strand2);
+
+            // Create rungs
+            const rungGeometry = new THREE.BoxGeometry(0.6, 0.07, 0.07);
+            const rungMaterial = new THREE.MeshPhongMaterial({ color: 0xdbeafe });
+
+            for (let i = -10; i <= 10; i++) {
+                const rung = new THREE.Mesh(rungGeometry, rungMaterial);
+                rung.position.y = i * 0.2;
+                rung.rotation.z = i * Math.PI * 0.1;
+                dnaGroup.add(rung);
+            }
+
+            // Create pulsing spheres
+            const sphereGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+            const sphereMaterial = new THREE.MeshPhongMaterial({
+                color: 0x60a5fa,
+                transparent: true,
+                opacity: 0.7
+            });
+
+            // Create multiple spheres in orbit
+            const spheres = [];
+            const orbits = [];
+
+            for (let i = 0; i < 5; i++) {
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+                const orbitGroup = new THREE.Group();
+                orbitGroup.rotation.x = Math.random() * Math.PI;
+                orbitGroup.rotation.y = Math.random() * Math.PI;
+
+                sphere.position.x = 2.5;
+                orbitGroup.add(sphere);
+                scene.add(orbitGroup);
+
+                spheres.push(sphere);
+                orbits.push(orbitGroup);
+            }
+
+            // Add groups to scene
+            scene.add(crossGroup);
+            scene.add(dnaGroup);
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Rotate the cross
+                crossGroup.rotation.y += 0.01;
+                crossGroup.rotation.x += 0.005;
+
+                // Rotate DNA
+                dnaGroup.rotation.y += 0.01;
+
+                // Animate orbiting spheres
+                orbits.forEach((orbit, i) => {
+                    orbit.rotation.z += 0.01 + (i * 0.005);
+
+                    // Pulsing effect on spheres
+                    const scale = 0.8 + Math.sin(Date.now() * 0.003 + i) * 0.2;
+                    spheres[i].scale.set(scale, scale, scale);
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            // Start animation
+            animate();
+        });
+    </script>
 {% endblock %}
 
 

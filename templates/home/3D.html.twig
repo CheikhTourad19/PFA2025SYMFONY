@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Building 3D Medical Simulations With Three.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--App Styles-->
+    <link rel="stylesheet" href="https://www.shanebrumback.com/css/app.css?v3">
+
+    <!--Font resources -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-mutate-approach="sync"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+
+        #crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            display: none; /* Hide the crosshair by default */
+        }
+
+
+        #playButton {
+            font-family: Arial;
+            font-size: 3vw;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.75);
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        @media (max-width: 900px) {
+            /* Styles for mobile devices with a maximum width of 767px */
+            #playButton {
+                font-family: 'Arial';
+                font-size: 15vw; /* Adjust the font size as per your preference */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="blocker"></div>
+<div id="instructions">
+
+    <div class="content">
+        <center>
+            <h2>
+                Shane Brumback 3D Virtual Training Games Example Code
+            </h2>
+        </center>
+        <center>
+            <div id="playButton">
+                Loading Model...
+                <br />
+                <br />
+            </div>
+            <div class="sub-content" style="pointer-events: none;">
+                <center>
+                    <p>
+                        ESC - Menu
+                        <br />
+                        WASF ARROWS - Move
+                    </p>
+                </center>
+            </div>
+        </center>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@latest/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/controls/PointerLockControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@latest/examples/js/loaders/GLTFLoader.js"></script>
+
+
+<script type="module">
+
+    // Set up the scene
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, .1, 1000);
+    camera.position.set(1, 1.5, 1); // Set camera position 0.1 units above the grid
+
+    // Adjust the camera's near clipping plane value
+    camera.near = .015; // Set a smaller value, like 0.1
+    camera.updateProjectionMatrix();
+
+
+    // Keyboard controls
+    var moveForward = false;
+    var moveBackward = false;
+    var moveLeft = false;
+    var moveRight = false;
+
+    // Setup Gun Object
+    var tommyGun;
+    // 3D Abandoned Building MOdel
+    var abandonedBuilding;
+    //Array for bullet hole meshes
+    let bulletHoles = [];
+    //Gun Firing Variable to track when gun is firing
+    let isFiring = false
+    // Counter variable to keep track of the number of bullets
+    var bulletCount = 0;
+
+
+    // Create the renderer
+    var renderer = new THREE.WebGLRenderer({ alpha: true, depth: true });
+    // Configure renderer settings
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.setClearColor(0x000000, 0); // Set background color to black
+    renderer.domElement.style.position = 'fixed';
+    renderer.domElement.id = 'renderer';
+    renderer.domElement.style.zIndex = '-1';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.top = '0';
+    document.body.appendChild(renderer.domElement);
+
+    //Create ray caster instance
+    var raycaster = new THREE.Raycaster();
+    //Create mouse instance
+    var mouse = new THREE.Vector2();
+    //Create array to store bullets
+    var bullets = [];
+
+    // Variables for tracking time and adding bullet hole meshes
+    let lastMeshAdditionTime = 0;
+    const meshAdditionInterval = 100; // Interval duration in milliseconds
+
+
+    ///flashing light // Create a point light
+    const tommyGunLight = new THREE.PointLight(0xffffff, 100, 100); // Adjust the light color and intensity as needed
+    tommyGunLight.position.set(0, 0, 0); // Set the light position
+    tommyGunLight.visible = false
+    // Add the light to the scene initially
+    scene.add(tommyGunLight);
+
+
+    // Gravity effect variables
+    var gravity = new THREE.Vector3(0, -0.01, 0); // Adjust the gravity strength as needed
+    var maxGravityDistance = 2; // Adjust the maximum distance affected by gravity as needed
+
+    // Add PointerLockControls
+    var controls = new THREE.PointerLockControls(camera, document.body);
+    controls.mouseSensitivity = 0.005; // Adjust the sensitivity as needed
+
+    // Create a grid
+    var gridHelper = new THREE.GridHelper(20, 20);
+    scene.add(gridHelper);
+
+    // Set up pointer lock controls
+    var blocker = document.getElementById('blocker');
+    var instructions = document.getElementById('instructions');
+    var playButton = document.getElementById('playButton');
+
+    playButton.addEventListener('click', function () {
+        controls.lock();
+    });
+
+    controls.addEventListener('lock', function () {
+        instructions.style.display = 'none';
+        blocker.style.display = 'none';
+    });
+
+    controls.addEventListener('unlock', function () {
+        blocker.style.display = 'block';
+        instructions.style.display = '';
+    });
+
+
+    // Resize renderer when window size changes
+    window.addEventListener('resize', function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    scene.add(controls.getObject());
+
+    // Create an ambient light with brightness
+    var ambientLight = new THREE.AmbientLight(0xffffff, 2); // Adjust the color as needed
+    scene.add(ambientLight);
+
+    // Load GLTF model
+    var loader = new THREE.GLTFLoader();
+
+
+    // Load GLTF model
+    loader.load(
+        '../models/charite_university_hospital_-_operating_room.glb',
+        function (gltf) {
+            abandonedBuilding = gltf.scene;
+            abandonedBuilding.position.y = 0.009;
+            scene.add(abandonedBuilding);
+
+            // After the model has loaded, update the message in the playButton div
+            playButton.innerText = "Click To Explore";
+        },
+        // Add a function to handle loading progress or errors (optional)
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        function (error) {
+            console.error('An error occurred:', error);
+        }
+    );
+
+    var onKeyDown = function (event) {
+        switch (event.keyCode) {
+            case 38: // up arrow
+            case 87: // W key
+                moveForward = true;
+                break;
+            case 37: // left arrow
+            case 65: // A key
+                moveLeft = true;
+                break;
+            case 40: // down arrow
+            case 83: // S key
+                moveBackward = true;
+                break;
+            case 39: // right arrow
+            case 68: // D key
+                moveRight = true;
+                break;
+        }
+    };
+
+    var onKeyUp = function (event) {
+        switch (event.keyCode) {
+            case 38: // up arrow
+            case 87: // W key
+                moveForward = false;
+                break;
+            case 37: // left arrow
+            case 65: // A key
+                moveLeft = false;
+                break;
+            case 40: // down arrow
+            case 83: // S key
+                moveBackward = false;
+                break;
+            case 39: // right arrow
+            case 68: // D key
+                moveRight = false;
+                break;
+        }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+
+    // Check collision with the grid
+    function checkCollision(position) {
+        var gridSize = 20;
+        var halfGridSize = gridSize / 2;
+        var margin = 0.1;
+
+        if (
+            position.x < -halfGridSize + margin ||
+            position.x > halfGridSize - margin ||
+            position.z < -halfGridSize + margin ||
+            position.z > halfGridSize - margin
+        ) {
+            return true; // Collision detected
+        }
+
+        return false; // No collision
+    }
+
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+
+        //ramp up player movement speed and direction
+        if (controls.isLocked) {
+            var acceleration = 0.003; // Speed increment per frame
+            var maxSpeed = 0.05; // Maximum speed
+
+            if (moveForward) {
+                controls.speed = Math.min(controls.speed + acceleration, maxSpeed);
+                controls.moveForward(controls.speed);
+                if (checkCollision(controls.getObject().position)) {
+                    controls.moveForward(-controls.speed); // Move back to the previous position
+                }
+            } else if (moveBackward) {
+                controls.speed = Math.min(controls.speed + acceleration, maxSpeed);
+                controls.moveForward(-controls.speed);
+                if (checkCollision(controls.getObject().position)) {
+                    controls.moveForward(controls.speed); // Move back to the previous position
+                }
+            } else if (moveLeft) {
+                controls.speed = Math.min(controls.speed + acceleration, maxSpeed);
+                controls.moveRight(-controls.speed);
+                if (checkCollision(controls.getObject().position)) {
+                    controls.moveRight(controls.speed); // Move back to the previous position
+                }
+            } else if (moveRight) {
+                controls.speed = Math.min(controls.speed + acceleration, maxSpeed);
+                controls.moveRight(controls.speed);
+                if (checkCollision(controls.getObject().position)) {
+                    controls.moveRight(-controls.speed); // Move back to the previous position
+                }
+            } else {
+                controls.speed = 0; // Reset speed when no movement controls are active
+            }
+        }
+
+
+
+        renderer.render(scene, camera);
+
+    }
+
+    animate();
+
+
+    // Add event listeners for the mouse down and mouse up events
+    window.addEventListener('mousedown', onMouseDown, false);
+    window.addEventListener('mouseup', onMouseUp, false);
+
+    function onMouseDown(event) {
+        // Check if the left mouse button is pressed (button code 0)
+        if (controls.isLocked && event.button === 0 && event.target.id !== 'playButton') {
+
+        }
+    }
+
+    function onMouseUp(event) {
+        // Check if the left mouse button is released (button code 0)
+        if (event.button === 0) {
+
+        }
+    }
+
+    function onMouseMove(event) {
+
+    }
+
+    // Mouse click event listener
+    document.addEventListener('mousemove', onMouseMove, false);
+
+
+    // Event listener for mouse down event
+    document.addEventListener('mousedown', function (event) {
+        // Check if the left mouse button is pressed (button code 0)
+        if (controls.isLocked && event.button === 0 && event.target.id !== 'playButton') {
+
+        }
+    });
+
+    // Event listener for mouse up event
+    document.addEventListener('mouseup', function (event) {
+        // Check if the left mouse button is released (button code 0)
+        if (event.button === 0) {
+
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

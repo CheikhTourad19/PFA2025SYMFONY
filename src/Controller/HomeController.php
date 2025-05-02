@@ -31,6 +31,20 @@ final class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig');
     }
+    #[Route('/3D', name: 'app_three')]
+    public function three(MailerInterface $mailer): Response
+    {
+
+//        $email = (new Email())
+//            ->from('donotreplyemedical@gmail.com')
+//            ->to('elghothvadel@gmail.com')
+//            ->subject('Test Email')
+//            ->text('This is a test email sent from Symfony!');
+//
+//        $mailer->send($email);
+
+        return $this->render('home/3D.html.twig');
+    }
     #[Route('/api/users')]
     public  function sendapi(UserRepository $userRepository): Response
     {
