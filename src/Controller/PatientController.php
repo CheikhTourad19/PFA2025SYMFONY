@@ -123,7 +123,7 @@ final class PatientController extends AbstractController
         $rdv->setMedecin($medecin);
         $rdv->setPatient($user);
         $rdv->setDate($dateRdv);
-        $rdv->setStatut('attente'); // Statut initial: en attente
+        $rdv->setStatut('en_attente'); // Statut initial: en attente
 
         $em->persist($rdv);
         $em->flush();
