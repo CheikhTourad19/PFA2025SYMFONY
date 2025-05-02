@@ -52,6 +52,11 @@ E-Medical est développé avec une attention particulière à la sécurité des 
 - Journalisation des activités et audit trail
 - Sessions sécurisées et authentification à deux facteurs
 
+## Features
+
+- Light/dark mode toggle
+- Responsive
+
 ## 📊 Captures d'écran
 
 *(À venir)*
@@ -100,4 +105,6 @@ Add badges from somewhere like: [shields.io](https://shields.io/)
  - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
  - [Awesome README](https://github.com/matiassingers/awesome-readme)
  - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+
+
 
