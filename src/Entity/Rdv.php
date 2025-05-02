@@ -75,7 +75,7 @@ class Rdv
         return $this->patient;
     }
 
-    public function setPatient(?Patient $patient): static
+    public function setPatient(?User $patient): static
     {
         $this->patient = $patient;
 

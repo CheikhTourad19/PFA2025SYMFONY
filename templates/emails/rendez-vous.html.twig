@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nouveau Rendez-vous</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        #date{
+            color: #0d47a1;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Nouveau Rendez vous</h2>
+    </div>
+
+    <div class="content">
+        <p>Bonjour dr {{ medecin.user.nom }} {{ medecin.user.prenom  }} </p>
+        <p>Vous avez un nouveau rendez vous avec le patient : {{ patient.nom }} {{ patient.prenom }} pour la date : <sapn id="date">{{ date|date }}</sapn></p>
+    </div>
+
+    <div class="footer">
+        <p>Ce message a été envoyé via la platforme de prise de rendez vous</p>
+        <p>© {{ "now"|date("Y") }} E-Medical Plateforme</p>
+    </div>
+</div>
+</body>
+</html>

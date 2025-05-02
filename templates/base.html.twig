@@ -132,6 +132,10 @@
                 !e.ctrlKey && !e.metaKey) {
 
                 showLoader();
+
+                setTimeout(()=>{
+                    hideLoader();
+                },3000)
             }
         });
 
@@ -142,28 +146,28 @@
 
         // For AJAX requests (if you're using them)
         // You can add this if you're using fetch or XMLHttpRequest for AJAX navigation
-        const originalFetch = window.fetch;
-        window.fetch = function() {
-            showLoader();
-            return originalFetch.apply(this, arguments)
-                .then(response => {
-                    hideLoader();
-                    return response;
-                })
-                .catch(error => {
-                    hideLoader();
-                    throw error;
-                });
-        };
+        // const originalFetch = window.fetch;
+        // window.fetch = function() {
+        //     showLoader();
+        //     return originalFetch.apply(this, arguments)
+        //         .then(response => {
+        //             hideLoader();
+        //             return response;
+        //         })
+        //         .catch(error => {
+        //             hideLoader();
+        //             throw error;
+        //         });
+        // };
 
         // For Turbo/Turbolinks if you're using them
-        document.addEventListener('turbo:visit', showLoader);
-        document.addEventListener('turbo:load', hideLoader);
-        document.addEventListener('turbo:render', hideLoader);
-
-        // For Symfony UX Turbo
-        document.addEventListener('turbo:before-visit', showLoader);
-        document.addEventListener('turbo:load', hideLoader);
+        // document.addEventListener('turbo:visit', showLoader);
+        // document.addEventListener('turbo:load', hideLoader);
+        // document.addEventListener('turbo:render', hideLoader);
+        //
+        // // For Symfony UX Turbo
+        // document.addEventListener('turbo:before-visit', showLoader);
+        // document.addEventListener('turbo:load', hideLoader);
 
         // Fallback for normal page loads
         window.addEventListener('beforeunload', showLoader);
