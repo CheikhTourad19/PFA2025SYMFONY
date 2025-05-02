@@ -1,0 +1,36 @@
+{# templates/task/index.html.twig #}
+{% extends 'medecin/task.html.twig' %}
+
+{% block title %}Gestion des Tâches - Médecin{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 bg-light border-end p-3">
+                <h4 class="text-primary mb-4">
+                    <i class="fas fa-tasks me-2"></i>Gestion des Tâches
+                </h4>
+
+                <div class="d-grid gap-2">
+                    <a href="{{ path('task_create') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-plus-circle me-2"></i>Créer une tâche
+                    </a>
+                    <a href="{{ path('my_tasks') }}" class="btn btn-outline-primary text-start active">
+                        <i class="fas fa-clipboard-list me-2"></i>Mes tâches
+                    </a>
+                    <a href="{{ path('followed_tasks') }}" class="btn btn-outline-primary text-start">
+                        <i class="fas fa-eye me-2"></i>Tâches suivies
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 p-4 bg-white">
+                {% block task_content %}
+                    <!-- Le contenu spécifique sera injecté ici -->
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

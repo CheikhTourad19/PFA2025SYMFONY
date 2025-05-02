@@ -1,0 +1,185 @@
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedSuite{% endblock %}</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    {% block stylesheets %}
+    <style>
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --glass: rgba(188, 226, 237, 0.95);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 1000;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .menu-item {
+            position: relative;
+            margin: 0.5rem 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            color: #4B5563;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            transition: var(--transition);
+        }
+
+        .menu-icon i {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .menu-text {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .menu-item.active .menu-icon {
+            background: var(--primary);
+        }
+
+        .menu-item.active .menu-icon i {
+            color: white;
+        }
+
+        .menu-item.active .menu-text {
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .menu-item:hover .menu-icon {
+            transform: translateX(5px);
+        }
+
+        body.shrink .glass-nav {
+            width: 88px;
+        }
+
+        body.shrink .menu-text {
+            opacity: 0;
+        }
+
+        .user-profile {
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.05);
+            margin: 1rem;
+            border-radius: 12px;
+        }
+    </style>
+    {% endblock %}
+</head>
+
+<body>
+<nav class="glass-nav">
+    <div class="nav-header">
+        <div class="logo">MS</div>
+        <h3 class="menu-text">MedSuite</h3>
+    </div>
+
+    <div class="nav-menu">
+        <ul>
+            {% set menu_items = {
+                'app_medecin_home': 'bx-home',
+                'app_task_index': 'bx-task',
+                'app_medecin_dossier_medical': 'bx-folder',
+                'app_medecin_messages': 'bx-chat',
+                'app_medecin_calendrier': 'bx-calendar',
+                'app_medecin_profil': 'bx-user'
+            } %}
+
+            {% for route, icon in menu_items %}
+                <li class="menu-item {{ app.request.get('_route') == route ? 'active' : '' }}">
+                    <a href="{{ path(route) }}" class="menu-link">
+                        <div class="menu-icon">
+                            <i class='bx {{ icon }}'></i>
+                        </div>
+                        <span class="menu-text">{{ icon|replace({'bx-': '', 'bx': ''})|capitalize }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="user-profile">
+        <div class="menu-link">
+            <div class="menu-icon">
+                <i class='bx bx-user-circle'></i>
+            </div>
+            <div class="menu-text">
+                <h4>{{ app.user.fullName }}</h4>
+                <small>Médecin</small>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main style="margin-left: 280px; padding: 2rem;">
+    {% block body %}{% endblock %}
+</main>
+
+<script>
+    document.querySelector('.logo').addEventListener('click', () => {
+        document.body.classList.toggle('shrink');
+    });
+</script>
+</body>
+</html>

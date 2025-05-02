@@ -1,0 +1,59 @@
+{% extends 'medecin/index.html.twig' %}
+
+{% block body %}
+    <div class="messaging-container">
+        <div class="sidebar">
+            <input type="text" id="user-search" placeholder="Rechercher un utilisateur...">
+            <ul id="conversation-list">
+                {% for conv in conversations %}
+                    <li data-id="{{ conv.id }}" class="conversation-item">
+                        {{ conv.fullName }}
+                    </li>
+                {% else %}
+                    <li class="empty">Aucune conversation</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="chat-window">
+            {% if receiver %}
+                <div class="chat-header">
+                    <h2>{{ receiver.user.prenom }} {{ receiver.user.nom }}</h2>
+                </div>
+
+                <div id="message-container" class="messages">
+                    {% for msg in messages %}
+                        <div class="message {{ msg.sender.id == app.user.id ? 'sent' : 'received' }}">
+                            <div class="message-content">{{ msg.content|escape }}</div>
+                            <div class="message-time">{{ msg.sentAt|date('H:i') }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="message-input">
+                    <textarea
+                            id="message-input"
+                            placeholder="Écrire un message..."
+                            rows="1"
+                            maxlength="500"
+                    ></textarea>
+                    <button id="send-button" data-receiver="{{ receiver.id }}">
+                        <span class="send-icon">➤</span>
+                    </button>
+                </div>
+            {% else %}
+                <div class="empty-chat">
+                    <p>Sélectionnez un utilisateur pour commencer la conversation</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        <script src="{{ build('messaging.js') }}"></script>
+
+    </script>
+{% endblock %}

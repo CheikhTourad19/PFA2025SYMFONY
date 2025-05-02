@@ -40,4 +40,13 @@ class MedecinRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findByNameTerm(string $term): array
+    {
+        return $this->createQueryBuilder('m')
+            ->join('m.user', 'u')
+            ->where('u.nom LIKE :term OR u.prenom LIKE :term')
+            ->setParameter('term', '%'.$term.'%')
+            ->getQuery()
+            ->getResult();
+    }
 }
