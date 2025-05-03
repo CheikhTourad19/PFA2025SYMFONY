@@ -53,13 +53,13 @@
 <p>Vous avez demandé à réinitialiser votre mot de passe. Veuillez cliquer sur le bouton ci-dessous pour continuer :</p>
 
 <p style="text-align: center;">
-    <a href="{{ absolute_url(path('app_reset_password', {token: resetToken.token}))|replace({'localhost': 'localhost:8000'}) }}" class="button">
+    <a href="{{ absolute_url(path('app_reset_password', {token: resetToken.token})) }}" class="button">
         Réinitialiser mon mot de passe
     </a>
 </p>
 
 <p>Ou copiez-collez ce lien dans votre navigateur :</p>
-<p class="link">{{ absolute_url(path('app_reset_password', {token: resetToken.token}))|replace({'localhost': 'localhost:8000'}) }}</p>
+<p class="link">{{ absolute_url(path('app_reset_password', {token: resetToken.token})) }}</p>
 
 <p>Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
 
