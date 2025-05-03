@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests\Controller;
 
+use App\Entity\Rdv;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Repository\UserRepository;
 
@@ -23,6 +24,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorExists('button:contains("Déconnexion")');
         $this->assertSelectorExists('a:contains("Accueil")');
     }
+
     public function testLoginAvecBonneInfoPharmacie(): void
     {
         $client = static::createClient();
@@ -58,6 +60,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.error-m', 'Identifiants invalides.');
 
     }
+
     public function testLoginAvecInvalidMDPPharmacie(): void
     {
         $client = static::createClient();
@@ -75,4 +78,5 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextContains('.error-m', 'Identifiants invalides.');
 
     }
+
 }

@@ -12,17 +12,17 @@ class Patient
     #[ORM\JoinColumn(name: 'patient_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
-    #[ORM\Column(type: 'bigint', nullable: true)]
-    private ?int $cin = null;
+    #[ORM\Column(type: 'string', length: 100)]
+    private $cin;
 
     // Getters and Setters
 
-    public function getCin(): ?int
+    public function getCin(): ?string
     {
         return $this->cin;
     }
 
-    public function setCin(?int $cin): static
+    public function setCin(?string $cin): static
     {
         $this->cin = $cin;
 
