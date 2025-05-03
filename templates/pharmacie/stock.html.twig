@@ -27,7 +27,7 @@
                 <div id="addMedicamentForm" class="mb-8 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 shadow-inner border border-gray-200/50 dark:border-gray-700/50 hidden transition-all duration-500 ease-in-out transform opacity-0 -translate-y-2">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
-                            <i class="fas fa-file-medical mr-2 text-blue-600 dark:text-blue-400"></i> Nouveau
+                            <i class="fas fa-file-medical mr-2 text-blue-600 dark:text-blue-400"></i> Nouveau ({{ medicaments|length }} medicaments dans notre arsenal)
                         </h2>
                         <button id="cancelAddBtn" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors">
                             <i class="fas fa-times text-xl"></i>
@@ -35,65 +35,34 @@
                     </div>
 
                     <form action="{{ path('app_pharma_add_medicament') }}" method="POST" class="space-y-5">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
                             <div class="space-y-1">
                                 <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
-                                    <i class="fas fa-tag mr-2 text-blue-500"></i> Nom
+                                    <i class="fas fa-tag mr-2 text-blue-500"></i> Medicament
                                 </label>
                                 <div class="relative">
-                                    <input
+                                    <select
                                             type="text"
                                             id="nom"
                                             name="nom"
                                             required
                                             class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
-                                            placeholder="e.g. Paracetamol 500mg"
+
                                     >
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-pills text-gray-400"></i>
-                                    </div>
+                                        {% set i = 1 %}
+                                        {% for medicament in medicaments %}
+                                            <option value="{{ medicament.id }}">{{ i }} - {{ medicament.nom }}</option>
+                                            {% set i=i+1 %}
+                                        {% endfor %}
+                                    </select>
+
                                 </div>
                             </div>
 
-                            <div class="space-y-1">
-                                <label for="prix" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
-                                    <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i> Prix (TND)
-                                </label>
-                                <div class="relative">
-                                    <input
-                                            type="number"
-                                            id="prix"
-                                            name="prix"
-                                            required
-                                            step="0.01"
-                                            min="0"
-                                            class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
-                                            placeholder="0.00"
-                                    >
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <i class="fas fa-dollar-sign text-gray-400"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="space-y-1">
-                            <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
-                                <i class="fas fa-align-left mr-2 text-blue-500"></i> Description
-                            </label>
-                            <div class="relative">
-                                <textarea
-                                        id="description"
-                                        name="description"
-                                        rows="3"
-                                        class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
-                                        placeholder="Description "
-                                ></textarea>
-                                <div class="absolute top-3 left-3">
-                                    <i class="fas fa-info-circle text-gray-400"></i>
-                                </div>
-                            </div>
-                        </div>
+
+
+
 
                         <div class="space-y-1">
                             <label for="quantite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">

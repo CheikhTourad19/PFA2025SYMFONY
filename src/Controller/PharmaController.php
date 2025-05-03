@@ -42,7 +42,7 @@ final class PharmaController extends AbstractController
         ]);
     }
     #[Route('/pharmacie/stock',  name: 'app_pharma_stock')]
-    public function Stockindex(StockRepository $stockRepository, PharmacieRepository $f): Response
+    public function Stockindex(StockRepository $stockRepository,MedicamentRepository $medicamentRepository): Response
     {
         $user = $this->getUser();
         $stocks = $stockRepository->createQueryBuilder('s')
@@ -52,9 +52,10 @@ final class PharmaController extends AbstractController
             ->setParameter('user', $user)
             ->getQuery()
             ->getArrayResult();
-
+        $medicaments=$medicamentRepository->findAll();
         return $this->render('pharmacie/stock.html.twig', [
             'stocks' => $stocks,
+            'medicaments'=>$medicaments,
         ]);
     }
     #[Route('/pharmacie/stock/update-stock/{id}',  name: 'app_pharma_update_stock')]
@@ -180,43 +181,21 @@ final class PharmaController extends AbstractController
         $pharmacie = $pharmacieRepository->findOneBy(['user' => $this->getUser()]);
 
         // Récupérer les données du formulaire
-        $nom = $request->request->get('nom');
-        $description = $request->request->get('description');
-        $prix = $request->request->get('prix');
         $quantite = (int)$request->request->get('quantite');
+        $medicament = $medicamentRepository->find($request->request->get('nom'));
+        $existingstock = $stockRepository->findOneBy(['medicament' => $medicament, 'pharmacie' => $pharmacie]);
 
-        // Vérifier si le médicament existe déjà
-        $med = $medicamentRepository->findOneBy(['nom' => $nom]);
-        if ($med == null) {
-            // Si le médicament n'existe pas, on le crée
-            $med = new Medicament();
-            $med->setNom($nom);
-            $med->setDescription($description);
-            $med->setPrix($prix);
-            $entityManager->persist($med);
-            $entityManager->flush(); // Flush ici pour obtenir l'ID du médicament
+        if ($existingstock) {
+            $this->addFlash('error', 'Vous avez deja ce medicament dans votre stock');;
+            return $this->redirectToRoute('app_pharma_stock');
         }
-
-        // Vérifier si un stock pour ce médicament existe déjà dans cette pharmacie
-        $existingStock = $stockRepository->findOneBy([
-            'pharmacie' => $pharmacie,
-            'medicament' => $med
-        ]);
-
-        if ($existingStock) {
-            // Si le stock existe déjà, mettre à jour la quantité
-            $existingStock->setQuantite($quantite); // ou utilisez $existingStock->setQuantite($existingStock->getQuantite() + $quantite); pour ajouter à la quantité existante
-            $entityManager->persist($existingStock);
-        } else {
-            // Si le stock n'existe pas, créer un nouveau
-            $stock = new Stock();
-            $stock->setMedicament($med);
-            $stock->setQuantite($quantite);
-            $stock->setPharmacie($pharmacie);
-            $entityManager->persist($stock);
-        }
-
+        $stock = new Stock();
+        $stock->setQuantite($quantite);
+        $stock->setMedicament($medicament);
+        $stock->setPharmacie($pharmacie);
         // Persister les changements
+
+        $entityManager->persist($stock);
         $entityManager->flush();
 
         // Ajouter un message flash
