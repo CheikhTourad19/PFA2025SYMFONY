@@ -125,23 +125,5 @@ class ChatController extends AbstractController
     }
 
 
-    #[Route('/mes-taches', name: 'app_my_created_tasks')]
-    public function myCreatedTasks(
-        Security $security,
-        TaskRepository $taskRepository
-    ): Response {
-        /** @var Medecin $currentUser */
-        $currentUser = $security->getUser();
 
-        if (!$currentUser) {
-            $this->addFlash('error', 'Vous devez être connecté');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $tasks = $taskRepository->findCreatedByMedecin($currentUser);
-
-        return $this->render('medecin/my_created_tasks.html.twig', [
-            'tasks' => $tasks
-        ]);
-    }
 }
