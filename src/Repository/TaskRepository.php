@@ -19,6 +19,16 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * Trouve les tâches assignées à un médecin
      */
+
+    public function findCreatedByMedecin(Medecin $medecin)
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.createdBy = :medecin')
+            ->setParameter('medecin', $medecin)
+            ->orderBy('t.createdAt', 'DESC') // Tri par date de création
+            ->getQuery()
+            ->getResult();
+    }
     public function findTasksForMedecin(Medecin $medecin): array
     {
         return $this->createQueryBuilder('t')
@@ -58,10 +68,10 @@ class TaskRepository extends ServiceEntityRepository
 
 
 
-    public function findFollowedTasks(User $user)
+    public function findFollowedTasks(Medecin $user)
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.assignedTo = :user')
+            ->andWhere('t.createdBy = :user')
             ->setParameter('user', $user)
             ->orderBy('t.deadline', 'ASC')
             ->getQuery()

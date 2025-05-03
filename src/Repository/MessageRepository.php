@@ -17,35 +17,50 @@ class MessageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Message::class);
     }
-
-    /**
-     * @return User[]
-     */
-    public function findMedecinsConversation(Medecin $medecin): array // Renamed method & parameter
+    public function findLastConversationsForUser(User $user): array
     {
-        return $this->createQueryBuilder('m')
-            ->select('DISTINCT m2') // Changed alias to m2 (medecin)
-            ->join('m.sender', 'm2') // Join with Medecin entity
-            ->where('m.receiver = :medecin')
-            ->orWhere('m.sender = :medecin')
-            ->setParameter('medecin', $medecin)
+        $messages = $this->createQueryBuilder('m')
+            ->leftJoin('m.sender', 's')
+            ->leftJoin('m.receiver', 'r')
+            ->addSelect('s', 'r')
+            ->where('m.sender = :user OR m.receiver = :user')
+            ->setParameter('user', $user)
+            ->orderBy('m.sentAt', 'DESC') // Changé de createdAt à sentAt
             ->getQuery()
             ->getResult();
-    }
+        $conversations = [];
+        foreach ($messages as $message) {
+            $otherUser = $message->getSender() === $user
+                ? $message->getReceiver()
+                : $message->getSender();
 
-    /**
-     * @return Message[]
-     */
-    public function findConversationBetween(Medecin $m1, Medecin $m2): array // Changed parameters to Medecin
-    {
-        return $this->createQueryBuilder('m')
-            ->where(
-                '(m.sender = :m1 AND m.receiver = :m2) OR ' .
-                '(m.sender = :m2 AND m.receiver = :m1)'
-            )
-            ->setParameters(['m1' => $m1, 'm2' => $m2])
-            ->orderBy('m.sentAt', 'ASC')
-            ->getQuery()
-            ->getResult();
+            if (!$otherUser || isset($conversations[$otherUser->getId()])) continue;
+
+            $conversations[$otherUser->getId()] = [
+                'user' => $otherUser,
+                'message' => $message->getContent(),
+                'date' => $message->getCreatedAt()
+            ];
+        }
+
+        return array_values($conversations);
     }
+    public function findMessagesBetweenUsers(User $currentUser, User $otherUser): array
+{
+    return $this->createQueryBuilder('m')
+        ->leftJoin('m.sender', 's')
+        ->leftJoin('m.receiver', 'r')
+        ->addSelect('s', 'r')
+        ->where('(m.sender = :currentUser AND m.receiver = :otherUser)')
+        ->orWhere('(m.sender = :otherUser AND m.receiver = :currentUser)')
+        ->setParameters([
+            'currentUser' => $currentUser,
+            'otherUser' => $otherUser
+        ])
+        ->orderBy('m.createdAt', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
+
 }

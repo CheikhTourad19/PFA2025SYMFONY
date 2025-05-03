@@ -1,59 +1,348 @@
 {% extends 'medecin/index.html.twig' %}
 
+{% block title %}Chat{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        :root {
+            --primary-color: #0084ff;
+            --secondary-color: #e9ecef;
+            --online-color: #00c853;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+            background: #f5f6f8;
+        }
+
+        /* Left Sidebar */
+        .left-sidebar {
+            width: 350px;
+            border-right: 1px solid #ddd;
+            background: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-box {
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .user-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-item:hover {
+            background: #f5f5f5;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Right Chat Area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--online-color);
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAOUlEQVRoge3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC3AcUIAAFkqh/QAAAAAElFTkSuQmCC') repeat;
+        }
+
+        .message {
+            max-width: 60%;
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            animation: messageAppear 0.3s ease-out;
+        }
+
+        .message.sent {
+            background: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background: white;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .message-time {
+            font-size: 0.75em;
+            opacity: 0.8;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .seen-status {
+            font-size: 0.9em;
+        }
+
+        .message-input-area {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #eee;
+        }
+
+        .message-form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            outline: none;
+        }
+
+        .send-button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+        }
+
+        .start-conversation {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #666;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-sidebar {
+                width: 100%;
+            }
+
+            .chat-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <div class="messaging-container">
-        <div class="sidebar">
-            <input type="text" id="user-search" placeholder="Rechercher un utilisateur...">
-            <ul id="conversation-list">
-                {% for conv in conversations %}
-                    <li data-id="{{ conv.id }}" class="conversation-item">
-                        {{ conv.fullName }}
-                    </li>
-                {% else %}
-                    <li class="empty">Aucune conversation</li>
-                {% endfor %}
-            </ul>
-        </div>
+    <div class="chat-container">
+        <!-- Left Sidebar -->
+        <div class="left-sidebar">
+            <div class="search-box">
+                <form method="get" action="{{ path('app_medecin_messages') }}">
+                    <input
+                            type="text"
+                            class="search-input"
+                            name="q"
+                            placeholder="Rechercher un collègue..."
+                            value="{{ searchTerm ?? '' }}"> <!-- Gère les cas null -->
+                </form>
+            </div>
 
-        <div class="chat-window">
-            {% if receiver %}
-                <div class="chat-header">
-                    <h2>{{ receiver.user.prenom }} {{ receiver.user.nom }}</h2>
-                </div>
-
-                <div id="message-container" class="messages">
-                    {% for msg in messages %}
-                        <div class="message {{ msg.sender.id == app.user.id ? 'sent' : 'received' }}">
-                            <div class="message-content">{{ msg.content|escape }}</div>
-                            <div class="message-time">{{ msg.sentAt|date('H:i') }}</div>
+         <div class="user-list">
+    {% if users is defined and users|length > 0 %}
+        {% for user in users %}
+            <a href="{{ path('app_medecin_chat', {'id': user.id}) }}" class="text-decoration-none">
+                <div class="user-item {{ selectedUser is defined and selectedUser and selectedUser.id == user.id ? 'active' : '' }}">
+                    <div class="user-avatar">
+                        <img src="{{ asset('uploads/avatars/' ~ (user.avatar ?? 'default-avatar.png')) }}" alt="Avatar">
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ user.nom  }} {{ user.prenom }}</div> <!-- Affiche nom complet -->
+                        <div class="user-status">
+                            {% if user.isOnline %}
+                                <span class="online-dot"></span> En ligne
+                            {% else %}
+                                <span class="offline-dot"></span> Hors ligne
+                            {% endif %}
                         </div>
-                    {% endfor %}
+                    </div>
+                </div>
+            </a>
+        {% endfor %}
+    {% else %}
+        <div class="p-3 text-center text-muted">
+            Aucun médecin trouvé
+        </div>
+    {% endif %}
+</div>
+        <!-- Right Chat Area -->
+        <div class="chat-area">
+            {% if selectedUser is defined and selectedUser %}
+                <div class="chat-header">
+                    <div class="user-avatar">
+                        {% if selectedUser.avatar is defined %}
+                            <img src="{{ asset('uploads/avatars/' ~ (selectedUser.avatar ?? 'default-avatar.png')) }}" alt="Avatar">
+                        {% else %}
+                            <img src="{{ asset('uploads/avatars/default-avatar.png') }}" alt="Avatar">
+                        {% endif %}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ selectedUser.fullName ?? 'Utilisateur' }}</div>
+                        <div class="user-status">
+                            {% if selectedUser.isOnline is defined and selectedUser.isOnline %}
+                                <span class="online-dot"></span> En ligne
+                            {% else %}
+                                <span class="offline-dot"></span> Hors ligne
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="message-input">
-                    <textarea
-                            id="message-input"
-                            placeholder="Écrire un message..."
-                            rows="1"
-                            maxlength="500"
-                    ></textarea>
-                    <button id="send-button" data-receiver="{{ receiver.id }}">
-                        <span class="send-icon">➤</span>
-                    </button>
+                <div class="messages-container">
+                    {% if messages is defined and messages|length > 0 %}
+                        {% for message in messages %}
+                            <div class="message {{ message.sender.id == app.user.id ? 'sent' : 'received' }}">
+                                <div class="message-content">
+                                    {{ message.content }}
+                                    <div class="message-time">
+                                        {{ message.sentAt|date('d/m/Y H:i') }}
+                                        {% if message.sender.id == app.user.id %}
+                                            <span class="seen-status">
+                                            {{ message.isRead ? '✓✓' : '✓' }}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted p-5">
+                            Aucun message. Démarrez la conversation !
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="message-input-area">
+                    {% if selectedUser.id is defined %}
+                        <form method="post" action="{{ path('app_medecin_send_message', {'id': selectedUser.id}) }}" class="message-form">
+                            <input type="text"
+                                   class="message-input"
+                                   name="message"
+                                   placeholder="Écrire un message..."
+                                   required>
+                            <button type="submit" class="send-button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            Impossible d'envoyer un message à cet utilisateur
+                        </div>
+                    {% endif %}
                 </div>
             {% else %}
-                <div class="empty-chat">
-                    <p>Sélectionnez un utilisateur pour commencer la conversation</p>
+                <div class="start-conversation">
+                    <div class="text-center">
+                        <i class="fas fa-comments fa-4x mb-4"></i>
+                        <h3>Sélectionnez une conversation</h3>
+                        <p>Commencez à échanger avec vos collègues</p>
+                    </div>
                 </div>
             {% endif %}
         </div>
     </div>
 {% endblock %}
-
 {% block javascripts %}
     {{ parent() }}
     <script>
-        <script src="{{ build('messaging.js') }}"></script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
 
+            // Recherche dynamique lors de la saisie
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value;
+
+                fetch(`{{ path('app_medecin_messages') }}?q=${encodeURIComponent(searchTerm)}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newUserList = doc.querySelector('.user-list').innerHTML;
+                        document.querySelector('.user-list').innerHTML = newUserList;
+                    });
+            });
+        });
     </script>
 {% endblock %}

@@ -24,6 +24,7 @@ class Task
 
 
 
+
     #[ORM\ManyToOne(targetEntity: Medecin::class)]
     #[ORM\JoinColumn(name: "assigned_to", referencedColumnName: "medecin_id")]
     private Medecin $assignedTo;

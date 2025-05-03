@@ -40,4 +40,15 @@ class UserRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+
+    /**
+     * Trouve tous les médecins de l'application
+     *
+     * @return User[]
+     */
+
+
+
 }

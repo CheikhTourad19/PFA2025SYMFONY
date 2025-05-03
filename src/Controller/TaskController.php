@@ -71,32 +71,7 @@ class TaskController extends AbstractController
     }
 
 
-    #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
-    {
-        $this->checkMedecinAccess();
 
-        if ($task->getCreatedBy() !== $this->getUser()->getMedecin()) {
-            throw new AccessDeniedException('Accès non autorisé à cette tâche');
-        }
-
-        $form = $this->createForm(TaskType::class, $task, [
-            'medecins' => $this->getDoctrine()->getRepository(Medecin::class)->findAll()
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-            $this->addFlash('success', 'Tâche mise à jour');
-            return $this->redirectToRoute('app_task_index');
-        }
-
-        return $this->render('medecin/follow-task.html.twig', [
-            'task' => $task,
-            'form' => $form->createView(),
-        ]);
-    }
     #[Route('/mes-tâches', name: 'app_my_tasks')]
     public function myTasks(TaskRepository $taskRepository): Response
     {
@@ -110,7 +85,7 @@ class TaskController extends AbstractController
 
         $tasks = $taskRepository->findByAssignedMedecin($medecin);
 
-        return $this->render('task/my-tasks.html.twig', [
+        return $this->render('medecin/my-tasks.html.twig', [
             'tasks' => $tasks
         ]);
     }
@@ -121,7 +96,7 @@ class TaskController extends AbstractController
         $this->checkMedecinAccess();
         $tasks = $taskRepository->findFollowedTasks($this->getUser()->getMedecin());
 
-        return $this->render('task/followed-tasks.html.twig', [
+        return $this->render('medecin/follow-task.html.twig', [
             'tasks' => $tasks
         ]);
     }

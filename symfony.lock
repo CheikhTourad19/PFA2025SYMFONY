@@ -144,6 +144,27 @@
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
     },
+    "symfony/mercure-bundle": {
+        "version": "0.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "0.3",
+            "ref": "528285147494380298f8f991ee8c47abebaf79db"
+        },
+        "files": [
+            "config/packages/mercure.yaml"
+        ]
+    },
+    "symfony/mercure-notifier": {
+        "version": "7.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "5.3",
+            "ref": "98a27687305d236709390ff01d7a6a9818735b97"
+        }
+    },
     "symfony/messenger": {
         "version": "7.2",
         "recipe": {

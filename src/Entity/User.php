@@ -1,6 +1,8 @@
 <?php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -60,7 +62,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: Patient::class, cascade: ['persist', 'remove'])]
     private ?Patient $patient = null;
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: Message::class)]
+    private Collection $sentMessages;
 
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Message::class)]
+    private Collection $receivedMessages;
+    public function __construct()
+    {
+        $this->sentMessages = new ArrayCollection();
+        $this->receivedMessages = new ArrayCollection();
+    }
     public function getRoles(): array
     {
         return ['ROLE_' . strtoupper($this->role->value)];
@@ -145,12 +156,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = $role;
         return $this;
     }
+    public function getSentMessages(): Collection { return $this->sentMessages; }
+    public function getReceivedMessages(): Collection { return $this->receivedMessages; }
 
     public function getMedecin(): ?Medecin
     {
         return $this->medecin;
     }
-
     public function setMedecin(?Medecin $medecin): static
     {
         // unset the owning side of the relation if necessary
@@ -237,4 +249,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return trim($this->prenom . ' ' . $this->nom);
     }
+
+    public function addReceivedMessage(Message $message): static
+    {
+        if (!$this->receivedMessages->contains($message)) {
+            $this->receivedMessages->add($message);
+            $message->setReceiver($this);
+        }
+        return $this;
+    }
+
+    public function removeReceivedMessage(Message $message): static
+    {
+        if ($this->receivedMessages->removeElement($message)) {
+            if ($message->getReceiver() === $this) {
+                $message->setReceiver(null);
+            }
+        }
+        return $this;
+    }
+
+
+
+
 }

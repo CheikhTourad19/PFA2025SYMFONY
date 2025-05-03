@@ -3,6 +3,7 @@ namespace App\Form;
 
 use App\Entity\Task;
 use App\Entity\Medecin;
+use App\Repository\MedecinRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -13,6 +14,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class TaskType extends AbstractType
 {
+    private MedecinRepository $medecinRepository;
+
+    // Injection du repository via le constructeur
+    public function __construct(MedecinRepository $medecinRepository)
+    {
+        $this->medecinRepository = $medecinRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -30,9 +39,9 @@ class TaskType extends AbstractType
             ])
             ->add('assignedTo', EntityType::class, [
                 'class' => Medecin::class,
-                'label' => 'Assigner à',
-                'choice_label' => 'user.fullName',
-                'attr' => ['class' => 'form-select']
+                // Utilisation du repository injecté
+                'query_builder' => fn() => $this->medecinRepository->createQueryBuilder('m'),
+                'choice_label' => 'user.fullName'
             ])
             ->add('deadline', DateType::class, [
                 'label' => 'Échéance',

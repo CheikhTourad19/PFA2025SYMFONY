@@ -1,0 +1,97 @@
+{# templates/medecin/my_created_tasks.html.twig #}
+{# templates/medecin/follow-task.html.twig #}
+
+{% extends 'medecin/task.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .task-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .task-card.completed {
+            background: #f0fff4;
+            border: 1px solid #38a169;
+        }
+
+        .task-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: #2d3748;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-description {
+            color: #718096;
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+
+        .meta-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: auto;
+        }
+
+        .dates {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .status.pending { background: #fefcbf; color: #744210; }
+        .status.completed { background: #c6f6d5; color: #22543d; }
+    </style>
+{% endblock %}
+
+{% block task_content %}
+    <div class="task-grid">
+        {% for task in tasks %}
+            <div class="task-card {{ task.status.value == 'completed' ? 'completed' : '' }}">
+                <h3 class="task-title">{{ task.title }}</h3>
+
+                <p class="task-description">
+                    {{ task.description|default('Aucune description disponible') }}
+                </p>
+
+                <div class="meta-bottom">
+                    <div class="dates">
+                        <div>📅 Créée: {{ task.createdAt|date('d/m/Y') }}</div>
+                        {% if task.deadline %}
+                            <div>⏳ Échéance: {{ task.deadline|date('d/m/Y') }}</div>
+                        {% endif %}
+                    </div>
+
+                    <span class="status {{ task.status.value }}">
+                        {{ task.status.value|capitalize }}
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-8 text-gray-500">
+                Aucune tâche à afficher
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
