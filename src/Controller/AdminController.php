@@ -276,9 +276,8 @@ final class AdminController extends AbstractController
         }
     }
     #[Route('/users/{type}/edit/{id}', name: '_user_edit')]
-    public function editUser(string $type, int $id, Request $request, EntityManagerInterface $em): Response
+    public function editUser(string $type, int $id, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Retrieve the appropriate entity based on the user type
         $entityMap = [
             'medecin' => Medecin::class,
             'pharmacie' => Pharmacie::class,
@@ -290,7 +289,7 @@ final class AdminController extends AbstractController
         }
         $entityClass = $entityMap[$type];
 
-        $entity = $em->getRepository($entityClass)->find($id);
+        $entity = $entityManager->getRepository($entityClass)->find($id);
         if (!$entity) {
             throw $this->createNotFoundException('Entité introuvable pour le type et ID spécifiés.');
         }
@@ -306,41 +305,39 @@ final class AdminController extends AbstractController
         $formClass = $formMap[$type];
         $form = $this->createForm($formClass, $entity);
         $form->handleRequest($request);
-            if( $form->isSubmitted() && $form->isValid()){
-                try {
-                    switch ($type) {
-                        case 'medecin':
-                            $entity->setService($form->get('service')->getData());
-                            break;
-                        case 'pharmacie':
-                            $adresse = $entity->getAdresse();
-                            if (!$adresse) {
-                                throw new \InvalidArgumentException('Adresse introuvable pour la pharmacie.');
-                            }
-                            $adresse->setRue($form->get('adresse')->get('rue')->getData());
-                            $adresse->setVille($form->get('adresse')->get('ville')->getData());
-                            $adresse->setQuartier($form->get('adresse')->get('quartier')->getData());
-                            $entity->setAdresse($adresse);
-                            $entity->setCin($form->get('cin')->getData());
-                            break;
-                        case 'infermier':
-                            $entity->setService($form->get('service')->getData());
-                            break;
-                        case 'patient':
-                            $entity->setCin($form->get('cin')->getData());
-                            break;
-                    }
-                    $em->persist($entity);
-                    $em->flush();
-
-                    $this->addFlash('success', ucfirst($type) . ' mis à jour avec succès.');
-                    return $this->redirectToRoute('app_admin_users');
-                } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erreur lors de la mise à jour de l\'utilisateur : ' . $e->getMessage());
+        if( $form->isSubmitted() && $form->isValid()){
+            try {
+                switch ($type) {
+                    case 'medecin':
+                        $entity->setService($form->get('service')->getData());
+                        break;
+                    case 'pharmacie':
+                        $adresse = $entity->getAdresse();
+                        if (!$adresse) {
+                            throw new \InvalidArgumentException('Adresse introuvable pour la pharmacie.');
+                        }
+                        $adresse->setRue($form->get('adresse')->get('rue')->getData());
+                        $adresse->setVille($form->get('adresse')->get('ville')->getData());
+                        $adresse->setQuartier($form->get('adresse')->get('quartier')->getData());
+                        $entity->setAdresse($adresse);
+                        $entity->setCin($form->get('cin')->getData());
+                        break;
+                    case 'infermier':
+                        $entity->setService($form->get('service')->getData());
+                        break;
+                    case 'patient':
+                        $entity->setCin($form->get('cin')->getData());
+                        break;
                 }
+                $entityManager->persist($entity);
+                $entityManager->flush();
+
+                $this->addFlash('success', ucfirst($type) . ' mis à jour avec succès.');
+                return $this->redirectToRoute('app_admin_users');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Erreur lors de la mise à jour de l\'utilisateur : ' . $e->getMessage());
             }
-
-
+        }
         return $this->render('admin/add_user.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
