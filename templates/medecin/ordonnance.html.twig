@@ -1,0 +1,151 @@
+{% extends 'medecin/task.html.twig' %}
+
+{% block title %}Nouvelle Ordonnance{% endblock %}
+
+{% block body %}
+ <div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-5xl mx-auto px-4">
+   <!-- Header -->
+   <div class="mb-8">
+    <h1 class="text-3xl font-bold text-indigo-700">Nouvelle Ordonnance</h1>
+    <p class="text-gray-600 mt-2">Créez une nouvelle prescription pour votre patient</p>
+   </div>
+
+   <form id="ordonnance-form" method="POST" action="{{ path('app_medecin_sauvegarder_ordonnance') }}">
+
+    <!-- Main Form Card -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+     <!-- Form Header with Patient Info -->
+     <div class="bg-indigo-50 p-6 border-b border-indigo-100">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Informations Patient</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <div>
+        <label for="patient" class="block text-sm font-medium text-gray-700 mb-1">Patient</label>
+        <select id="patient" name="patient" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+         <option value="">Sélectionner un patient</option>
+         {% for patient in patients %}
+          <option value="{{ patient.id }}">{{ patient.nom }} {{ patient.prenom }}</option>
+         {% endfor %}
+        </select>
+       </div>
+       <div>
+        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+        <input type="date" id="date" name="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="{{ "now"|date("Y-m-d") }}" required>
+       </div>
+      </div>
+     </div>
+
+     <!-- Medications Section -->
+     <div class="p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">Médicaments</h2>
+
+      <!-- Medication Items Container -->
+      <div id="medications-container">
+       <!-- Single Medication Item Template -->
+       <div class="medication-item bg-gray-50 rounded-lg p-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+         <!-- Medication Selection (6 cols) -->
+         <div class="md:col-span-6">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Médicament</label>
+          <select name="medicaments[]" class="medicament-select w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+           <option value="">Sélectionner un médicament</option>
+           {% for medicament in medicaments %}
+            <option value="{{ medicament.id }}">{{ medicament.nom }} </option>
+           {% endfor %}
+          </select>
+         </div>
+
+         <!-- Quantity (2 cols) -->
+         <div class="md:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
+          <input type="number" name="quantites[]" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" min="1" value="1" required>
+         </div>
+
+         <!-- Delete Button (2 cols) -->
+         <div class="md:col-span-2 flex items-end">
+          <button type="button" class="delete-medication w-full bg-red-50 text-red-600 hover:bg-red-100 rounded-md px-3 py-2 text-sm font-medium transition duration-150 flex items-center justify-center">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+           </svg>
+           Retirer
+          </button>
+         </div>
+
+         <!-- Instructions (full width) -->
+         <div class="md:col-span-12 mt-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
+          <textarea name="instructions[]" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" rows="2" placeholder="Ex: 1 comprimé matin, midi et soir pendant 7 jours" required></textarea>
+         </div>
+        </div>
+       </div>
+      </div>
+
+      <!-- Add Medication Button -->
+      <button type="button" id="add-medication" class="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+       </svg>
+       Ajouter un médicament
+      </button>
+     </div>
+
+     <!-- Additional Notes -->
+     <div class="p-6 bg-gray-50 border-t border-gray-200">
+      <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Remarques supplémentaires</label>
+      <textarea id="notes" name="notes" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Remarques ou instructions supplémentaires..."></textarea>
+     </div>
+
+     <!-- Submit Button Section -->
+     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+      <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+       </svg>
+       Valider l'ordonnance
+      </button>
+     </div>
+    </div>
+   </form>
+  </div>
+ </div>
+{% endblock %}
+
+{% block javascripts %}
+ {{ parent() }}
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+   const medicationsContainer = document.getElementById('medications-container');
+   const addMedicationButton = document.getElementById('add-medication');
+
+   // Add another medication field
+   addMedicationButton.addEventListener('click', function() {
+    const medicationItem = document.querySelector('.medication-item').cloneNode(true);
+
+    // Reset the values
+    medicationItem.querySelector('select').selectedIndex = 0;
+    medicationItem.querySelector('input[type="number"]').value = 1;
+    medicationItem.querySelector('textarea').value = '';
+
+    // Add delete event listener
+    const deleteButton = medicationItem.querySelector('.delete-medication');
+    deleteButton.addEventListener('click', function() {
+     if (document.querySelectorAll('.medication-item').length > 1) {
+      medicationItem.remove();
+     }
+    });
+
+    medicationsContainer.appendChild(medicationItem);
+   });
+
+   // Add delete event listener to the first medication item
+   const firstDeleteButton = document.querySelector('.delete-medication');
+   if (firstDeleteButton) {
+    firstDeleteButton.addEventListener('click', function() {
+     if (document.querySelectorAll('.medication-item').length > 1) {
+      this.closest('.medication-item').remove();
+     }
+    });
+   }
+  });
+ </script>
+{% endblock %}

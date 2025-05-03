@@ -8,6 +8,7 @@
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     {% block stylesheets %}
+
     <style>
         :root {
             --primary: #3B82F6;
@@ -125,6 +126,13 @@
             border-radius: 12px;
         }
     </style>
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
     {% endblock %}
 </head>
 
@@ -143,7 +151,8 @@
                 'app_medecin_dossier_medical': 'bx-folder',
                 'app_medecin_messages': 'bx-chat',
                 'app_medecin_calendrier': 'bx-calendar',
-                'app_medecin_profil': 'bx-user'
+                'app_medecin_profil': 'bx-user',
+                'app_medecin_ordonnace':'bx-ordonnance'
             } %}
 
             {% for route, icon in menu_items %}

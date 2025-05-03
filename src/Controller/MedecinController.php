@@ -3,7 +3,15 @@
 namespace App\Controller;
 
 
+use App\Entity\Ordonnance;
+use App\Entity\OrdonnanceMedicament;
+use App\Repository\MedecinRepository;
+use App\Repository\MedicamentRepository;
+use App\Repository\OrdonnanceMedicamentRepository;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,6 +24,41 @@ final class MedecinController extends AbstractController
         // Redirection vers la page des tâches
         return $this->redirectToRoute('app_medecin_taches');
     }
+    #[Route('/ordonnance', name: 'app_medecin_ordonnace', methods: ['GET'])]
+    public function ordonnanceMedecin(MedicamentRepository $medicamentRepository,UserRepository $userRepository): Response
+    {
+        $medicaments=$medicamentRepository->findAll();
+        $patients=$userRepository->findBy(['role'=>'patient']);
+        return $this->render('medecin/ordonnance.html.twig',['medicaments'=>$medicaments,'patients'=>$patients]);
+    }
+    #[Route('/ordonnance', name: 'app_medecin_sauvegarder_ordonnance', methods: ['POST'])]
+    public function save(EntityManagerInterface $entityManager,UserRepository $userRepository,MedicamentRepository $medicamentRepository,Request $request): Response
+    {
+        $medecin=$this->getUser()->getMedecin();
+        $patient=$userRepository->find($request->request->get('patient'));
+        $date=$request->request->get('date');
+        $medicaments = $request->request->all('medicaments');
+        $quantites = $request->request->all('quantites');
+        $instructions = $request->request->all('instructions');
+        $ordonnance=new Ordonnance();
+        $ordonnance->setPatient($patient);
+        $ordonnance->setMedecin($medecin);
+        $ordonnance->setDateCreation(new \DateTime($date));
+        for($i=0;$i<count($medicaments);$i++){
+            $med=$medicamentRepository->find($medicaments[$i]);
+            $ordmed=new OrdonnanceMedicament();
+            $ordmed->setMedicament($med);
+            $ordmed->setOrdonnance($ordonnance);
+            $ordmed->setQuantite($quantites[$i]);
+            $ordmed->setInstructions($instructions[$i]);
+            $entityManager->persist($ordmed);
+        }
+        $entityManager->persist($ordonnance);
+        $entityManager->flush();
+        $this->addFlash('success','Ordonnance cree avec succes');
+        return $this->redirectToRoute('app_medecin_ordonnance');
+    }
+
 
     #[Route('/taches', name: 'app_medecin_taches')]
     public function taches(): Response
