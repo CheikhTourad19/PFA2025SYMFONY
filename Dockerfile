@@ -12,8 +12,23 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install intl pdo pdo_mysql zip gd
+    && docker-php-ext-install \
+        intl \
+        pdo \
+        pdo_mysql \
+        zip \
+        gd \
+        mbstring \
+        exif \
+        opcache \
+        xml
+
+# Configure opcache
+COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -21,15 +36,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set the working directory
 WORKDIR /var/www/html
 
-# Copy project files
+
+
+# Copy composer files first for better layer caching
+COPY composer.json composer.lock ./
+
+# Install dependencies (only)
+RUN composer install --no-scripts --no-autoloader --no-interaction
+
+# Copy the rest of the application code
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Set permissions for Symfony
-RUN chmod -R 775 var vendor && \
-    chown -R www-data:www-data var vendor
+
+# Generate optimized autoloader
+RUN composer dump-autoload --optimize
+
+
 
 # Expose port for php-fpm
 EXPOSE 9002

@@ -1,25 +1,41 @@
+
+
 services:
   php:
     build:
       context: .
+      dockerfile: Dockerfile
     volumes:
       - .:/var/www/html:cached
       - vendor:/var/www/html/vendor
       - node_modules:/var/www/html/node_modules
     ports:
       - "9002:9002"
+    environment:
+      - APP_ENV=dev
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
     depends_on:
       - node
 
   worker:
     build:
       context: .
-    command: php bin/console messenger:consume async --no-interaction
+      dockerfile: Dockerfile
+    command: php bin/console messenger:consume async --time-limit=3600 --limit=1000 --memory-limit=128M --no-interaction
     volumes:
       - .:/var/www/html:cached
       - vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=dev
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
     depends_on:
       - php
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   nginx:
     image: nginx:alpine
@@ -32,6 +48,11 @@ services:
       - node_modules:/var/www/html/node_modules
     depends_on:
       - php
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
   node:
     image: node:18
