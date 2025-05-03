@@ -3,105 +3,126 @@
 {% block title %}Nouvelle Ordonnance{% endblock %}
 
 {% block body %}
- <div class="min-h-screen bg-gray-50 py-8">
-  <div class="max-w-5xl mx-auto px-4">
-   <!-- Header -->
-   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-indigo-700">Nouvelle Ordonnance</h1>
-    <p class="text-gray-600 mt-2">Créez une nouvelle prescription pour votre patient</p>
+ <div class="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-8">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+   <!-- Header with animated gradient -->
+   <div class="mb-8 text-center">
+    <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500 mb-2">Nouvelle Ordonnance</h1>
+    <p class="text-lg text-gray-600">Créez une prescription médicale en quelques clics</p>
+    <div class="mt-4 h-1 w-24 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-full mx-auto"></div>
    </div>
 
-   <form id="ordonnance-form" method="POST" action="{{ path('app_medecin_sauvegarder_ordonnance') }}">
-
-    <!-- Main Form Card -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+   <form id="ordonnance-form" method="POST" action="{{ path('app_medecin_sauvegarder_ordonnance') }}" class="space-y-6">
+    <!-- Main Form Card with glass morphism effect -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-white/20">
      <!-- Form Header with Patient Info -->
-     <div class="bg-indigo-50 p-6 border-b border-indigo-100">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">Informations Patient</h2>
+     <div class="bg-gradient-to-r from-indigo-500 to-blue-600 p-6">
+      <h2 class="text-xl font-semibold text-white mb-4">Informations Patient</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
        <div>
-        <label for="patient" class="block text-sm font-medium text-gray-700 mb-1">Patient</label>
-        <select id="patient" name="patient" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-         <option value="">Sélectionner un patient</option>
-         {% for patient in patients %}
-          <option value="{{ patient.id }}">{{ patient.nom }} {{ patient.prenom }}</option>
-         {% endfor %}
-        </select>
+        <label for="patient" class="block text-sm font-medium text-indigo-100 mb-2">Patient</label>
+        <div class="relative">
+         <select id="patient" name="patient" class="appearance-none w-full pl-4 pr-10 py-3 rounded-lg border border-indigo-300 bg-white/90 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" required>
+          <option value="">Sélectionner un patient</option>
+          {% for patient in patients %}
+           <option value="{{ patient.id }}">{{ patient.nom }} {{ patient.prenom }}</option>
+          {% endfor %}
+         </select>
+         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <svg class="h-5 w-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+           <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+         </div>
+        </div>
        </div>
        <div>
-        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-        <input type="date" id="date" name="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="{{ "now"|date("Y-m-d") }}" required>
+        <label for="date" class="block text-sm font-medium text-indigo-100 mb-2">Date</label>
+        <div class="relative">
+         <input type="date" id="date" name="date" class="w-full pl-4 pr-10 py-3 rounded-lg border border-indigo-300 bg-white/90 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" value="{{ "now"|date("Y-m-d") }}" required>
+         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+          <svg class="h-5 w-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+           <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+          </svg>
+         </div>
+        </div>
        </div>
       </div>
      </div>
 
      <!-- Medications Section -->
      <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">Médicaments</h2>
+      <div class="flex justify-between items-center mb-6">
+       <h2 class="text-xl font-semibold text-gray-800">Médicaments</h2>
+       <button type="button" id="add-medication" class="group flex items-center space-x-1 px-4 py-2 bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 rounded-full shadow-md transition-all duration-200 transform hover:scale-105">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white group-hover:rotate-90 transition-transform duration-300" viewBox="0 0 20 20" fill="currentColor">
+         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        <span class="text-white text-sm font-medium">Ajouter un médicament</span>
+       </button>
+      </div>
 
       <!-- Medication Items Container -->
-      <div id="medications-container">
+      <div id="medications-container" class="space-y-4">
        <!-- Single Medication Item Template -->
-       <div class="medication-item bg-gray-50 rounded-lg p-4 mb-4">
+       <div class="medication-item bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-sm p-5 border border-gray-100 hover:border-indigo-100 transition-all duration-200">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
          <!-- Medication Selection (6 cols) -->
          <div class="md:col-span-6">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Médicament</label>
-          <select name="medicaments[]" class="medicament-select w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-           <option value="">Sélectionner un médicament</option>
-           {% for medicament in medicaments %}
-            <option value="{{ medicament.id }}">{{ medicament.nom }} </option>
-           {% endfor %}
-          </select>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Médicament</label>
+          <div class="relative">
+           <select name="medicaments[]" class="medicament-select appearance-none w-full pl-4 pr-10 py-2.5 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" required>
+            <option value="">Sélectionner un médicament</option>
+            {% for medicament in medicaments %}
+             <option value="{{ medicament.id }}">{{ medicament.nom }}</option>
+            {% endfor %}
+           </select>
+           <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+           </div>
+          </div>
          </div>
 
          <!-- Quantity (2 cols) -->
          <div class="md:col-span-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Quantité</label>
-          <input type="number" name="quantites[]" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" min="1" value="1" required>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Quantité</label>
+          <input type="number" name="quantites[]" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" min="1" value="1" required>
          </div>
 
          <!-- Delete Button (2 cols) -->
          <div class="md:col-span-2 flex items-end">
-          <button type="button" class="delete-medication w-full bg-red-50 text-red-600 hover:bg-red-100 rounded-md px-3 py-2 text-sm font-medium transition duration-150 flex items-center justify-center">
-           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+          <button type="button" class="delete-medication w-full flex items-center justify-center space-x-1 px-3 py-2.5 bg-gradient-to-r from-red-50 to-rose-50 border border-red-100 text-red-600 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-rose-500 rounded-lg shadow-sm transition-all duration-200">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
            </svg>
-           Retirer
+           <span class="text-sm font-medium">Retirer</span>
           </button>
          </div>
 
          <!-- Instructions (full width) -->
          <div class="md:col-span-12 mt-2">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
-          <textarea name="instructions[]" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" rows="2" placeholder="Ex: 1 comprimé matin, midi et soir pendant 7 jours" required></textarea>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Instructions</label>
+          <textarea name="instructions[]" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" rows="2" placeholder="Ex: 1 comprimé matin, midi et soir pendant 7 jours" required></textarea>
          </div>
         </div>
        </div>
       </div>
-
-      <!-- Add Medication Button -->
-      <button type="button" id="add-medication" class="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-       </svg>
-       Ajouter un médicament
-      </button>
      </div>
 
      <!-- Additional Notes -->
-     <div class="p-6 bg-gray-50 border-t border-gray-200">
-      <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Remarques supplémentaires</label>
-      <textarea id="notes" name="notes" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="Remarques ou instructions supplémentaires..."></textarea>
+     <div class="p-6 bg-gray-50/50 border-t border-gray-200/50">
+      <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Remarques supplémentaires</label>
+      <textarea id="notes" name="notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 shadow-sm transition-all duration-200" placeholder="Remarques ou instructions supplémentaires..."></textarea>
      </div>
 
      <!-- Submit Button Section -->
-     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end">
-      <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+     <div class="px-6 py-5 bg-gray-50/50 border-t border-gray-200/50 flex justify-end">
+      <button type="submit" class="group flex items-center space-x-2 px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 rounded-xl shadow-lg transform hover:scale-[1.02] transition-all duration-300">
+       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white group-hover:animate-bounce" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
        </svg>
-       Valider l'ordonnance
+       <span class="text-white font-medium">Valider l'ordonnance</span>
       </button>
      </div>
     </div>
@@ -117,35 +138,77 @@
    const medicationsContainer = document.getElementById('medications-container');
    const addMedicationButton = document.getElementById('add-medication');
 
-   // Add another medication field
-   addMedicationButton.addEventListener('click', function() {
+   // Add smooth animation when adding a new medication
+   function addMedicationField() {
     const medicationItem = document.querySelector('.medication-item').cloneNode(true);
 
-    // Reset the values
+    // Reset values
     medicationItem.querySelector('select').selectedIndex = 0;
     medicationItem.querySelector('input[type="number"]').value = 1;
     medicationItem.querySelector('textarea').value = '';
 
-    // Add delete event listener
+    // Add delete functionality
     const deleteButton = medicationItem.querySelector('.delete-medication');
     deleteButton.addEventListener('click', function() {
      if (document.querySelectorAll('.medication-item').length > 1) {
-      medicationItem.remove();
+      medicationItem.style.transform = 'translateX(100px)';
+      medicationItem.style.opacity = '0';
+      setTimeout(() => medicationItem.remove(), 300);
      }
     });
 
+    // Add animation when appending
+    medicationItem.style.opacity = '0';
+    medicationItem.style.transform = 'translateY(20px)';
     medicationsContainer.appendChild(medicationItem);
-   });
 
-   // Add delete event listener to the first medication item
+    // Trigger animation
+    setTimeout(() => {
+     medicationItem.style.opacity = '1';
+     medicationItem.style.transform = 'translateY(0)';
+    }, 10);
+   }
+
+   // Add event listener for the add button
+   addMedicationButton.addEventListener('click', addMedicationField);
+
+   // Initialize delete button for the first item
    const firstDeleteButton = document.querySelector('.delete-medication');
    if (firstDeleteButton) {
     firstDeleteButton.addEventListener('click', function() {
      if (document.querySelectorAll('.medication-item').length > 1) {
-      this.closest('.medication-item').remove();
+      const item = this.closest('.medication-item');
+      item.style.transform = 'translateX(100px)';
+      item.style.opacity = '0';
+      setTimeout(() => item.remove(), 300);
      }
     });
    }
+
+   // Add hover effect to all medication items
+   document.addEventListener('mouseover', function(e) {
+    if (e.target.closest('.medication-item')) {
+     const item = e.target.closest('.medication-item');
+     if (!item.classList.contains('hover-effect')) {
+      item.classList.add('hover-effect');
+     }
+    }
+   }, true);
   });
  </script>
+ <style>
+  .medication-item {
+   transition: all 0.3s ease;
+  }
+  .medication-item.hover-effect {
+   box-shadow: 0 4px 20px -5px rgba(99, 102, 241, 0.2);
+   border-color: rgba(99, 102, 241, 0.3);
+  }
+  select, input, textarea {
+   transition: all 0.2s ease;
+  }
+  select:focus, input:focus, textarea:focus {
+   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+ </style>
 {% endblock %}
