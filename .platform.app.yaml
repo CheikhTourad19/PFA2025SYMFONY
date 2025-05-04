@@ -30,3 +30,6 @@ hooks:
     composer install --prefer-dist --no-dev --no-progress --no-interaction
     npm install
     npm run build
+dependencies:
+  php:
+    ext-sodium: "*"
