@@ -59,7 +59,7 @@ class Medecin
 
     public function getId(): ?int
 {
-    return $this->medecin_id;
+    return $this->user->getId();
 }
 
 }
