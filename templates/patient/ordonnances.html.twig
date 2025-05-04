@@ -289,13 +289,11 @@
                     </div>
                 </div>
 
-                <!-- Pagination (Optional) -->
                 <div class="px-6 py-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
                     <div class="text-sm text-gray-500 dark:text-gray-400">
                         Affichage de <span class="font-medium text-gray-900 dark:text-white">{{ ordonnances|length }}</span> prescriptions
                     </div>
 
-                    <!-- Simple pagination example -->
                     <div class="flex items-center space-x-1">
                         <button class="inline-flex items-center justify-center p-1.5 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -327,7 +325,7 @@
                         Vos prescriptions médicales apparaîtront ici après consultation avec un professionnel de santé.
                     </p>
                     <div class="mt-8">
-                        <a href="{{ path('app_patient_rdv') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
+                        <a href="{{ path('app_patient_prendrdv') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                             </svg>
@@ -341,37 +339,193 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get DOM elements
+            // Pagination configuration
+            const itemsPerPage = 5;
+            let currentPage = 1;
+
+            // Get all prescription rows
+            const prescriptionRows = document.querySelectorAll('.prescription-row');
+            const totalItems = prescriptionRows.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            // Search and filter elements
             const searchInput = document.getElementById('searchInput');
             const doctorFilter = document.getElementById('doctorFilter');
-            const prescriptionRows = document.querySelectorAll('.prescription-row');
+            const emptyState = document.getElementById('emptyState');
 
-            // Function to filter table rows
-            function filterTable() {
-                const searchText = searchInput.value.toLowerCase();
+            // Generate pagination controls dynamically
+            generatePaginationControls();
+
+            // Initialize the display
+            updateDisplay();
+
+            // Add event listeners
+            searchInput.addEventListener('input', function() {
+                currentPage = 1; // Reset to first page when searching
+                updateDisplay();
+                updatePaginationButtons();
+            });
+
+            doctorFilter.addEventListener('change', function() {
+                currentPage = 1; // Reset to first page when filtering
+                updateDisplay();
+                updatePaginationButtons();
+            });
+
+            // Function to update the display based on current page, search, and filters
+            function updateDisplay() {
+                const searchTerm = searchInput.value.toLowerCase();
                 const selectedDoctor = doctorFilter.value;
 
+                let visibleCount = 0;
+                let matchCount = 0;
+
+                // First pass: determine which items match the search/filter criteria
                 prescriptionRows.forEach(row => {
                     const medecin = row.getAttribute('data-medecin');
                     const service = row.getAttribute('data-service');
                     const date = row.getAttribute('data-date');
                     const email = row.getAttribute('data-email');
 
-                    // Combine all searchable text
-                    const rowText = `${medecin} ${service} ${date} ${email}`.toLowerCase();
+                    // Check if row matches search and filter criteria
+                    const matchesSearch =
+                        medecin.toLowerCase().includes(searchTerm) ||
+                        service.toLowerCase().includes(searchTerm) ||
+                        date.toLowerCase().includes(searchTerm) ||
+                        email.toLowerCase().includes(searchTerm);
 
-                    // Check if row matches both search and filter criteria
-                    const matchesSearch = searchText === '' || rowText.includes(searchText);
-                    const matchesDoctor = selectedDoctor === '' || medecin === selectedDoctor;
+                    const matchesFilter = selectedDoctor === '' || medecin === selectedDoctor;
 
-                    // Show/hide row based on match
-                    row.style.display = (matchesSearch && matchesDoctor) ? '' : 'none';
+                    const matches = matchesSearch && matchesFilter;
+
+                    if (matches) {
+                        matchCount++;
+                    }
+
+                    // Store the match status for the second pass
+                    row.dataset.matches = matches ? 'true' : 'false';
                 });
+
+                // Second pass: apply pagination to matching items
+                prescriptionRows.forEach((row, index) => {
+                    const matches = row.dataset.matches === 'true';
+
+                    if (matches) {
+                        visibleCount++;
+
+                        // Check if this item should be visible on the current page
+                        const itemNumber = visibleCount;
+                        const startIndex = (currentPage - 1) * itemsPerPage + 1;
+                        const endIndex = currentPage * itemsPerPage;
+
+                        if (itemNumber >= startIndex && itemNumber <= endIndex) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Update the items counter
+                document.querySelector('.text-sm.text-gray-500 span').textContent = matchCount;
+
+                // Show/hide empty state
+                if (matchCount === 0) {
+                    emptyState.classList.remove('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                }
             }
 
-            // Add event listeners
-            searchInput.addEventListener('input', filterTable);
-            doctorFilter.addEventListener('change', filterTable);
+            // Function to generate pagination controls
+            function generatePaginationControls() {
+                const paginationContainer = document.querySelector('.flex.items-center.space-x-1');
+
+                // Clear existing pagination controls
+                paginationContainer.innerHTML = '';
+
+                // Create previous button
+                const prevButton = document.createElement('button');
+                prevButton.id = 'prevPageBtn';
+                prevButton.className = 'inline-flex items-center justify-center p-1.5 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed';
+                prevButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+                prevButton.addEventListener('click', function() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updateDisplay();
+                        updatePaginationButtons();
+                    }
+                });
+                paginationContainer.appendChild(prevButton);
+
+                // Create page number buttons (for pages 1-5)
+                const maxVisiblePages = Math.min(5, totalPages);
+                for (let i = 1; i <= maxVisiblePages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.className = 'page-number inline-flex items-center justify-center min-w-[2rem] h-8 px-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500';
+                    pageButton.textContent = i;
+                    pageButton.dataset.page = i;
+                    pageButton.addEventListener('click', function() {
+                        currentPage = parseInt(this.dataset.page);
+                        updateDisplay();
+                        updatePaginationButtons();
+                    });
+                    paginationContainer.appendChild(pageButton);
+                }
+
+                // Create next button
+                const nextButton = document.createElement('button');
+                nextButton.id = 'nextPageBtn';
+                nextButton.className = 'inline-flex items-center justify-center p-1.5 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed';
+                nextButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+                nextButton.addEventListener('click', function() {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        updateDisplay();
+                        updatePaginationButtons();
+                    }
+                });
+                paginationContainer.appendChild(nextButton);
+
+                // Initialize the state of pagination buttons
+                updatePaginationButtons();
+            }
+
+            // Function to update pagination buttons state
+            function updatePaginationButtons() {
+                const prevButton = document.getElementById('prevPageBtn');
+                const nextButton = document.getElementById('nextPageBtn');
+                const pageButtons = document.querySelectorAll('.page-number');
+
+                // Update active state for page number buttons
+                pageButtons.forEach(button => {
+                    const buttonPage = parseInt(button.dataset.page);
+                    if (buttonPage === currentPage) {
+                        button.classList.add('bg-blue-500');
+                        button.classList.add('text-white');
+                        button.classList.add('font-medium');
+                    } else {
+                        button.classList.remove('bg-blue-500');
+                        button.classList.remove('text-white');
+                        button.classList.remove('font-medium');
+                    }
+                });
+
+                // Enable/disable prev/next buttons based on current page
+                if (currentPage === 1) {
+                    prevButton.setAttribute('disabled', 'disabled');
+                } else {
+                    prevButton.removeAttribute('disabled');
+                }
+
+                if (currentPage === totalPages || totalPages === 0) {
+                    nextButton.setAttribute('disabled', 'disabled');
+                } else {
+                    nextButton.removeAttribute('disabled');
+                }
+            }
         });
     </script>
 

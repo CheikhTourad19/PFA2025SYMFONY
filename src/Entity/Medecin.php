@@ -10,12 +10,8 @@ class Medecin
 {
 
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(
-        name: "medecin_id",
-        referencedColumnName: "id",
-        onDelete: "CASCADE"
-    )]
+    #[ORM\OneToOne(targetEntity: User::class,inversedBy: "patient")]
+    #[ORM\JoinColumn(name: 'medecin_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private User $user;
 
     #[ORM\Column(type: "string", length: 100)]
