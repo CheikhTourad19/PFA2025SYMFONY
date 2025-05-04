@@ -83,7 +83,15 @@ final class PatientController extends AbstractController
     public function calendrier(RdvRepository $rdvRepository,int $id): Response
     {
         // Récupérer les rendez-vous du patient connecté
-        $rdv = $rdvRepository->findBy(['medecin' => $id]);
+        $rdv = $rdvRepository->createQueryBuilder('r')
+            ->where('r.medecin = :medecin')
+            ->andWhere('r.statut = :confirme OR r.statut = :attente')
+            ->setParameter('medecin', $id)
+            ->setParameter('confirme', 'confirme')
+            ->setParameter('attente', 'attente')
+            ->getQuery()
+            ->getResult();
+
         return $this->render('patient/calendrier.html.twig', [
             'rdv' => $rdv
         ]);
