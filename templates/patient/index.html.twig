@@ -38,6 +38,7 @@
 
 {% endblock %}
 {% block content %}
+
     <div class="min-h-screen bg-gray-50">
         <!-- Hero Section -->
         <section class="relative bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700 text-white py-5 md:py-10 overflow-hidden rounded-2xl shadow-2xl">
@@ -238,26 +239,374 @@
     </div>
 
     <!-- Blob animation styles -->
-    <style>
-        @keyframes blob {
-            0% {
-                transform: translate(0px, 0px) scale(1);
+
+    {# Add this to your patient/index.html.twig file #}
+
+    {% if showTutorial %}
+        <div id="tutorialModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80 transition-opacity duration-300 opacity-0 pointer-events-none">
+            <div class="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-auto overflow-hidden transform transition-all duration-300 scale-95" style="max-height: 90vh;">
+                <!-- Close button - FIXED: Added bg-white and border to make it more visible -->
+                <button id="skipTutorial" class="absolute top-5 right-5 z-20 p-2 rounded-full bg-white border border-gray-300 hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span class="sr-only">Passer</span>
+                </button>
+
+                <!-- Modal header -->
+                <div class="relative p-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-white"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-bold">Bienvenue sur votre espace patient</h3>
+                        <p class="mt-2 text-blue-100">Découvrez les fonctionnalités principales de votre espace personnel</p>
+                    </div>
+                </div>
+
+                <!-- Tutorial content -->
+                <div class="p-6 overflow-y-auto" style="max-height: calc(90vh - 180px);">
+
+
+                    <!-- Carousel for tutorial slides -->
+                    <div id="tutorialCarousel" class="relative">
+                        <!-- Slides -->
+                        <div class="slides-container relative h-96">
+                            <!-- Slide 1: Ordonnances -->
+                            <div class="slide absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center">
+                                <div class="flex flex-col md:flex-row gap-8 w-full">
+                                    <div class="md:w-1/2 w-full">
+                                        <div class="relative rounded-xl overflow-hidden shadow-lg border-4 border-white transform rotate-1">
+                                            <img src="{{ asset('assets/ordonnance.png') }}" alt="Consulter mes ordonnances" class="w-full h-auto object-cover">
+                                            <div class="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="md:w-1/2 w-full flex flex-col justify-center">
+                                        <div class="flex items-center mb-4">
+                                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-2xl font-bold text-gray-800">Consulter mes ordonnances</h4>
+                                        </div>
+                                        <p class="text-gray-600 leading-relaxed">Accédez à toutes vos ordonnances médicales en un seul endroit. Vous pouvez les télécharger ou les partager facilement avec votre pharmacie.</p>
+                                        <div class="mt-6 flex items-center text-sm text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Astuce : Vous pouvez filtrer par date ou médecin
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 2: Rendez-vous -->
+                            <div class="slide absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center">
+                                <div class="flex flex-col md:flex-row gap-8 w-full">
+                                    <div class="md:w-1/2 w-full">
+                                        <div class="relative rounded-xl overflow-hidden shadow-lg border-4 border-white transform -rotate-1">
+                                            <img src="{{ asset('assets/prendre-rendez-vous.png') }}" alt="Prendre et consulter mes rendez-vous" class="w-full h-auto object-cover">
+                                            <div class="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="md:w-1/2 w-full flex flex-col justify-center">
+                                        <div class="flex items-center mb-4">
+                                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-2xl font-bold text-gray-800">Prendre un rendez-vous</h4>
+                                        </div>
+                                        <p class="text-gray-600 leading-relaxed">Prenez rendez-vous en ligne avec vos médecins et consultez votre agenda médical. Recevez des rappels automatiques pour ne jamais manquer une consultation.</p>
+                                        <div class="mt-6 flex items-center text-sm text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Notification SMS et email 24h avant chaque RDV
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Slide 3: Profil -->
+                            <div class="slide absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center">
+                                <div class="flex flex-col md:flex-row gap-8 w-full">
+                                    <div class="md:w-1/2 w-full">
+                                        <div class="relative rounded-xl overflow-hidden shadow-lg border-4 border-white transform rotate-2">
+                                            <img src="{{ asset('assets/profil.png') }}" alt="Modifier mon profil" class="w-full h-auto object-cover">
+                                            <div class="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="md:w-1/2 w-full flex flex-col justify-center">
+                                        <div class="flex items-center mb-4">
+                                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-2xl font-bold text-gray-800">Gérer mon profil</h4>
+                                        </div>
+                                        <p class="text-gray-600 leading-relaxed">Mettez à jour vos informations personnelles, vos coordonnées et vos préférences de notification pour personnaliser votre expérience.</p>
+                                        <div class="mt-6 flex items-center text-sm text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Mettez à jour votre photo pour une expérience plus personnelle
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 4: Pharmacies -->
+                            <div class="slide absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center">
+                                <div class="flex flex-col md:flex-row gap-8 w-full">
+                                    <div class="md:w-1/2 w-full">
+                                        <div class="relative rounded-xl overflow-hidden shadow-lg border-4 border-white transform -rotate-1">
+                                            <img src="{{ asset('assets/pharmacies.png') }}" alt="Chercher une pharmacie partenaire" class="w-full h-auto object-cover">
+                                            <div class="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="md:w-1/2 w-full flex flex-col justify-center">
+                                        <div class="flex items-center mb-4">
+                                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-2xl font-bold text-gray-800">Pharmacies partenaires</h4>
+                                        </div>
+                                        <p class="text-gray-600 leading-relaxed">Localisez les pharmacies partenaires près de chez vous. Envoyez directement vos ordonnances pour préparer votre commande à l'avance.</p>
+                                        <div class="mt-6 flex items-center text-sm text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            Filtrez par distance, horaires ou services spéciaux
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slide 5: Contact -->
+                            <div class="slide absolute inset-0 transition-opacity duration-500 opacity-0 flex items-center">
+                                <div class="flex flex-col md:flex-row gap-8 w-full">
+                                    <div class="md:w-1/2 w-full">
+                                        <div class="relative rounded-xl overflow-hidden shadow-lg border-4 border-white transform rotate-1">
+                                            <img src="{{ asset('assets/contact.png') }}" alt="Contacter les développeurs" class="w-full h-auto object-cover">
+                                            <div class="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition-opacity duration-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="md:w-1/2 w-full flex flex-col justify-center">
+                                        <div class="flex items-center mb-4">
+                                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                            </div>
+                                            <h4 class="text-2xl font-bold text-gray-800">Contact & Support</h4>
+                                        </div>
+                                        <p class="text-gray-600 leading-relaxed">Vous avez une question ou une suggestion ? Contactez directement notre équipe technique pour obtenir de l'aide ou partager vos idées.</p>
+                                        <div class="mt-6 flex items-center text-sm text-gray-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                            </svg>
+                                            Réponse garantie sous 24h ouvrées
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Add similar structure for other slides -->
+                        </div>
+
+                        <!-- Slide indicators -->
+                        <div class="flex justify-center mt-8 mb-4">
+                            {% for i in 1..5 %}
+                                <button class="slide-indicator mx-1.5 w-3 h-3 rounded-full bg-gray-300 transition-all duration-300 hover:bg-blue-400 focus:outline-none" data-slide="{{ loop.index0 }}"></button>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Navigation buttons -->
+                        <div class="flex justify-between mt-6">
+                            <button id="prevSlide" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:-translate-x-1 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Précédent
+                                </div>
+                            </button>
+                            <button id="nextSlide" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:translate-x-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <div class="flex items-center">
+                                    Suivant
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Added: Extra skip button at the bottom for better visibility -->
+                <div class="p-4 bg-gray-50 border-t border-gray-100 text-center">
+                    <button id="skipTutorialBottom" class="text-gray-600 hover:text-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                        Passer le tutoriel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const modal = document.getElementById('tutorialModal');
+                const skipButton = document.getElementById('skipTutorial');
+                const skipButtonBottom = document.getElementById('skipTutorialBottom');
+                const prevButton = document.getElementById('prevSlide');
+                const nextButton = document.getElementById('nextSlide');
+                const slides = document.querySelectorAll('.slide');
+                const indicators = document.querySelectorAll('.slide-indicator');
+                let currentSlide = 0;
+
+                // Show modal with animation
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.remove('pointer-events-none');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                }, 100);
+
+                // Initialize
+                function initTutorial() {
+                    showSlide(0);
+                    updateButtons();
+                }
+
+                // Show current slide
+                function showSlide(index) {
+                    slides.forEach((slide, i) => {
+                        slide.classList.toggle('opacity-0', i !== index);
+                        slide.classList.toggle('opacity-100', i === index);
+                    });
+
+                    // Update indicators
+                    indicators.forEach((indicator, i) => {
+                        indicator.classList.toggle('bg-gray-300', i !== index);
+                        indicator.classList.toggle('bg-blue-600', i === index);
+                        indicator.classList.toggle('w-3', i !== index);
+                        indicator.classList.toggle('w-8', i === index);
+                    });
+
+                    currentSlide = index;
+                    updateButtons();
+                }
+
+                // Update navigation buttons
+                function updateButtons() {
+                    prevButton.disabled = currentSlide === 0;
+
+                    if (currentSlide === slides.length - 1) {
+                        nextButton.innerHTML = `
+                    <div class="flex items-center">
+                        Terminer
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                `;
+                    } else {
+                        nextButton.innerHTML = `
+                    <div class="flex items-center">
+                        Suivant
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </div>
+                `;
+                    }
+                }
+
+                // Next slide
+                nextButton.addEventListener('click', function() {
+                    if (currentSlide < slides.length - 1) {
+                        showSlide(currentSlide + 1);
+                    } else {
+                        closeModal();
+                    }
+                });
+
+                // Previous slide
+                prevButton.addEventListener('click', function() {
+                    if (currentSlide > 0) {
+                        showSlide(currentSlide - 1);
+                    }
+                });
+
+                // Indicator clicks
+                indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => {
+                        showSlide(index);
+                    });
+                });
+
+                // Skip tutorial
+                skipButton.addEventListener('click', closeModal);
+                skipButtonBottom.addEventListener('click', closeModal); // Added event listener for bottom skip button
+
+                // Close modal with animation
+                function closeModal() {
+                    modal.classList.add('opacity-0');
+                    modal.classList.add('pointer-events-none');
+
+                    // Fix: Changed selector to look for div instead of non-existent .modal-content class
+                    const modalContent = modal.querySelector('div:first-child');
+                    if (modalContent) {
+                        modalContent.classList.add('scale-95');
+                    }
+
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 300);
+                }
+
+                // Keyboard navigation
+                document.addEventListener('keydown', function(e) {
+                    if (modal.style.display !== 'none') {
+                        if (e.key === 'ArrowRight') {
+                            nextButton.click();
+                        } else if (e.key === 'ArrowLeft') {
+                            prevButton.click();
+                        } else if (e.key === 'Escape') {
+                            closeModal();
+                        }
+                    }
+                });
+
+                // Initialize
+                initTutorial();
+            });
+        </script>
+
+        <style>
+            .slide {
+                transition: opacity 0.5s ease, transform 0.5s ease;
             }
-            33% {
-                transform: translate(30px, -50px) scale(1.1);
+
+            .slide-indicator {
+                transition: all 0.3s ease;
             }
-            66% {
-                transform: translate(-20px, 20px) scale(0.9);
+
+            /* Fixed selector to match the actual structure */
+            #tutorialModal > div {
+                transition: transform 0.3s ease, opacity 0.3s ease;
             }
-            100% {
-                transform: translate(0px, 0px) scale(1);
+
+            /* Added styles to make the skip button more visible */
+            #skipTutorial {
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             }
-        }
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-    </style>
+
+            #skipTutorial:hover {
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+        </style>
+    {% endif %}
 {% endblock content %}

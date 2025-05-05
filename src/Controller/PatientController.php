@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\FirstTime;
 use App\Entity\Medecin;
 use App\Entity\Patient;
 use App\Entity\Rdv;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Form\UserType;
+use App\Repository\FirstTimeRepository;
 use App\Repository\MedecinRepository;
 use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\OrdonnanceRepository;
@@ -185,10 +187,24 @@ final class PatientController extends AbstractController
 
 
     #[Route('/patient', name: 'app_home_patient')]
-    public function index(): Response
+    public function index(EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        $showTutorial = false;
+        $firstTime = $em->getRepository(FirstTime::class)->find($user->getId());
+        if ($firstTime === null) {
 
-        return $this->render('patient/index.html.twig', []);
+            $showTutorial = true;
+
+
+            $firstTime = new FirstTime();
+            $firstTime->setUser($user);
+            $firstTime->setIsFirstTime(false);
+
+            $em->persist($firstTime);
+            $em->flush();
+        }
+        return $this->render('patient/index.html.twig', ['showTutorial' => $showTutorial]);
     }
 
     #[Route('/patient/pahrmacie', name: 'app_patient_pharmacie')]

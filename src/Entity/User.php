@@ -67,6 +67,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Message::class)]
     private Collection $receivedMessages;
+
+    #[ORM\OneToOne(mappedBy: "user", targetEntity: FirstTime::class, cascade: ["persist"])]
+    private ?FirstTime $firstTime = null;
+
     public function __construct()
     {
         $this->sentMessages = new ArrayCollection();
@@ -154,6 +158,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRole(Role $role): static
     {
         $this->role = $role;
+        return $this;
+    }
+    public function getFirstTime(): ?FirstTime
+    {
+        return $this->firstTime;
+    }
+
+    public function setFirstTime(?FirstTime $firstTime): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($firstTime === null && $this->firstTime !== null) {
+            $this->firstTime->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($firstTime !== null && $firstTime->getUser() !== $this) {
+            $firstTime->setUser($this);
+        }
+
+        $this->firstTime = $firstTime;
         return $this;
     }
     public function getSentMessages(): Collection { return $this->sentMessages; }
