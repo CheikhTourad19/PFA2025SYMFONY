@@ -191,7 +191,7 @@ final class PatientController extends AbstractController
     {
         $user = $this->getUser();
         $showTutorial = false;
-        $firstTime = $em->getRepository(FirstTime::class)->find($user->getId());
+        $firstTime = $user->getFirstTime();
         if ($firstTime === null) {
 
             $showTutorial = true;
