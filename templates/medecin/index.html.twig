@@ -53,23 +53,25 @@
             }
          }"
          x-init="
-            const types = ['success', 'error', 'warning', 'info'];
-            let allMessages = [];
+            (() => {
+                const types = ['success', 'error', 'warning', 'info'];
+                let allMessages = [];
 
-            for (const type of types) {
-                if (window.flashMessages[type] && window.flashMessages[type].length > 0) {
-                    window.flashMessages[type].forEach(message => {
-                        allMessages.push({ type: type, message: message });
-                    });
+                for (const type of types) {
+                    if (window.flashMessages[type] && window.flashMessages[type].length > 0) {
+                        window.flashMessages[type].forEach(message => {
+                            allMessages.push({ type: type, message: message });
+                        });
+                    }
                 }
-            }
 
-            if (allMessages.length > 0) {
-                flashMessages = allMessages;
-                currentFlashMessage = allMessages[0].message;
-                currentFlashType = allMessages[0].type;
-                isFlashModalOpen = true;
-            }
+                if (allMessages.length > 0) {
+                    flashMessages = allMessages;
+                    currentFlashMessage = allMessages[0].message;
+                    currentFlashType = allMessages[0].type;
+                    isFlashModalOpen = true;
+                }
+            })()
          "
          x-on:keydown.esc.prevent="isModalOpen = false; isFlashModalOpen = false;">
         <!-- Navbar -->
@@ -111,8 +113,8 @@
                     <div class="flex items-center">
                         <button
                                 @click="isModalOpen = true; offcanvasOpen = false"
-                                class="mr-2 flex items-center px-4 py-2 text-red-100 hover:bg-red-600/20 rounded-lg transition-colors"
-                        >
+                                class="mr-2 rounded-lg flex items-center px-4 py-2 text-red-100 hover:bg-red-600/20 bg-red-600 transition-colors"
+                        type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-1 text-red-100">
                                 <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
                                 <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
