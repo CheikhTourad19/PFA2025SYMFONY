@@ -65,7 +65,7 @@
     </style>
 {% endblock %}
 
-{% block content %}
+{% block task_content %}
     <div class="task-grid">
         {% for task in tasks %}
             <div class="task-card {{ task.status.value == 'completed' ? 'completed' : '' }}">
