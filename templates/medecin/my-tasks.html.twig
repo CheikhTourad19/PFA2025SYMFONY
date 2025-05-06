@@ -1,176 +1,53 @@
 {% extends 'medecin/task.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .task-grid .row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
-        }
-
-        @media (max-width: 992px) {
-            .task-grid .row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .task-card {
-            min-height: 320px;
-            margin: 0;
-        }
-        /* Styles spécifiques aux cartes de tâches */
-        .task-grid {
-            padding: 2rem;
-            margin-top: 70px;
-        }
-        .task-card {
-            background: linear-gradient(145deg, #f0f9ff 0%, #348cb5 100%) !important;
-            border: none !important;
-            border-radius: 15px !important;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            min-height: 280px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .task-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(33, 150, 243, 0.2);
-        }
-
-        .card-header-section {
-            display: flex;
-            justify-content: space-between;
-            padding: 1.5rem 1.5rem 0;
-        }
-
-        .task-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #0d47a1;
-            margin: 0;
-        }
-
-        .task-creator {
-            text-align: right;
-            color: #546e7a;
-        }
-
-        .task-creator span {
-            display: block;
-            font-size: 0.95rem;
-            color: #37474f;
-            font-weight: 500;
-        }
-
-        .task-description {
-            padding: 1.5rem;
-            color: #607d8b;
-            flex-grow: 1;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .card-footer-section {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .task-deadline {
-            font-size: 0.9rem;
-            color: #78909c;
-        }
-
-        .task-action-btn {
-            background: #00c853 !important;
-            border: none;
-            border-radius: 8px;
-            padding: 0.6rem 1.5rem;
-            color: white !important;
-            transition: transform 0.3s ease;
-        }
-
-        .task-action-btn:hover {
-            transform: scale(1.05);
-            background: #009624 !important;
-        }
-
-        .task-completed-badge {
-            background: #00c853 !important;
-            padding: 0.7rem 1.2rem;
-            border-radius: 8px;
-            color: white !important;
-        }
-
-        @media (max-width: 768px) {
-            .task-grid {
-                padding: 1rem;
-            }
-
-            .task-card {
-                min-height: auto;
-            }
-
-            .card-header-section {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .task-creator {
-                text-align: left;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block task_content %}
-    <div class="task-grid">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ block('title') }}</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for task in tasks %}
-                <div class="col">
-                    <div class="task-card">
-                        <div class="card-header-section">
-                            <h5 class="task-title">{{ task.title }}</h5>
-                            <div class="task-creator">
-                                Créée par :<br>
-                                <span>{{ task.createdBy.user.prenom }} {{ task.createdBy.user.nom }}</span>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-lg font-semibold text-blue-800">{{ task.title }}</h3>
+                            <div class="text-right text-sm text-gray-600">
+                                <span class="block">Créée par:</span>
+                                <span class="font-medium">{{ task.createdBy.user.prenom }} {{ task.createdBy.user.nom }}</span>
                             </div>
                         </div>
 
-                        <p class="task-description">{{ task.description }}</p>
+                        <p class="text-gray-600 mb-6">{{ task.description|default('Aucune description disponible') }}</p>
 
-                        <div class="card-footer-section">
-                            <small class="task-deadline">
-                                <i class="fas fa-calendar-alt me-1"></i>
-                                {{ task.deadline|date('d/m/Y') }}
-                            </small>
+                        <div class="flex justify-between items-center border-t pt-4">
+                            <div class="text-sm text-gray-500">
+                                <div class="flex items-center">
+                                    <i class="far fa-calendar-alt mr-2"></i>
+                                    {{ task.deadline|date('d/m/Y') }}
+                                </div>
+                            </div>
 
                             {% if task.status.value == 'pending' %}
                                 <form action="{{ path('task_complete', {'id': task.id}) }}" method="POST">
                                     <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ task.id) }}">
-                                    <button type="submit" class="btn task-action-btn">
-                                        <i class="fas fa-check-circle me-2"></i>
+                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-all flex items-center">
+                                        <i class="fas fa-check-circle mr-2"></i>
                                         Terminer
                                     </button>
                                 </form>
                             {% else %}
-                                <span class="badge task-completed-badge">
-                                    <i class="fas fa-check me-2"></i>
-                                    Terminée
-                                </span>
+                                <span class="bg-green-100 text-green-800 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                                <i class="fas fa-check mr-2"></i>
+                                Terminée
+                            </span>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             {% else %}
-                <div class="col-12 text-center py-5">
-                    <div class="alert alert-info">
-                        Aucune tâche trouvée
+                <div class="col-span-full text-center py-12">
+                    <div class="bg-blue-50 text-blue-800 p-6 rounded-xl inline-block">
+                        <i class="fas fa-info-circle text-2xl mb-2"></i>
+                        <p class="font-medium">Aucune tâche trouvée</p>
                     </div>
                 </div>
             {% endfor %}

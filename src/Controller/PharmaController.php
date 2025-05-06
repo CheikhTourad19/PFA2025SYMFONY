@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Adresse;
+use App\Entity\FirstTime;
 use App\Entity\Medicament;
 use App\Entity\OrdonnanceMedicament;
 use App\Entity\Patient;
@@ -28,10 +29,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class PharmaController extends AbstractController
 {
     #[Route('/pharmacie',  name: 'app_home_pharmacie')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        $new=false;
+        if (!$user->getFirstTime()){
+            $firsTime=new FirstTime();
+            $firsTime->setUser($user);
+            $firsTime->setIsFirstTime(false);
+            $entityManager->persist($firsTime);
+            $entityManager->flush();
+            $new=true;
+        }
 
         return $this->render('pharmacie/index.html.twig', [
+            'new'=>$new,
         ]);
     }
     #[Route('/pharmacie/contact',  name: 'app_pharma_contact')]

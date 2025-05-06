@@ -1,112 +1,45 @@
-{# templates/medecin/task.html.twig #}
 {% extends 'medecin/index.html.twig' %}
 
 {% block title %}Gestion des Tâches{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        /* Override Bootstrap navbar styles */
-        .task-navbar {
-            background: #3B82F6 !important;
-            padding: 0.5rem 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .task-navbar .navbar-brand {
-            color: white !important;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-
-        .task-navbar .nav-link {
-            color: rgba(255,255,255,0.8) !important;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem !important;
-        }
-
-        .task-navbar .nav-link.active {
-            background: rgba(255,255,255,0.15) !important;
-            border-radius: 6px;
-        }
-
-        .task-navbar .nav-link:hover {
-            color: white !important;
-            transform: translateX(3px);
-        }
-
-        .task-navbar .navbar-toggler {
-            border-color: rgba(255,255,255,0.5) !important;
-        }
-
-        .task-navbar .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-        }
-        .task-navbar .navbar-nav {
-            width: 80%;
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center;
-        }
-
-        .task-navbar .nav-link {
-            font-size: 1.1rem;
-            padding: 1rem 1rem !important;
-            gap: 0.8rem;
-        }
-
-        .task-navbar .nav-link i {
-            font-size: 1.4rem;
-        }
-    </style>
-{% endblock %}
-
 {% block content %}
-    <!-- Top Navigation Bar -->
-    <nav class="navbar navbar-expand-lg task-navbar">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-tasks me-2"></i>Tâches
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#taskNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="taskNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a href="{{ path('app_task_new') }}"
-                           class="nav-link {{ app.request.get('_route') == 'app_task_new' ? 'active' : '' }}">
-                            <i class="fas fa-plus-circle"></i>
-                            Créer
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('app_task_index') }}"
-                           class="nav-link {{ app.request.get('_route') == 'app_task_index' ? 'active' : '' }}">
-                            <i class="fas fa-clipboard-list"></i>
-                            Mes tâches
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ path('app_task_followed') }}"
-                           class="nav-link {{ app.request.get('_route') == 'app_task_followed' ? 'active' : '' }}">
-                            <i class="fas fa-eye"></i>
-                            Suivies
-                        </a>
-                    </li>
-                </ul>
+    <div class="flex h-full min-h-screen">
+        <!-- Left Navigation Bar - Fixed and Full Height -->
+        <aside class=" inset-y-0 left-0 w-64 bg-blue-600 text-white shadow-lg overflow-y-auto ">
+            <div class="p-4 flex items-center space-x-3 border-b border-blue-500/50">
+                <i class="fas fa-tasks text-xl"></i>
+                <span class="text-xl font-semibold">Tâches</span>
             </div>
-        </div>
-    </nav>
 
-    {% block task_content %}
-        <!-- Le contenu des pages enfants -->
+            <nav class="p-4 space-y-2">
+                <a href="{{ path('app_task_new') }}"
+                   class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
+                      {{ app.request.get('_route') == 'app_task_new' ? 'bg-blue-700/80' : 'hover:bg-blue-700/50' }}">
+                    <i class="fas fa-plus-circle text-lg w-6 text-center"></i>
+                    <span>Créer</span>
+                </a>
 
-    {% endblock %}
+                <a href="{{ path('app_task_index') }}"
+                   class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
+                      {{ app.request.get('_route') == 'app_task_index' ? 'bg-blue-700/80' : 'hover:bg-blue-700/50' }}">
+                    <i class="fas fa-clipboard-list text-lg w-6 text-center"></i>
+                    <span>Mes tâches</span>
+                </a>
+
+                <a href="{{ path('app_task_followed') }}"
+                   class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-200
+                      {{ app.request.get('_route') == 'app_task_followed' ? 'bg-blue-700/80' : 'hover:bg-blue-700/50' }}">
+                    <i class="fas fa-eye text-lg w-6 text-center"></i>
+                    <span>Suivies</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area - With Left Margin for Sidebar -->
+        <main class="flex-1 p-8 bg-gray-50 min-h-screen overflow-y-auto">
+            {% block task_content %}
+                <!-- Le contenu des pages enfants -->
+            {% endblock %}
+        </main>
+    </div>
 {% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Entity\FirstTime;
 use App\Entity\Ordonnance;
 use App\Entity\OrdonnanceMedicament;
 use App\Entity\User;
@@ -13,6 +14,7 @@ use App\Repository\OrdonnanceMedicamentRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -22,10 +24,20 @@ use Symfony\Component\Routing\Attribute\Route;
 final class MedecinController extends AbstractController
 {
     #[Route('/', name: 'app_medecin_home')]
-    public function indexMedecin(): Response
+    public function indexMedecin(EntityManagerInterface $entityManager): Response
     {
-        // Redirection vers la page des tâches
-        return $this->redirectToRoute('app_medecin_taches');
+        $user = $this->getUser();
+        if (!$user->getFirstTime()){
+            $firsTime=new FirstTime();
+            $firsTime->setUser($user);
+            $firsTime->setIsFirstTime(false);
+            $entityManager->persist($firsTime);
+            $entityManager->flush();
+            $this->addFlash('error','vous devez changer votre mot de passe');
+            return $this->redirectToRoute('app_medecin_profil');
+
+        }
+        return $this->redirectToRoute('app_task_index');
     }
     #[Route('/ordonnance', name: 'app_medecin_ordonnace', methods: ['GET'])]
     public function ordonnanceMedecin(MedicamentRepository $medicamentRepository,UserRepository $userRepository): Response
@@ -97,7 +109,6 @@ final class MedecinController extends AbstractController
     ): Response {
         // Fetch the current user
         $user = $this->getUser();
-        $message = $request->query->get('m');
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
@@ -140,7 +151,7 @@ final class MedecinController extends AbstractController
         // Render both forms in the same template
         return $this->render('medecin/profil.html.twig', [
             'profileForm' => $profileForm->createView(),
-            'm'=>$message
+
         ]);
     }
 

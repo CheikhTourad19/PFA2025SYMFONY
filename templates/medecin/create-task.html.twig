@@ -1,67 +1,36 @@
 {% extends 'medecin/task.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .task-form-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-title {
-            color: #1a365d;
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .task-form .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .task-form label {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-        }
-    </style>
-{% endblock %}
-
 {% block task_content %}
-    <div class="task-form-container">
-        <h2 class="form-title">
-            <i class="fas fa-plus-circle me-2"></i>Nouvelle Tâche
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
+        <h2 class="text-2xl font-bold text-blue-800 mb-8 text-center">
+            <i class="fas fa-plus-circle mr-2"></i>Nouvelle Tâche
         </h2>
 
-        {{ form_start(form, {'attr': {'class': 'task-form'}}) }}
-        <div class="form-grid">
-            <div class="form-group">
-                {{ form_label(form.title) }}
-                {{ form_widget(form.title) }}
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+                {{ form_label(form.title, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500'}}) }}
             </div>
 
-            <div class="form-group">
-                {{ form_label(form.assignedTo) }}
-                {{ form_widget(form.assignedTo) }}
+            <div class="space-y-2">
+                {{ form_label(form.assignedTo, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.assignedTo, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500'}}) }}
             </div>
 
-            <div class="form-group">
-                {{ form_label(form.deadline) }}
-                {{ form_widget(form.deadline) }}
+            <div class="space-y-2">
+                {{ form_label(form.deadline, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                {{ form_widget(form.deadline, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 datepicker'}}) }}
             </div>
         </div>
 
-        <div class="form-group">
-            {{ form_label(form.description) }}
-            {{ form_widget(form.description) }}
+        <div class="space-y-2">
+            {{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500', 'rows': 4}}) }}
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 py-2">
-            <i class="fas fa-save me-2"></i>Créer la Tâche
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center">
+            <i class="fas fa-save mr-2"></i>Créer la Tâche
         </button>
         {{ form_end(form) }}
     </div>

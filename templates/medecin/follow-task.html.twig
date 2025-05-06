@@ -1,97 +1,64 @@
-{# templates/medecin/my_created_tasks.html.twig #}
-{# templates/medecin/follow-task.html.twig #}
-
 {% extends 'medecin/task.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .task-grid {
-            display: grid;
-            gap: 1.5rem;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-
-        .task-card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s;
-            position: relative;
-        }
-
-        .task-card.completed {
-            background: #f0fff4;
-            border: 1px solid #38a169;
-        }
-
-        .task-title {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: #2d3748;
-            margin-bottom: 0.75rem;
-        }
-
-        .task-description {
-            color: #718096;
-            flex-grow: 1;
-            margin-bottom: 1rem;
-        }
-
-        .meta-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: auto;
-        }
-
-        .dates {
-            font-size: 0.875rem;
-            color: #4a5568;
-        }
-
-        .status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-        .status.pending { background: #fefcbf; color: #744210; }
-        .status.completed { background: #c6f6d5; color: #22543d; }
-    </style>
-{% endblock %}
-
 {% block task_content %}
-    <div class="task-grid">
-        {% for task in tasks %}
-            <div class="task-card {{ task.status.value == 'completed' ? 'completed' : '' }}">
-                <h3 class="task-title">{{ task.title }}</h3>
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ block('title') }}</h1>
 
-                <p class="task-description">
-                    {{ task.description|default('Aucune description disponible') }}
-                </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for task in tasks %}
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1
+                        {{ task.status.value == 'completed' ? 'border-l-4 border-green-500 bg-green-50' : '' }}">
+                    <div class="p-6 flex flex-col h-full">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ task.title }}</h3>
 
-                <div class="meta-bottom">
-                    <div class="dates">
-                        <div>📅 Créée: {{ task.createdAt|date('d/m/Y') }}</div>
-                        {% if task.deadline %}
-                            <div>⏳ Échéance: {{ task.deadline|date('d/m/Y') }}</div>
-                        {% endif %}
+                        <p class="text-gray-600 mb-4 flex-grow">
+                            {{ task.description|default('Aucune description disponible') }}
+                        </p>
+
+                        <div class="mt-auto pt-4 border-t border-gray-100">
+                            <div class="flex flex-col space-y-2 text-sm text-gray-600">
+                                <div class="flex items-center">
+                                    <i class="far fa-calendar-alt mr-2 text-gray-400"></i>
+                                    Créée: {{ task.createdAt|date('d/m/Y') }}
+                                </div>
+                                {% if task.deadline %}
+                                    <div class="flex items-center">
+                                        <i class="far fa-clock mr-2 text-gray-400"></i>
+                                        Échéance: {{ task.deadline|date('d/m/Y') }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mt-4 flex justify-between items-center">
+                            <span class="px-3 py-1 rounded-full text-sm font-medium
+                                        {{ task.status.value == 'completed'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800' }}">
+                                {{ task.status.value|capitalize }}
+                            </span>
+
+                                {% if task.status.value != 'completed' %}
+                                    <form action="{{ path('task_complete', {'id': task.id}) }}" method="POST">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ task.id) }}">
+                                        <button type="submit" class="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg transition-all flex items-center">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Terminer
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
-
-                    <span class="status {{ task.status.value }}">
-                        {{ task.status.value|capitalize }}
-                    </span>
                 </div>
-            </div>
-        {% else %}
-            <div class="text-center py-8 text-gray-500">
-                Aucune tâche à afficher
-            </div>
-        {% endfor %}
+            {% else %}
+                <div class="col-span-full text-center py-12">
+                    <div class="bg-blue-50 text-blue-800 p-6 rounded-xl inline-block max-w-md">
+                        <i class="fas fa-tasks text-3xl mb-3 text-blue-400"></i>
+                        <h3 class="text-lg font-medium mb-1">Aucune tâche à afficher</h3>
+                        <p class="text-sm text-blue-600">Créez votre première tâche pour commencer</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
