@@ -119,10 +119,11 @@ class MedecinRepository extends ServiceEntityRepository
     public function searchByNomOuPrenom(string $term): array
     {
         return $this->createQueryBuilder('m')
-            ->where('m.nom LIKE :term')
-            ->orWhere('m.prenom LIKE :term')
-            ->setParameter('term', $term . '%')
-            ->orderBy('m.nom', 'ASC')
+            ->join('m.user', 'u')  // Add this join statement
+            ->where('u.nom LIKE :term')
+            ->orWhere('u.prenom LIKE :term')
+            ->setParameter('term', '%' . $term . '%')  // Changed to use % on both sides
+            ->orderBy('u.nom', 'ASC')
             ->getQuery()
             ->getResult();
     }
