@@ -14,6 +14,14 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+use Symfony\Component\Security\Core\Security;
+
 final class HomeController extends AbstractController
 {
 
@@ -51,7 +59,51 @@ final class HomeController extends AbstractController
         $users = $userRepository->findAll();
         return $this->json($users);
     }
+    #[Route('/chat11', name: 'chat')]
+    public function chat(): Response
+    {
+        return $this->render('home/chat.html.twig');
+    }
+    #[Route('/chat/send', name: 'chat_send', methods: ['POST'])]
+    public function sendMessage(
+        Request $request,
+        HubInterface $hub,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $recipientId = $data['recipient'];
+        $content = $data['message'];
 
+        /** @var User $sender */
+        $sender = $this->getUser();
+        $recipient = $em->getRepository(User::class)->find($recipientId);
+
+        if (!$recipient) {
+            return $this->json(['error' => 'Recipient not found'], 404);
+        }
+
+        // CHANGE HERE: Use public topic format (no leading slash)
+        $update = new Update(
+            "user{$recipientId}", // No leading slash, matches EventSource subscription
+            json_encode([
+                'sender' => $sender->getId(),
+                'message' => $content,
+                'timestamp' => (new \DateTime())->format('Y-m-d H:i:s')
+            ])
+        );
+
+        // For debugging
+        try {
+            $hub->publish($update);
+            return $this->json([
+                'success' => true,
+                'sent_to' => $recipientId,
+                'topic' => "user{$recipientId}" // Show the exact topic used
+            ]);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 
 

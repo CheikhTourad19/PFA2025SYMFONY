@@ -1,0 +1,75 @@
+{# templates/chat/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1>Private Chat</h1>
+
+        <div class="chat-box" id="messages"></div>
+
+        <div class="message-input">
+            <input type="text" id="recipient-id" placeholder="Recipient ID">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Pass current user ID to JavaScript
+        document.body.dataset.userId = "{{ app.user.id }}";
+        document.getElementById('send-button').addEventListener('click', async () => {
+            const recipientId = document.getElementById('recipient-id').value;
+            const message = document.getElementById('message-input').value;
+
+            const response = await fetch('/chat/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipient: recipientId, message }),
+            });
+
+            if (response.ok) {
+                document.getElementById('message-input').value = '';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = document.body.dataset.userId;
+            console.log("Current user ID:", userId);
+
+            // CHANGE HERE: Use public topic format (no leading slash)
+            const eventSource = new EventSource(
+                `http://localhost:3000/.well-known/mercure?topic=user${userId}`,
+                { withCredentials: true }
+            );
+
+            // Add debugging for connection
+            eventSource.onopen = () => {
+                console.log('Connected to Mercure hub successfully!');
+            };
+
+            eventSource.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                console.log("Received message:", data);
+
+                // Display the message in the chat UI
+                const chatBox = document.getElementById('messages');
+                chatBox.innerHTML += `
+                    <div class="message">
+                        <strong>User ${data.sender}</strong>: ${data.message}
+                    </div>
+                `;
+            };
+
+            eventSource.onerror = (e) => {
+                console.error("EventSource error:", e);
+                // Try to reconnect after a delay
+                setTimeout(() => {
+                    console.log("Attempting to reconnect...");
+                    eventSource.close();
+                    const newEventSource = new EventSource(`http://localhost:3000/.well-known/mercure?topic=user${userId}`);
+                    // Set up event handlers for the new EventSource...
+                }, 5000);
+            };
+        });
+    </script>
+{% endblock %}
