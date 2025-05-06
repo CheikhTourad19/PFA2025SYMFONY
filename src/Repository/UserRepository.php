@@ -41,7 +41,21 @@ class UserRepository extends ServiceEntityRepository
     //        ;
     //    }
 
+// In UserRepository.php
+    public function findUsersForChat(?string $searchTerm = null): array
+    {
+        $query = $this->createQueryBuilder('u')
+            ->orderBy('u.nom', 'ASC');
 
+        if ($searchTerm) {
+            $query->where('u.nom LIKE :term')
+                ->orWhere('u.prenom LIKE :term')
+                ->orWhere('u.email LIKE :term')
+                ->setParameter('term', '%' . $searchTerm . '%');
+        }
+
+        return $query->getQuery()->getResult();
+    }
 
     /**
      * Trouve tous les médecins de l'application

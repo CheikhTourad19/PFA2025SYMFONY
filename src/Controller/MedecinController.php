@@ -87,11 +87,11 @@ final class MedecinController extends AbstractController
         return $this->render('medecin/dossier_medical.html.twig');
     }
 
-    #[Route('/messages', name: 'app_medecin_messages')]
-    public function messages(): Response
-    {
-        return $this->render('medecin/messages.html.twig');
-    }
+//    #[Route('/messages', name: 'app_medecin_messages')]
+//    public function messages(): Response
+//    {
+//        return $this->render('medecin/messages.html.twig');
+//    }
 
     #[Route('/rendez-vous', name: 'app_medecin_rendez_vous')]
     public function rendezVous(): Response

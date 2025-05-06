@@ -98,19 +98,9 @@ class Message
     }
 
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    // Optionnel : Ajouter le getter si inexistant
-    public function getCreatedAt(): \DateTimeInterface
-    {
-        return $this->createdAt;
 
 
-}
+
 
 
     public function setReceiver(?User $receiver): static
