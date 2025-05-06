@@ -1,14 +1,10 @@
 {# templates/base.html.twig #}
-<!DOCTYPE html>
-<html lang="fr" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MedSuite{% endblock %}</title>
+   {% extends 'base.html.twig' %}
+   {% block title %}MedSuite{% endblock %}
 
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
     {% block stylesheets %}
-
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
         :root {
             --primary: #3B82F6;
@@ -134,36 +130,46 @@
 
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.12.0/dist/cdn.min.js" defer></script>
     {% endblock %}
-</head>
 
-<body>
-<nav class="glass-nav">
-    <div class="nav-header">
-        <div class="logo">MS</div>
-        <h3 class="menu-text">MedSuite</h3>
-    </div>
 
-    <div class="nav-menu">
-        <ul>
-            {% set menu_items = {
-                'app_medecin_home': 'bx-home',
-                'app_task_index': 'bx-task',
-                'app_medecin_dossier_medical': 'bx-folder',
-                'app_medecin_messages': 'bx-chat',
-                'app_medecin_calendrier': 'bx-calendar',
-                'app_medecin_profil': 'bx-user',
-                'app_medecin_ordonnace':'bx-ordonnance',
-            } %}
+{% block body  %}
+
+    <nav class="bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg" :class="{ 'backdrop-blur-sm bg-opacity-80': isModalOpen || isFlashModalOpen }" x-data="{ isMobileMenuOpen: false }">
+        <div class="relative flex items-center justify-between h-16 md:h-20">
+            <!-- Logo and app name -->
+            <div class="flex-shrink-0 flex items-center space-x-3">
+                <!-- Modern animated logo -->
+
+                <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100 tracking-tight">Espace Patient</span>
+            </div>
+
+
+                {% set currentRoute = app.request.attributes.get('_route') %}
+    {% set menu_items = {
+                    'app_medecin_home': 'bx-home',
+                    'app_task_index': 'bx-task',
+                    'app_medecin_dossier_medical': 'bx-folder',
+                    'app_medecin_messages': 'bx-chat',
+                    'app_medecin_calendrier': 'bx-calendar',
+                    'app_medecin_profil': 'bx-user',
+                    'app_medecin_ordonnace':'bx-ordonnance',
+                } %}
+    <div class="hidden md:flex items-center space-x-1">
+        {% set currentRoute = app.request.attributes.get('_route') %}
+
+        <!-- Navigation items with modern hover effects -->
+
 
             {% for route, icon in menu_items %}
-                <li class="menu-item {{ app.request.get('_route') == route ? 'active' : '' }}">
-                    <a href="{{ path(route) }}" class="menu-link">
+                <a href="{{ path(route) }}" class="group relative px-4 py-2 rounded-lg transition-all duration-500 {{ currentRoute == route ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-700/30' }}">
+                    <div class="flex items-center space-x-2">
                         <div class="menu-icon">
                             <i class='bx {{ icon }}'></i>
                         </div>
                         <span class="menu-text">{{ icon|replace({'bx-': '', 'bx': ''})|capitalize }}</span>
-                    </a>
-                </li>
+                    </div>
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-500"></span>
+                </a>
             {% endfor %}
             <li>
                 <form action="{{ path('app_logout') }}" method="post">
@@ -177,9 +183,11 @@
                 Déconnexion
             </button>
                 </form>
+
             </li>
-        </ul>
     </div>
+    </div>
+
 
     <div class="user-profile">
         <div class="menu-link">
@@ -194,8 +202,8 @@
     </div>
 </nav>
 
-<main style="margin-left: 280px; padding: 2rem;">
-    {% block body %}{% endblock %}
+<main >
+    {% block content %}{% endblock %}
 </main>
 
 <script>
@@ -203,5 +211,4 @@
         document.body.classList.toggle('shrink');
     });
 </script>
-</body>
-</html>
+{% endblock %}
