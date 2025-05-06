@@ -196,7 +196,6 @@ final class PatientController extends AbstractController
 
             $showTutorial = true;
 
-
             $firstTime = new FirstTime();
             $firstTime->setUser($user);
             $firstTime->setIsFirstTime(false);

@@ -147,6 +147,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="alpinejs" level="application" />
-    <orderEntry type="library" name="chart.js" level="application" />
+    <orderEntry type="library" name="three.js" level="application" />
+    <orderEntry type="library" name="boxicons" level="application" />
+    <orderEntry type="library" name="alpinejs" level="application" />
   </component>
 </module>

@@ -49,10 +49,10 @@
                                             class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
 
                                     >
-                                        {% set i = 1 %}
+
                                         {% for medicament in medicaments %}
-                                            <option value="{{ medicament.id }}">{{ i }} - {{ medicament.nom }}</option>
-                                            {% set i=i+1 %}
+                                            <option value="{{ medicament.id }}">{{ medicament.nom }}</option>
+
                                         {% endfor %}
                                     </select>
 

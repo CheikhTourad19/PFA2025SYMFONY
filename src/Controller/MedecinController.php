@@ -97,6 +97,7 @@ final class MedecinController extends AbstractController
     ): Response {
         // Fetch the current user
         $user = $this->getUser();
+        $message = $request->query->get('m');
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
@@ -138,7 +139,8 @@ final class MedecinController extends AbstractController
 
         // Render both forms in the same template
         return $this->render('medecin/profil.html.twig', [
-            'profileForm' => $profileForm->createView()
+            'profileForm' => $profileForm->createView(),
+            'm'=>$message
         ]);
     }
 
