@@ -34,16 +34,8 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             return new RedirectResponse($this->router->generate('app_admin_home'));
         }
         if (in_array('ROLE_MEDECIN', $roles, true)) {
-            if (!$user->getFirstTime()){
-                $firsTime=new FirstTime();
-                $firsTime->setUser($user);
-                $firsTime->setIsFirstTime(false);
-                $this->em->persist($firsTime);
-                $this->em->flush();
 
-                return new RedirectResponse($this->router->generate('app_medecin_profil',['m'=>'vous devez changer votre mot de passe']));
-            }
-            return new RedirectResponse($this->router->generate('app_home_medecin'));
+            return new RedirectResponse($this->router->generate('app_medecin_home'));
         }
         if (in_array('ROLE_PATIENT', $roles, true)) {
             return new RedirectResponse($this->router->generate('app_home_patient'));
