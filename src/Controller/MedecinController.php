@@ -37,7 +37,7 @@ final class MedecinController extends AbstractController
             return $this->redirectToRoute('app_medecin_profil');
 
         }
-        return $this->redirectToRoute('app_medecin_taches');
+        return $this->redirectToRoute('app_task_index');
     }
     #[Route('/ordonnance', name: 'app_medecin_ordonnace', methods: ['GET'])]
     public function ordonnanceMedecin(MedicamentRepository $medicamentRepository,UserRepository $userRepository): Response
