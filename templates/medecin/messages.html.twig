@@ -4,70 +4,85 @@
 {% block title %}Messagerie{% endblock %}
 
 {% block content %}
-    <div class="container-fluid py-4">
-        <h1 class="mb-4">Messagerie</h1>
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Messagerie</h1>
 
-        <div class="message-layout-container">
-            <!-- Colonne gauche : Recherche et liste des conversations -->
-            <div class="message-sidebar">
-                <div class="card h-100">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Contacts</h5>
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Left column: Search and conversation list -->
+            <div class="w-full lg:w-1/3 flex-shrink-0">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col">
+                    <div class="bg-blue-600 text-white p-4">
+                        <h5 class="font-semibold text-lg">Contacts</h5>
                     </div>
 
-                    <!-- Zone de recherche -->
-                    <div class="search-container p-2 border-bottom">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher un médecin...">
-                        <div id="searchResults" class="mt-2"></div>
+                    <!-- Search area -->
+                    <div class="p-3 border-b relative">
+                        <input
+                                type="text"
+                                id="searchInput"
+                                class="w-full p-2 pl-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Rechercher un médecin..."
+                        >
+                        <div id="searchResults" class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md max-h-60 overflow-auto hidden"></div>
                     </div>
 
-                    <!-- Liste des conversations -->
-                    <div class="card-header bg-light border-bottom">
-                        <h6 class="mb-0">Conversations récentes</h6>
+                    <!-- Conversation list -->
+                    <div class="p-3 bg-gray-50 border-b">
+                        <h6 class="font-medium text-gray-700">Conversations récentes</h6>
                     </div>
-                    <div class="conversations-list flex-grow-1 overflow-auto" id="conversationsList">
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Chargement...</span>
-                            </div>
-                            <p class="mt-2">Chargement des conversations...</p>
+                    <div class="flex-grow overflow-auto" id="conversationsList">
+                        <div class="flex flex-col items-center justify-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                            <p class="text-gray-500">Chargement des conversations...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Colonne droite : Zone de chat -->
-            <div class="message-main-content">
-                <div class="card message-container h-100" id="messageContainer" style="display: none;">
-                    <!-- En-tête du chat avec le nom du contact -->
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" id="messageHeader">
-                        <h5 class="mb-0">Sélectionnez une conversation</h5>
+            <!-- Right column: Chat area -->
+            <div class="flex-grow">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col" id="messageContainer" style="display: none;">
+                    <!-- Chat header with contact name -->
+                    <div class="bg-blue-600 text-white p-4 flex justify-between items-center" id="messageHeader">
+                        <h5 class="font-semibold text-lg">Sélectionnez une conversation</h5>
                     </div>
 
-                    <!-- Zone des messages -->
-                    <div class="card-body messages-container p-0 flex-grow-1">
-                        <div class="messages-list p-3 h-100" id="messagesList"></div>
+                    <!-- Messages area -->
+                    <div class="flex-grow overflow-hidden flex flex-col">
+                        <div class="p-4 overflow-y-auto flex-grow" id="messagesList"></div>
                     </div>
 
-                    <!-- Zone de saisie du message -->
-                    <div class="card-footer p-2 bg-light">
-                        <div class="message-form">
-                            <div class="input-group">
-                                <textarea id="messageInput" class="form-control" placeholder="Tapez votre message..." rows="2"></textarea>
-                                <button id="sendButton" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> Envoyer
-                                </button>
-                            </div>
+                    <!-- Message input area -->
+                    <div class="p-3 bg-gray-50 border-t">
+                        <div class="flex items-end gap-2">
+                            <textarea
+                                    id="messageInput"
+                                    class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                                    placeholder="Tapez votre message..."
+                                    rows="2"
+                            ></textarea>
+                            <button
+                                    id="sendButton"
+                                    class="h-12 w-12 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Message affiché quand aucune conversation n'est sélectionnée -->
-                <div class="card h-100" id="selectConversationPrompt">
-                    <div class="card-body text-center py-5">
-                        <i class="fas fa-comments fa-4x text-muted mb-3"></i>
-                        <h4>Sélectionnez une conversation ou recherchez un contact</h4>
-                        <p class="text-muted">Vos messages apparaîtront ici</p>
+                <!-- Prompt when no conversation is selected -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden h-full flex items-center justify-center" id="selectConversationPrompt">
+                    <div class="text-center p-8">
+                        <div class="mx-auto h-16 w-16 text-gray-400 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-700 mb-2">Sélectionnez une conversation</h4>
+                        <p class="text-gray-500">Vos messages apparaîtront ici</p>
                     </div>
                 </div>
             </div>
@@ -90,22 +105,23 @@
         // Fonction pour montrer/cacher l'interface de message
         function toggleMessageInterface(show) {
             if (show) {
-                messageContainer.style.display = 'block';
+                messageContainer.style.display = 'flex';
                 selectConversationPrompt.style.display = 'none';
             } else {
                 messageContainer.style.display = 'none';
-                selectConversationPrompt.style.display = 'block';
+                selectConversationPrompt.style.display = 'flex';
             }
         }
 
         // Initialisation - cacher l'interface de message
-        toggleMessageInterface(true);
+        toggleMessageInterface(false);
 
         searchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase().trim();
 
             if (!query) {
                 searchResults.innerHTML = '';
+                searchResults.classList.add('hidden');
                 return;
             }
 
@@ -118,24 +134,26 @@
 
             // Afficher les résultats
             searchResults.innerHTML = '';
+            searchResults.classList.remove('hidden');
 
             if (results.length === 0) {
-                searchResults.innerHTML = '<div class="p-2 text-muted">Aucun résultat</div>';
+                searchResults.innerHTML = '<div class="p-3 text-gray-500">Aucun résultat</div>';
                 return;
             }
 
             results.forEach(medecin => {
                 const resultItem = document.createElement('div');
-                resultItem.className = 'search-result-item p-2 border-bottom';
+                resultItem.className = 'p-3 hover:bg-gray-100 cursor-pointer transition-colors border-b border-gray-100 last:border-0';
                 resultItem.innerHTML = `
-                <div class="fw-bold">${medecin.prenom} ${medecin.nom}</div>
-                <div class="small text-muted">${medecin.service || ''}</div>
-            `;
+                    <div class="font-medium">${medecin.prenom} ${medecin.nom}</div>
+                    <div class="text-sm text-gray-500">${medecin.service || ''}</div>
+                `;
 
                 resultItem.addEventListener('click', () => {
                     selectUser(medecin.id);
                     searchInput.value = '';
                     searchResults.innerHTML = '';
+                    searchResults.classList.add('hidden');
                 });
 
                 searchResults.appendChild(resultItem);
@@ -154,17 +172,19 @@
             const selectedUser = medecins.find(m => m.id === userId);
             if (selectedUser) {
                 document.getElementById('messageHeader').innerHTML = `
-                <h5 class="mb-0">${selectedUser.prenom} ${selectedUser.nom}</h5>
-                <span class="badge bg-light text-dark">${selectedUser.service || ''}</span>
-            `;
+                    <h5 class="font-semibold text-lg">${selectedUser.prenom} ${selectedUser.nom}</h5>
+                    <span class="bg-white text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${selectedUser.service || ''}</span>
+                `;
             }
 
             // Marquer cette conversation comme active dans la liste des conversations
             document.querySelectorAll('.conversation-item').forEach(item => {
-                if (item.getAttribute('data-user-id') === userId) {
-                    item.classList.add('active');
+                if (item.getAttribute('data-user-id') == userId) {
+                    item.classList.add('bg-blue-50');
+                    item.classList.remove('hover:bg-gray-100');
                 } else {
-                    item.classList.remove('active');
+                    item.classList.remove('bg-blue-50');
+                    item.classList.add('hover:bg-gray-100');
                 }
             });
         }
@@ -173,13 +193,11 @@
         async function fetchMessages(userId) {
             try {
                 document.getElementById('messagesList').innerHTML = `
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Chargement...</span>
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                        <p class="text-gray-500">Chargement des messages...</p>
                     </div>
-                    <p class="mt-2">Chargement des messages...</p>
-                </div>
-            `;
+                `;
 
                 const response = await fetch(`/api/chat/messages/${userId}`);
                 if (!response.ok) {
@@ -191,10 +209,10 @@
             } catch (error) {
                 console.error('Erreur lors du chargement des messages:', error);
                 document.getElementById('messagesList').innerHTML = `
-                <div class="alert alert-danger m-3">
-                    Erreur lors du chargement des messages. Veuillez réessayer.
-                </div>
-            `;
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded m-4">
+                        Erreur lors du chargement des messages. Veuillez réessayer.
+                    </div>
+                `;
             }
         }
 
@@ -205,21 +223,23 @@
 
             if (!messages || messages.length === 0) {
                 messagesList.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
-                    <p class="text-muted">Aucun message. Commencez la conversation !</p>
-                </div>
-            `;
+                    <div class="flex flex-col items-center justify-center py-8 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                        <p>Aucun message. Commencez la conversation !</p>
+                    </div>
+                `;
                 return;
             }
 
             // Créer un conteneur pour les messages
             const messagesContainer = document.createElement('div');
-            messagesContainer.className = 'd-flex flex-column gap-2';
+            messagesContainer.className = 'space-y-3';
 
             messages.forEach(message => {
                 const messageItem = document.createElement('div');
-                messageItem.className = `message ${message.isSentByMe ? 'sent' : 'received'}`;
+                messageItem.className = `flex ${message.isSentByMe ? 'justify-end' : 'justify-start'}`;
 
                 // Formatage de la date
                 const messageDate = new Date(message.sentAt);
@@ -232,9 +252,11 @@
                 });
 
                 messageItem.innerHTML = `
-                <div class="message-content">${message.content}</div>
-                <div class="message-time">${formattedDate}</div>
-            `;
+                    <div class="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 ${message.isSentByMe ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-800 rounded-bl-none'}">
+                        <div class="message-content">${message.content}</div>
+                        <div class="text-xs mt-1 ${message.isSentByMe ? 'text-blue-100' : 'text-gray-500'} text-right">${formattedDate}</div>
+                    </div>
+                `;
                 messagesContainer.appendChild(messageItem);
             });
 
@@ -265,7 +287,12 @@
                 // Désactiver le bouton pendant l'envoi
                 const sendButton = document.getElementById('sendButton');
                 sendButton.disabled = true;
-                sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                sendButton.innerHTML = `
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                `;
 
                 const response = await fetch(`/api/chat/messages/${selectedUserId}`, {
                     method: 'POST',
@@ -284,7 +311,11 @@
 
                 // Réactiver le bouton
                 sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+                sendButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                    </svg>
+                `;
 
                 // Recharger les messages
                 fetchMessages(selectedUserId);
@@ -293,11 +324,25 @@
                 loadConversations();
             } catch (error) {
                 console.error('Erreur lors de l\'envoi du message:', error);
-                alert('Erreur lors de l\'envoi du message');
+
+                // Show error notification
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg';
+                notification.textContent = 'Erreur lors de l\'envoi du message';
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
 
                 // Réactiver le bouton en cas d'erreur
-                document.getElementById('sendButton').disabled = false;
-                document.getElementById('sendButton').innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
+                const sendButton = document.getElementById('sendButton');
+                sendButton.disabled = false;
+                sendButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
+                    </svg>
+                `;
             }
         }
 
@@ -309,12 +354,14 @@
 
             if (!conversations || conversations.length === 0) {
                 conversationsList.innerHTML = `
-        <div class="text-center py-4">
-            <i class="fas fa-comments fa-2x text-muted mb-3"></i>
-            <p class="text-muted">Aucune conversation</p>
-            <p class="small text-muted">Recherchez un contact pour commencer à discuter</p>
-        </div>
-        `;
+                    <div class="flex flex-col items-center justify-center py-8 text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <p>Aucune conversation</p>
+                        <p class="text-sm mt-1">Recherchez un contact pour commencer à discuter</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -338,27 +385,28 @@
                 });
 
                 const conversationItem = document.createElement('div');
-                conversationItem.className = 'conversation-item p-3 border-bottom d-flex justify-content-between align-items-center';
+                conversationItem.className = 'conversation-item p-3 border-b border-gray-100 flex justify-between items-center hover:bg-gray-100 cursor-pointer transition-colors';
                 conversationItem.setAttribute('data-user-id', withUser.id);
 
                 // Vérifier si c'est la conversation sélectionnée
-                if (selectedUserId === withUser.id) {
-                    conversationItem.classList.add('active');
+                if (selectedUserId == withUser.id) {
+                    conversationItem.classList.add('bg-blue-50');
+                    conversationItem.classList.remove('hover:bg-gray-100');
                 }
 
                 conversationItem.innerHTML = `
-        <div class="conversation-info">
-            <div class="conversation-name fw-bold">
-                ${withUser.prenom} ${withUser.nom}
-            </div>
-            <div class="last-message text-truncate" style="max-width: 200px;">
-                ${message.content}
-            </div>
-        </div>
-        <div class="last-message-time small text-muted">
-            ${formattedDate}
-        </div>
-        `;
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium truncate">
+                            ${withUser.prenom} ${withUser.nom}
+                        </div>
+                        <div class="text-sm text-gray-500 truncate">
+                            ${message.content}
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                        ${formattedDate}
+                    </div>
+                `;
 
                 conversationItem.addEventListener('click', () => {
                     selectUser(withUser.id);
@@ -372,13 +420,11 @@
         async function loadConversations() {
             try {
                 document.getElementById('conversationsList').innerHTML = `
-        <div class="text-center py-3">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Chargement...</span>
-            </div>
-            <p class="mt-2">Chargement des conversations...</p>
-        </div>
-        `;
+                    <div class="flex flex-col items-center justify-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
+                        <p class="text-gray-500">Chargement des conversations...</p>
+                    </div>
+                `;
 
                 const response = await fetch('/api/chat/conversations');
                 if (!response.ok) {
@@ -396,105 +442,98 @@
             } catch (error) {
                 console.error('Erreur lors du chargement des conversations:', error);
                 document.getElementById('conversationsList').innerHTML = `
-        <div class="alert alert-danger m-3">
-            Erreur lors du chargement des conversations: ${error.message}
-            <button class="btn btn-sm btn-outline-danger mt-2" onclick="loadConversations()">
-                <i class="fas fa-sync-alt"></i> Réessayer
-            </button>
-        </div>
-        `;
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded m-4">
+                        Erreur lors du chargement des conversations: ${error.message}
+                        <button
+                            class="mt-2 text-sm bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors"
+                            onclick="loadConversations()"
+                        >
+                            Réessayer
+                        </button>
+                    </div>
+                `;
             }
         }
-
 
         // Charger les conversations au chargement de la page
         document.addEventListener('DOMContentLoaded', loadConversations);
-        function setupMercureSubscription() {if (!selectedUserId) return;
 
-        // Create EventSource pointed at the Mercure hub with a topic for this user
-        const currentUserId = {{ app.user.id }};
-        const url = new URL('http://localhost:3000/.well-known/mercure');
-        url.searchParams.append('topic', `chat/messages/${currentUserId}`);
+        // Mercure setup (same as before)
+        function setupMercureSubscription() {
+            if (!selectedUserId) return;
 
-        // Close any existing EventSource
-        if (window.messageEventSource) {
-            window.messageEventSource.close();
-        }
+            const currentUserId = {{ app.user.id }};
+            const url = new URL('http://localhost:3000/.well-known/mercure');
+            url.searchParams.append('topic', `chat/messages/${currentUserId}`);
 
-        // Create new EventSource
-        window.messageEventSource = new EventSource(url);
-
-        // Handle incoming messages
-        window.messageEventSource.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-
-            // Only process if this is from the currently selected conversation
-            if (data.senderId == selectedUserId) {
-                // Create and append the new message
-                const messageItem = document.createElement('div');
-                messageItem.className = 'message-item received';
-                messageItem.innerHTML = `
-                <div class="message-content">
-                    <div class="message-text">${data.content}</div>
-                    <small class="message-time">${formatDateTime(data.sentAt)}</small>
-                </div>
-            `;
-
-                const messagesList = document.getElementById('messagesList');
-                messagesList.appendChild(messageItem);
-
-                // Scroll to the bottom
-                messagesList.scrollTop = messagesList.scrollHeight;
-
-                // Play notification sound or show notification if needed
-                playNotificationSound();
-            } else {
-                // This is a message from another conversation - update the conversations list
-                showNewMessageNotification(data.senderId);
-                refreshConversations();
+            if (window.messageEventSource) {
+                window.messageEventSource.close();
             }
-        };
 
-        window.messageEventSource.onerror = (error) => {
-            console.error('Mercure EventSource error:', error);
-            // Try to reconnect after a delay
-            setTimeout(setupMercureSubscription, 5000);
-        };
+            window.messageEventSource = new EventSource(url);
+
+            window.messageEventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                if (data.senderId == selectedUserId) {
+                    const messageItem = document.createElement('div');
+                    messageItem.className = 'flex justify-start';
+                    messageItem.innerHTML = `
+                        <div class="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
+                            <div class="message-content">${data.content}</div>
+                            <div class="text-xs mt-1 text-gray-500 text-right">${new Date().toLocaleTimeString()}</div>
+                        </div>
+                    `;
+
+                    const messagesList = document.getElementById('messagesList');
+                    messagesList.appendChild(messageItem);
+                    messagesList.scrollTop = messagesList.scrollHeight;
+
+                    playNotificationSound();
+                } else {
+                    showNewMessageNotification(data.senderId);
+                    refreshConversations();
+                }
+            };
+
+            window.messageEventSource.onerror = (error) => {
+                console.error('Mercure EventSource error:', error);
+                setTimeout(setupMercureSubscription, 5000);
+            };
         }
+
         function playNotificationSound() {
-            // Create a simple notification sound
-            const audio = new Audio('/sounds/notification.mp3'); // Add a sound file to your public directory
+            const audio = new Audio('/sounds/notification.mp3');
             audio.play().catch(error => console.log('Audio play failed:', error));
         }
+
         function showNewMessageNotification(userId) {
-            // Find the conversation element by user ID
             const conversationEl = document.querySelector(`.conversation-item[data-user-id="${userId}"]`);
             if (conversationEl) {
-                conversationEl.classList.add('has-new-message');
+                conversationEl.classList.add('relative');
+                const dot = document.createElement('div');
+                dot.className = 'absolute top-2 right-2 h-2 w-2 bg-blue-500 rounded-full';
+                conversationEl.appendChild(dot);
             }
         }
+
         function refreshConversations() {
-            fetchConversations();
+            loadConversations();
         }
+
         function onUserSelect(userId) {
             selectedUserId = userId;
-            // Your existing code for selecting a user...
-
-            // Set up Mercure subscription
             setupMercureSubscription();
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            // Your existing initialization code...
 
-            // Set up the Mercure subscription when the page loads
+        // Initialize Mercure subscription
+        document.addEventListener('DOMContentLoaded', () => {
             setupMercureSubscription();
         });
+
         // Subscribe to real-time updates with Mercure
         function subscribeToMessages() {
-            // Get the current user ID (you'll need to pass this from the controller)
             const currentUserId = {{ app.user.id|json_encode|raw }};
-
-            // Create Mercure EventSource
             const url = new URL('{{ mercure_public_url }}');
             url.searchParams.append('topic', 'chat/messages/' + currentUserId);
 
@@ -504,233 +543,35 @@
                 const data = JSON.parse(event.data);
                 console.log('Received message via Mercure:', data);
 
-                // If we're currently viewing a conversation with this sender, add the message
                 if (selectedUserId && selectedUserId == data.senderId) {
-                    // Create message element
                     const messageElement = document.createElement('div');
-                    messageElement.className = 'message received';
+                    messageElement.className = 'flex justify-start';
                     messageElement.innerHTML = `
-                <div class="message-content">
-                    <p>${data.content}</p>
-                    <small class="text-muted">${formatMessageTime(data.sentAt)}</small>
-                </div>
-            `;
+                        <div class="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-lg p-3 bg-gray-200 text-gray-800 rounded-bl-none">
+                            <div>${data.content}</div>
+                            <div class="text-xs mt-1 text-gray-500 text-right">${new Date().toLocaleTimeString()}</div>
+                        </div>
+                    `;
 
-                    // Add to message list
                     document.getElementById('messagesList').appendChild(messageElement);
-
-                    // Scroll to bottom
                     const messagesContainer = document.getElementById('messagesList');
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 } else {
-                    // Update the conversation list to show new message
-                    refreshConversationsList();
+                    refreshConversations();
                 }
             };
 
             eventSource.onerror = event => {
                 console.error('Mercure EventSource error:', event);
-                // Attempt to reconnect after a delay
                 setTimeout(() => {
                     subscribeToMessages();
                 }, 5000);
             };
         }
 
-        // Add helper function to format time
-        function formatMessageTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
         // Call the subscription function when the page loads
         document.addEventListener('DOMContentLoaded', function() {
             subscribeToMessages();
         });
-
-
-
-
-
-
-
-
     </script>
-
-    <style>
-        /* Add this to your CSS file or in a <style> tag in your template */
-        .conversation-item.has-new-message {
-            background-color: rgba(13, 110, 253, 0.1);
-            font-weight: bold;
-        }
-
-        .conversation-item.has-new-message::after {
-            content: '';
-            display: block;
-            width: 10px;
-            height: 10px;
-            background-color: #0d6efd;
-            border-radius: 50%;
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        /* Styles pour la page de messages */
-        .search-container {
-            position: relative;
-        }
-
-        #searchResults {
-            position: absolute;
-            width: 100%;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            z-index: 1000;
-            max-height: 300px;
-            overflow-y: auto;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .search-result-item {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .search-result-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .conversations-list {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .conversation-item {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .conversation-item:hover,
-        .conversation-item.active {
-            background-color: #e9ecef;
-        }
-
-        .messages-container {
-            height: 500px;
-            overflow-y: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .messages-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 1rem;
-            max-width: 80%;
-            position: relative;
-            word-break: break-word;
-        }
-
-        .message.sent {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 0;
-        }
-
-        .message.received {
-            background-color: #f1f1f1;
-            align-self: flex-start;
-            border-bottom-left-radius: 0;
-        }
-
-        .message-time {
-            font-size: 0.7rem;
-            color: #777;
-            text-align: right;
-            margin-top: 5px;
-        }
-
-        .message-form {
-            width: 100%;
-        }
-
-        #messageInput {
-            resize: none;
-        }
-
-        /* NOUVELLES CLASSES DE MISE EN PAGE FORCÉE */
-        .message-layout-container {
-            display: flex !important;
-            flex-direction: row !important;
-            width: 100% !important;
-            gap: 20px !important;
-        }
-
-        .message-sidebar {
-            width: 30% !important;
-            min-width: 250px !important;
-            flex-shrink: 0 !important;
-            order: 1 !important;
-        }
-
-        .message-main-content {
-            flex-grow: 1 !important;
-            width: 70% !important;
-            order: 2 !important;
-        }
-
-        /* Surcharger les styles Bootstrap qui pourraient interférer */
-        .message-layout-container > div {
-            float: none !important;
-            position: relative !important;
-            left: auto !important;
-            right: auto !important;
-            top: auto !important;
-            bottom: auto !important;
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-
-        /* Responsive styles */
-        @media (max-width: 768px) {
-            .messages-container {
-                height: 400px;
-            }
-
-            /* Version mobile - empilée mais maintien de l'ordre */
-            .message-layout-container {
-                flex-direction: column !important;
-            }
-
-            .message-sidebar {
-                width: 100% !important;
-                order: 1 !important;
-                margin-bottom: 20px !important;
-            }
-
-            .message-main-content {
-                width: 100% !important;
-                order: 2 !important;
-            }
-        }
-
-        /* Assurez-vous que les cartes prennent toute la hauteur */
-        .card.h-100 {
-            height: 100% !important;
-            display: flex;
-            flex-direction: column;
-        }
-    </style>
 {% endblock %}
