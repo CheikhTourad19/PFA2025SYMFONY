@@ -223,20 +223,14 @@
          <div class="user-list">
     {% if users is defined and users|length > 0 %}
         {% for user in users %}
-            <a href="{{ path('app_medecin_chat', {'id': user.id}) }}" class="text-decoration-none">
-                <div class="user-item {{ selectedUser is defined and selectedUser and selectedUser.id == user.id ? 'active' : '' }}">
+            <a href="{{ path('app_medecin_chat', {'id': user.user.id}) }}" class="text-decoration-none">
+                <div class="user-item {{ selectedUser is defined and selectedUser and selectedUser.id == user.user.id ? 'active' : '' }}">
                     <div class="user-avatar">
                         <img src="{{ asset('uploads/avatars/' ~ (user.avatar ?? 'default-avatar.png')) }}" alt="Avatar">
                     </div>
                     <div class="user-info">
-                        <div class="user-name">{{ user.nom  }} {{ user.prenom }}</div> <!-- Affiche nom complet -->
-                        <div class="user-status">
-                            {% if user.isOnline %}
-                                <span class="online-dot"></span> En ligne
-                            {% else %}
-                                <span class="offline-dot"></span> Hors ligne
-                            {% endif %}
-                        </div>
+                        <div class="user-name">{{ user.user.nom  }} {{ user.user.prenom }}</div> <!-- Affiche nom complet -->
+
                     </div>
                 </div>
             </a>

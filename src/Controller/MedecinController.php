@@ -75,11 +75,7 @@ final class MedecinController extends AbstractController
     }
 
 
-    #[Route('/taches', name: 'app_medecin_taches')]
-    public function taches(): Response
-    {
-        return $this->render('medecin/task.html.twig');
-    }
+
 
     #[Route('/dossier-medical', name: 'app_medecin_dossier_medical')]
     public function dossierMedical(): Response
@@ -87,11 +83,7 @@ final class MedecinController extends AbstractController
         return $this->render('medecin/dossier_medical.html.twig');
     }
 
-    #[Route('/messages', name: 'app_medecin_messages')]
-    public function messages(): Response
-    {
-        return $this->render('medecin/messages.html.twig');
-    }
+
 
     #[Route('/rendez-vous', name: 'app_medecin_rendez_vous')]
     public function rendezVous(): Response

@@ -51,7 +51,7 @@ class ChatController extends AbstractController
         $users = [];
         foreach ($conversations as $conv) {
             if (isset($conv['user'])) {
-                $users[] = $conv['user'];
+                $users[] = $conv['user']->getMedecin();
             }
         }
 

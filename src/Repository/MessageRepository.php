@@ -39,7 +39,7 @@ class MessageRepository extends ServiceEntityRepository
             $conversations[$otherUser->getId()] = [
                 'user' => $otherUser,
                 'message' => $message->getContent(),
-                'date' => $message->getCreatedAt()
+                
             ];
         }
 
