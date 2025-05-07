@@ -159,7 +159,29 @@ final class MedecinController extends AbstractController
     {
         return $this->render('medecin/calendrier.html.twig');
     }
+    #[Route('/messages', name: 'app_medecin_messages')]
+    public function messages(
+        MedecinRepository $medecinRepository
+    ): Response
+    {
+        // Récupérer tous les médecins
+        $medecins = $medecinRepository->findAll();
 
+        // Préparer les données pour le JavaScript
+        $medecinsData = [];
+        foreach ($medecins as $medecin) {
+            $medecinsData[] = [
+                'id' => $medecin->getUser()->getId(),
+                'nom' => $medecin->getUser()->getNom(),
+                'prenom' => $medecin->getUser()->getPrenom(),
+                'service' => $medecin->getService()
+            ];
+        }
+
+        return $this->render('medecin/messages.html.twig', [
+            'medecins' => $medecinsData,
+        ]);
+    }
     #[Route('/deconnexion', name: 'app_medecin_deconnexion')]
     public function logout(): void
     {

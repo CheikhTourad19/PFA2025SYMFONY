@@ -77,6 +77,12 @@ class Message
         return $this;
     }
 
+
+
+
+
+
+
     public function getSender(): ?User
     {
         return $this->sender;
@@ -97,12 +103,6 @@ class Message
         return $this->receiver;
     }
 
-
-
-
-
-
-
     public function setReceiver(?User $receiver): static
     {
         if ($this->receiver !== $receiver) {
@@ -120,4 +120,5 @@ class Message
         }
         return $this;
     }
+
 }
