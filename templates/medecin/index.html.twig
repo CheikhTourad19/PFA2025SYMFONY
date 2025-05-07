@@ -1,13 +1,66 @@
 {# templates/pharmacie/base.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}E-Medical Pharmacie{% endblock %}
-{% block head %}
+{% block title %}E-Medical Doctor Portal{% endblock %}
 
+{% block head %}
     {{ parent() }}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         [x-cloak] { display: none !important; }
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-item-active {
+            position: relative;
+        }
+
+        .nav-item-active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: currentColor;
+            transform-origin: left;
+            animation: scaleIn 0.3s ease-out forwards;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
     </style>
     <script>
         window.flashMessages = {
@@ -17,14 +70,10 @@
             info: [{% for message in app.flashes('info') %}'{{ message|e('js') }}'{% if not loop.last %},{% endif %}{% endfor %}]
         };
     </script>
-
 {% endblock %}
 
 {% block body %}
-    {# Store flash messages in JavaScript variables #}
-
-
-    <div class="min-h-screen flex flex-col bg-gray-50"
+    <div class="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-blue-50"
          x-data="{
             isModalOpen: false,
             isFlashModalOpen: false,
@@ -74,15 +123,23 @@
             })()
          "
          x-on:keydown.esc.prevent="isModalOpen = false; isFlashModalOpen = false;">
-        <!-- Navbar -->
-        <nav class="bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg " :class="{ 'backdrop-blur-sm bg-opacity-80': isModalOpen || isFlashModalOpen }">
+
+        <!-- Modern Navbar -->
+        <nav class="glass-effect shadow-sm sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Main navigation container -->
                 <div class="relative flex items-center justify-between h-16 md:h-20">
                     <!-- Logo and app name -->
                     <div class="flex-shrink-0 flex items-center space-x-3">
-                        <!-- Modern animated logo -->
-                        <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100 tracking-tight">Espace Medecin</span>
+                        <div class="flex items-center space-x-2">
+                            <svg class="h-8 w-8 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 14C19 15.657 16.761 17 14 17C11.239 17 9 15.657 9 14M19 14C19 12.343 16.761 11 14 11C11.239 11 9 12.343 9 14M19 14V6M9 14V6M14 17C10.686 17 8 15.657 8 14M14 17C17.314 17 20 15.657 20 14M14 11C17.314 11 20 9.657 20 11M14 11C10.686 11 8 9.657 8 11M20 11V6M8 11V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 6H5M5 6H6M5 6V5M5 6V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 18H5M5 18H6M5 18V17M5 18V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 14H5M5 14H6M5 14V13M5 14V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 10H5M5 10H6M5 10V9M5 10V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400 tracking-tight">E-Medical</span>
+                        </div>
                     </div>
 
                     <!-- Desktop navigation -->
@@ -98,35 +155,29 @@
                             'app_medecin_ordonnace':'bx-prescription',
                         } %}
                         {% for route,icon in menu_items %}
-                            <!-- Navigation items with modern hover effects -->
-                            <a href="{{ path(route) }}" class="group relative px-4 py-2 rounded-lg transition-all duration-500 {{ currentRoute == route ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-700/30' }}">
+                            <a href="{{ path(route) }}"
+                               class="group relative px-4 py-2 rounded-lg smooth-transition {{ currentRoute == route ? 'nav-item-active text-blue-600 font-medium' : 'text-gray-600 hover:text-blue-600' }}">
                                 <div class="flex items-center space-x-2">
-                                    <i class="bx {{ icon }}"></i>
-                                    <span class="font-medium">{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
+                                    <i class="bx {{ icon }} text-lg"></i>
+                                    <span>{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
                                 </div>
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-500"></span>
                             </a>
                         {% endfor %}
                     </div>
 
                     <!-- User profile and mobile menu button -->
-                    <div class="flex items-center">
-                        <button
-                                @click="isModalOpen = true; offcanvasOpen = false"
-                                class="mr-2 rounded-lg flex items-center px-4 py-2 text-red-100 hover:bg-red-600/20 bg-red-600 transition-colors"
-                        type="button">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-1 text-red-100">
-                                <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
-                                <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z" clip-rule="evenodd" />
-                            </svg>
-                            Déconnexion
+                    <div class="flex items-center space-x-4">
+                        <button @click="isModalOpen = true"
+                                class="flex items-center space-x-1 px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-400 text-white shadow-sm hover:shadow-md smooth-transition">
+                            <i class="bx bx-log-out"></i>
+                            <span class="hidden sm:inline">Logout</span>
                         </button>
 
                         <!-- Mobile menu button -->
-                        <button @click="isMobileMenuOpen = !isMobileMenuOpen" type="button" class="md:hidden p-1 rounded-md text-white hover:bg-blue-700/30 focus:outline-none focus:ring-2 focus:ring-white">
-                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                        <button @click="isMobileMenuOpen = !isMobileMenuOpen"
+                                class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 focus:outline-none smooth-transition">
+                            <i class="bx bx-menu text-2xl" x-show="!isMobileMenuOpen"></i>
+                            <i class="bx bx-x text-2xl" x-show="isMobileMenuOpen" x-cloak></i>
                         </button>
                     </div>
                 </div>
@@ -134,19 +185,20 @@
 
             <!-- Mobile menu -->
             <div x-cloak x-show="isMobileMenuOpen"
-                 x-transition:enter="transition ease-out duration-100"
-                 x-transition:enter-start="opacity-0 scale-95"
-                 x-transition:enter-end="opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-75"
-                 x-transition:leave-start="opacity-100 scale-100"
-                 x-transition:leave-end="opacity-0 scale-95"
-                 class="md:hidden bg-white/90 backdrop-blur-sm rounded-lg mx-4 shadow-xl overflow-hidden">
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 translate-y-4"
+                 class="md:hidden glass-effect rounded-lg mx-4 shadow-xl overflow-hidden">
                 <div class="px-2 pt-2 pb-3 space-y-1">
                     {% set currentRoute = app.request.attributes.get('_route') %}
                     {% for route,icon in menu_items %}
-                        <a href="{{ path(route) }}" class="flex items-center px-3 py-3 rounded-md text-base font-medium {{ currentRoute == route ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }}">
-                            <i class="bx {{ icon }}"></i>
-                            <span class="font-medium">{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
+                        <a href="{{ path(route) }}"
+                           class="flex items-center px-4 py-3 rounded-lg smooth-transition {{ currentRoute == route ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <i class="bx {{ icon }} text-lg mr-3"></i>
+                            <span>{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
                         </a>
                     {% endfor %}
                 </div>
@@ -158,204 +210,167 @@
             {% block content %}{% endblock %}
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <!-- Modern Footer -->
+        <footer class="bg-white border-t border-gray-200 mt-8">
+            <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="mb-4 md:mb-0">
-                        <p class="text-sm text-gray-400">&copy; {{ "now"|date("Y") }} E-Medical Tunisie. Tous droits réservés.</p>
+                    <div class="mb-4 md:mb-0 flex items-center space-x-2">
+                        <svg class="h-6 w-6 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 14C19 15.657 16.761 17 14 17C11.239 17 9 15.657 9 14M19 14C19 12.343 16.761 11 14 11C11.239 11 9 12.343 9 14M19 14V6M9 14V6M14 17C10.686 17 8 15.657 8 14M14 17C17.314 17 20 15.657 20 14M14 11C17.314 11 20 9.657 20 11M14 11C10.686 11 8 9.657 8 11M20 11V6M8 11V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 6H5M5 6H6M5 6V5M5 6V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 18H5M5 18H6M5 18V17M5 18V19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 14H5M5 14H6M5 14V13M5 14V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 10H5M5 10H6M5 10V9M5 10V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <p class="text-sm text-gray-600">&copy; {{ "now"|date("Y") }} E-Medical. All rights reserved.</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-500 hover:text-blue-600 smooth-transition">
+                            <i class="bx bxl-facebook-circle text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-blue-400 smooth-transition">
+                            <i class="bx bxl-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-500 hover:text-pink-600 smooth-transition">
+                            <i class="bx bxl-instagram text-xl"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </footer>
 
-        <!-- Flash message modal -->
-        <div
-                x-cloak
-                x-show="isModalOpen"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                x-bind:aria-hidden="!isModalOpen"
-                tabindex="-1"
-                role="dialog"
-                class="z-50 fixed inset-0 overflow-y-auto overflow-x-hidden bg-zinc-900/75 p-4 backdrop-blur-xs will-change-auto lg:p-8">
+        <!-- Logout Confirmation Modal -->
+        <div x-cloak x-show="isModalOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
 
-            <!-- Modal Dialog -->
-            <div
-                    x-cloak
-                    x-show="isModalOpen"
-                    x-on:click.away="isModalOpen = false"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 scale-90 -translate-y-full"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-125 translate-y-full"
-                    role="document"
-                    class="mx-auto flex w-full max-w-md flex-col overflow-hidden rounded-lg bg-white shadow-xs will-change-auto">
+            <div x-on:click.away="isModalOpen = false"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                 class="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden">
 
-                <div class="flex items-center justify-between bg-zinc-50 px-5 py-4">
-                    <h3 class="text-lg font-bold">Confirmation</h3>
-                    <div class="-my-4">
-                        <button
-                                x-on:click="isModalOpen = false"
-                                type="button"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs focus:ring-zinc-300/25 active:border-zinc-200 active:shadow-none">
-                            <svg
-                                    class="inline-block size-4 -mx-1"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                        fill-rule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clip-rule="evenodd">
-                                </path>
-                            </svg>
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold text-gray-900">Confirm Logout</h3>
+                        <button @click="isModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <i class="bx bx-x text-2xl"></i>
                         </button>
                     </div>
-                </div>
 
-                <div class="grow p-5">
-                    <p class="text-sm/relaxed">Êtes-vous sûr de vouloir vous déconnecter ?</p>
-                </div>
+                    <div class="mt-4">
+                        <p class="text-gray-600">Are you sure you want to log out of your account?</p>
+                    </div>
 
-                <div class="flex items-center justify-end gap-1.5 border-t border-zinc-100 px-5 py-4">
-                    <button
-                            x-on:click="isModalOpen = false"
-                            type="button"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs focus:ring-zinc-300/25 active:border-zinc-200 active:shadow-none">
-                        Annuler
-                    </button>
-                    <form action="{{ path('app_logout') }}" method="POST" class="inline">
-                        <button
-                                type="submit"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-800 bg-red-500 px-3 py-2 text-sm font-medium leading-5 text-white hover:border-red-900 hover:bg-red-900 hover:text-white focus:outline-hidden focus:ring-2 focus:ring-zinc-500/50 active:border-zinc-700 active:bg-zinc-700">
-                            Se déconnecter
+                    <div class="mt-6 flex justify-end space-x-3">
+                        <button @click="isModalOpen = false"
+                                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 smooth-transition">
+                            Cancel
                         </button>
-                    </form>
+                        <form action="{{ path('app_logout') }}" method="POST">
+                            <button type="submit"
+                                    class="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-400 text-white shadow-sm hover:shadow-md smooth-transition">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <!-- END Modal Dialog -->
         </div>
-        <!-- END Logout Confirmation Modal -->
 
         <!-- Flash Messages Modal -->
-        <div
-                x-cloak
-                x-show="isFlashModalOpen"
-                x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                x-bind:aria-hidden="!isFlashModalOpen"
-                tabindex="-1"
-                role="dialog"
-                class="z-50 fixed inset-0 overflow-y-auto overflow-x-hidden bg-zinc-900/75 p-4 backdrop-blur-xs will-change-auto lg:p-8">
+        <div x-cloak x-show="isFlashModalOpen"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
 
-            <!-- Modal Dialog -->
-            <div
-                    x-cloak
-                    x-show="isFlashModalOpen"
-                    x-on:click.away="isFlashModalOpen = false"
-                    x-transition:enter="transition ease-out duration-300"
-                    x-transition:enter-start="opacity-0 scale-90 -translate-y-full"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease-in duration-150"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-125 translate-y-full"
-                    role="document"
-                    class="mx-auto flex w-full max-w-md flex-col overflow-hidden rounded-lg bg-white shadow-xs will-change-auto"
-                    :class="{
-                    'border-l-4 border-green-500': currentFlashType === 'success',
-                    'border-l-4 border-red-500': currentFlashType === 'error',
-                    'border-l-4 border-yellow-500': currentFlashType === 'warning',
-                    'border-l-4 border-blue-500': currentFlashType === 'info'
-                }">
+            <div x-on:click.away="isFlashModalOpen = false"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                 class="w-full max-w-md rounded-xl bg-white shadow-xl overflow-hidden"
+                 :class="{
+                    'border-t-4 border-green-500': currentFlashType === 'success',
+                    'border-t-4 border-red-500': currentFlashType === 'error',
+                    'border-t-4 border-yellow-500': currentFlashType === 'warning',
+                    'border-t-4 border-blue-500': currentFlashType === 'info'
+                 }">
 
-                <div
-                        class="flex items-center justify-between px-5 py-4"
-                        :class="{
-                        'bg-green-50': currentFlashType === 'success',
-                        'bg-red-50': currentFlashType === 'error',
-                        'bg-yellow-50': currentFlashType === 'warning',
-                        'bg-blue-50': currentFlashType === 'info',
-                        'bg-zinc-50': !currentFlashType
-                    }">
-                    <div class="flex items-center gap-2">
-                        <h3 class="text-lg font-bold"
-                            :class="{
-                                'text-green-700': currentFlashType === 'success',
-                                'text-red-700': currentFlashType === 'error',
-                                'text-yellow-700': currentFlashType === 'warning',
-                                'text-blue-700': currentFlashType === 'info'
-                            }">
-                            <span x-text="currentFlashType === 'success' ? 'Succès' :
-                                    currentFlashType === 'error' ? 'Erreur' :
-                                    currentFlashType === 'warning' ? 'Attention' : 'Information'"></span>
-                        </h3>
-                        <div class="text-gray-500 text-sm" x-show="flashMessages.length > 1">
-                            <span x-text="(currentFlashIndex + 1) + ' / ' + flashMessages.length"></span>
+                <div class="p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <i class="bx text-2xl"
+                               :class="{
+                                   'bx-check-circle text-green-500': currentFlashType === 'success',
+                                   'bx-error-circle text-red-500': currentFlashType === 'error',
+                                   'bx-error text-yellow-500': currentFlashType === 'warning',
+                                   'bx-info-circle text-blue-500': currentFlashType === 'info'
+                               }"></i>
+                            <h3 class="text-lg font-bold"
+                                :class="{
+                                    'text-green-600': currentFlashType === 'success',
+                                    'text-red-600': currentFlashType === 'error',
+                                    'text-yellow-600': currentFlashType === 'warning',
+                                    'text-blue-600': currentFlashType === 'info'
+                                }">
+                                <span x-text="currentFlashType === 'success' ? 'Success' :
+                                              currentFlashType === 'error' ? 'Error' :
+                                              currentFlashType === 'warning' ? 'Warning' : 'Information'"></span>
+                            </h3>
+                            <span class="text-sm text-gray-500" x-show="flashMessages.length > 1">
+                                <span x-text="(currentFlashIndex + 1) + '/' + flashMessages.length"></span>
+                            </span>
                         </div>
-                    </div>
-                    <div class="-my-4">
-                        <button
-                                x-on:click="isFlashModalOpen = false"
-                                type="button"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs focus:ring-zinc-300/25 active:border-zinc-200 active:shadow-none">
-                            <svg
-                                    class="inline-block size-4 -mx-1"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                        fill-rule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clip-rule="evenodd">
-                                </path>
-                            </svg>
+                        <button @click="isFlashModalOpen = false" class="text-gray-400 hover:text-gray-500">
+                            <i class="bx bx-x text-2xl"></i>
                         </button>
                     </div>
-                </div>
 
-                <div class="grow p-5">
-                    <p x-text="currentFlashMessage" class="text-sm/relaxed"></p>
-                </div>
+                    <div class="mt-4">
+                        <p x-text="currentFlashMessage" class="text-gray-700"></p>
+                    </div>
 
-                <div class="flex items-center justify-between gap-1.5 border-t border-zinc-100 px-5 py-4">
-                    <div class="space-x-2" x-show="flashMessages.length > 1">
-                        <button @click="showPreviousFlashMessage()"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1 text-sm font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs"
-                                :disabled="currentFlashIndex === 0"
-                                :class="{ 'opacity-50 cursor-not-allowed': currentFlashIndex === 0 }">
-                            &larr;
-                        </button>
-                        <button @click="showNextFlashMessage()"
-                                class="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1 text-sm font-semibold leading-5 text-zinc-800 hover:border-zinc-300 hover:text-zinc-900 hover:shadow-xs"
-                                :disabled="currentFlashIndex === flashMessages.length - 1"
-                                :class="{ 'opacity-50 cursor-not-allowed': currentFlashIndex === flashMessages.length - 1 }">
-                            &rarr;
+                    <div class="mt-6 flex justify-between items-center">
+                        <div class="flex space-x-2" x-show="flashMessages.length > 1">
+                            <button @click="showPreviousFlashMessage()"
+                                    class="p-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed smooth-transition"
+                                    :disabled="currentFlashIndex === 0">
+                                <i class="bx bx-chevron-left"></i>
+                            </button>
+                            <button @click="showNextFlashMessage()"
+                                    class="p-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed smooth-transition"
+                                    :disabled="currentFlashIndex === flashMessages.length - 1">
+                                <i class="bx bx-chevron-right"></i>
+                            </button>
+                        </div>
+                        <button @click="isFlashModalOpen = false"
+                                class="px-4 py-2 rounded-lg text-white smooth-transition"
+                                :class="{
+                                    'bg-green-500 hover:bg-green-600': currentFlashType === 'success',
+                                    'bg-red-500 hover:bg-red-600': currentFlashType === 'error',
+                                    'bg-yellow-500 hover:bg-yellow-600': currentFlashType === 'warning',
+                                    'bg-blue-500 hover:bg-blue-600': currentFlashType === 'info'
+                                }">
+                            Close
                         </button>
                     </div>
-                    <button @click="isFlashModalOpen = false"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium leading-5 text-white hover:text-white focus:outline-hidden focus:ring-2"
-                            :class="{
-                                'border-green-600 bg-green-600 hover:border-green-700 hover:bg-green-700 focus:ring-green-500/50 active:border-green-500 active:bg-green-500': currentFlashType === 'success',
-                                'border-red-600 bg-red-600 hover:border-red-700 hover:bg-red-700 focus:ring-red-500/50 active:border-red-500 active:bg-red-500': currentFlashType === 'error',
-                                'border-yellow-600 bg-yellow-600 hover:border-yellow-700 hover:bg-yellow-700 focus:ring-yellow-500/50 active:border-yellow-500 active:bg-yellow-500': currentFlashType === 'warning',
-                                'border-blue-600 bg-blue-600 hover:border-blue-700 hover:bg-blue-700 focus:ring-blue-500/50 active:border-blue-500 active:bg-blue-500': currentFlashType === 'info' || !currentFlashType
-                            }">
-                        Fermer
-                    </button>
                 </div>
             </div>
-            <!-- END Modal Dialog -->
         </div>
     </div>
 {% endblock %}
