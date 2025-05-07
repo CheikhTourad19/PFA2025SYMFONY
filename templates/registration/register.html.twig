@@ -157,7 +157,7 @@
       message: 'Choisir un mot de passe fort',
       password: '',
       strength: 0,
-
+      passwordVisible: false, // Add this for toggle functionality
 
       // Check the strength of the password
       checkStrength() {
@@ -185,37 +185,33 @@
         this.strength = score;
 
         if (score === 0) {
-        document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
-        document.getElementById('submit-button').disabled = true;
+          document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = true;
 
           this.message = 'Choose a strong password';
         } else if (score === 10) {
-                document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
-
-                document.getElementById('submit-button').disabled = true;
+          document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = true;
 
           this.message = 'tres petit!';
         } else if (score <= 30) {
-         document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
-        document.getElementById('submit-button').disabled = true;
+          document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = true;
 
           this.message = 'faible';
         } else if (score <= 60) {
-            document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
-
-         document.getElementById('submit-button').disabled = false;
+          document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = false;
 
           this.message = 'Moyen';
         } else if (score <= 80) {
-        document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
-
-        document.getElementById('submit-button').disabled = false;
+          document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = false;
 
           this.message = 'Fort 💪';
         } else {
-        document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
-
-        document.getElementById('submit-button').disabled = false;
+          document.getElementById('submit-button').classList.remove('opacity-50', 'cursor-not-allowed');
+          document.getElementById('submit-button').disabled = false;
 
           this.message = 'Very strong!';
         }
@@ -232,12 +228,29 @@
                     </div>
                     {{ form_widget(registrationForm.password, {
                         'attr': {
+                            'id':'password',
                             'x-model': 'password',
                             'x-on:input': 'checkStrength',
+                            ':type': 'passwordVisible ? "text" : "password"',
                             'class': 'form-input pl-10 w-full p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                             'placeholder': '••••••••'
                         }
                     }) }}
+                    <button
+                            type="button"
+                            @click="passwordVisible = !passwordVisible"
+                            class="absolute inset-y-0 right-0 px-3 flex items-center cursor-pointer"
+                            aria-label="password toggle"
+                    >
+            <span
+                    class="icon-[tabler--eye] text-base-content/80 size-5 shrink-0"
+                    x-show="!passwordVisible"
+            ></span>
+                        <span
+                                class="icon-[tabler--eye-off] text-base-content/80 size-5 shrink-0"
+                                x-show="passwordVisible"
+                        ></span>
+                    </button>
                 </div>
                 {{ form_errors(registrationForm.password, {
                     'attr': {'class': 'error-message'}
@@ -255,13 +268,13 @@
                     <div
                             class="h-1.5 rounded-full transition-all duration-300"
                             :class="{
-          'bg-rose-500': strength <= 30,
-          'bg-orange-500': strength <= 60,
-          'bg-emerald-500': strength > 60,
-        }"
+                'bg-rose-500': strength <= 30,
+                'bg-orange-500': strength <= 60,
+                'bg-emerald-500': strength > 60,
+            }"
                             x-bind:style="{
-          'width': strength + '%'
-        }"
+                'width': strength + '%'
+            }"
                     ></div>
                 </div>
                 <!-- END Progress Bar -->
@@ -279,11 +292,11 @@
                         x-text="message"
                         class="mt-1.5 text-sm font-medium"
                         x-bind:class="{
-        'text-zinc-500 dark:text-zinc-400': strength === 0,
-        'text-rose-500 dark:text-rose-400': strength <= 30,
-        'text-orange-500 dark:text-orange-400': strength <= 60,
-        'text-emerald-500 dark:text-emerald-400': strength > 60,
-      }"
+            'text-zinc-500 dark:text-zinc-400': strength === 0,
+            'text-rose-500 dark:text-rose-400': strength <= 30,
+            'text-orange-500 dark:text-orange-400': strength <= 60,
+            'text-emerald-500 dark:text-emerald-400': strength > 60,
+        }"
                 ></p>
             </div>
 
