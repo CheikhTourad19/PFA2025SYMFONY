@@ -1,147 +1,103 @@
 <?php
+// src/Controller/Api/ChatController.php
+
 namespace App\Controller;
 
-use App\Entity\Medecin;
 use App\Entity\Message;
 use App\Entity\User;
-use App\Repository\MedecinRepository;
 use App\Repository\MessageRepository;
-use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
+use App\Service\ChatService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
-#[Route('/medecin')]
+#[Route('/api/chat')]
 class ChatController extends AbstractController
 {
-    #[Route('/messages', name: 'app_medecin_messages')]
-    public function messages(
-        Request $request,
-        MedecinRepository $medecinRepository,
-        MessageRepository $messageRepository,
-        Security $security
-    ): Response {
-        /** @var User $currentUser */
-        $currentUser = $security->getUser();
 
-        if (!$currentUser) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
+    #[Route('/conversations', name: 'api_chat_conversations', methods: ['GET'])]
+    public function getConversations(ChatService $chatService
+
+    ): JsonResponse
+    { $currentUser = $this->getUser();
+        $messages = $chatService->getLastMessagesWithUserInfo($currentUser);
+
+        return $this->json(['conversations' => $messages]);
+
+    }
+
+    #[Route('/messages/{userId}', name: 'api_chat_messages', methods: ['GET'])]
+    public function getMessages(int $userId, UserRepository $userRepository, MessageRepository $messageRepository): JsonResponse
+    {
+        $currentUser = $this->getUser();
+        $otherUser = $userRepository->find($userId);
+
+        if (!$otherUser) {
+            return $this->json(['error' => 'Utilisateur non trouvé'], 404);
         }
 
-        $searchTerm = $request->query->get('q');
+        $messages = $messageRepository->findMessagesBetweenUsers($currentUser, $otherUser);
 
-        // Si un terme de recherche est spécifié, filtrons les utilisateurs
-        if ($searchTerm) {
-            // Vous devrez implémenter cette méthode dans UserRepository
-            $filteredUsers = $medecinRepository->searchByNomOuPrenom($searchTerm);
-            return $this->render('medecin/messages.html.twig', [
-                'users' => $filteredUsers,
-                'searchTerm' => $searchTerm,
-                'selectedUser' => null,
-                'messages' => []
-            ]);
+        $formattedMessages = [];
+        foreach ($messages as $message) {
+            $formattedMessages[] = [
+                'id' => $message->getId(),
+                'content' => $message->getContent(),
+                'sentAt' => $message->getSentAt()->format('Y-m-d H:i:s'),
+                'isSentByMe' => $message->getSender()->getId() === $currentUser->getId()
+            ];
         }
 
-        $conversations = $messageRepository->findLastConversationsForUser($currentUser);
-        $users = [];
-        foreach ($conversations as $conv) {
-            if (isset($conv['user'])) {
-                $users[] = $conv['user']->getMedecin();
-            }
-        }
-
-        return $this->render('medecin/messages.html.twig', [
-            'users' => $users,
-            'searchTerm' => $searchTerm ?? null,
-            'selectedUser' => null, // Explicitement défini comme null
-            'messages' => []
+        return $this->json([
+            'messages' => $formattedMessages,
+            'withUser' => [
+                'id' => $otherUser->getId(),
+                'nom' => $otherUser->getNom(),
+                'prenom' => $otherUser->getPrenom()
+            ]
         ]);
     }
 
-    #[Route('/messages/{id}', name: 'app_medecin_chat')]
-    public function chat(
-        User $user,
-        MessageRepository $messageRepository,
-        Security $security
-    ): Response {
-        /** @var User $currentUser */
-        $currentUser = $security->getUser();
-
-        if (!$currentUser) {
-            $this->addFlash('error', 'Vous devez être connecté pour accéder à cette page');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $conversations = $messageRepository->findLastConversationsForUser($currentUser);
-        $users = [];
-        foreach ($conversations as $conv) {
-            if (isset($conv['user'])) {
-                $users[] = $conv['user'];
-            }
-        }
-
-        // Récupérer les messages
-        $messages = $messageRepository->findMessagesBetweenUsers($currentUser, $user);
-
-        return $this->render('medecin/messages.html.twig', [
-            'users' => $users, // Utiliser la variable $users correctement traitée
-            'selectedUser' => $user,
-            'messages' => $messages,
-            'searchTerm' => ''
-        ]);
-    }
-
-    #[Route('/messages/{id}/send', name: 'app_medecin_send_message', methods: ['POST'])]
+    #[Route('/messages/{userId}', name: 'api_chat_send_message', methods: ['POST'])]
     public function sendMessage(
-        User $user,
+        int $userId,
         Request $request,
-        EntityManagerInterface $em,
-        Security $security
-    ): Response {
-        /** @var User $currentUser */
-        $currentUser = $security->getUser();
-        $content = $request->request->get('message');
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $currentUser = $this->getUser();
+        $receiver = $userRepository->find($userId);
 
-        if (empty($content)) {
-            $this->addFlash('error', 'Le message ne peut pas être vide');
-            return $this->redirectToRoute('app_medecin_chat', ['id' => $user->getId()]);
+        if (!$receiver) {
+            return $this->json(['error' => 'Destinataire non trouvé'], 404);
+        }
+
+        $content = json_decode($request->getContent(), true)['content'] ?? null;
+
+        if (!$content) {
+            return $this->json(['error' => 'Contenu du message manquant'], 400);
         }
 
         $message = new Message();
-        $message->setContent($content)
-            ->setSender($currentUser)
-            ->setReceiver($user)
-            ->setSentAt(new \DateTimeImmutable());
+        $message->setSender($currentUser);
+        $message->setReceiver($receiver);
+        $message->setContent($content);
+        $message->setSentAt(new \DateTime());
 
-        $em->persist($message);
-        $em->flush();
+        $entityManager->persist($message);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_medecin_chat', ['id' => $user->getId(),'searchTerm' => '']);
-    }
-
-
-    #[Route('/mes-taches', name: 'app_my_created_tasks')]
-    public function myCreatedTasks(
-        Security $security,
-        TaskRepository $taskRepository
-    ): Response {
-        /** @var Medecin $currentUser */
-        $currentUser = $security->getUser();
-
-        if (!$currentUser) {
-            $this->addFlash('error', 'Vous devez être connecté');
-            return $this->redirectToRoute('app_login');
-        }
-
-        $tasks = $taskRepository->findCreatedByMedecin($currentUser);
-
-        return $this->render('medecin/my_created_tasks.html.twig', [
-            'tasks' => $tasks
+        return $this->json([
+            'message' => [
+                'id' => $message->getId(),
+                'content' => $message->getContent(),
+                'sentAt' => $message->getSentAt()->format('Y-m-d H:i:s'),
+                'isSentByMe' => true
+            ]
         ]);
     }
 }

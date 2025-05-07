@@ -292,6 +292,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+    public function addSentMessage(Message $message): static
+    {
+        if (!$this->sentMessages->contains($message)) {
+            $this->sentMessages->add($message);
+            $message->setSender($this);
+        }
+        return $this;
+    }
+
+    public function removeSentMessage(Message $message): static
+    {
+        if ($this->sentMessages->removeElement($message)) {
+            if ($message->getSender() === $this) {
+                $message->setSender(null);
+            }
+        }
+        return $this;
+    }
+
+
 
 
 
