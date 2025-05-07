@@ -164,6 +164,8 @@ final class MedecinController extends AbstractController
         MedecinRepository $medecinRepository
     ): Response
     {
+        $user = $this->getUser();
+
         // Récupérer tous les médecins
         $medecins = $medecinRepository->findAll();
 
@@ -180,6 +182,9 @@ final class MedecinController extends AbstractController
 
         return $this->render('medecin/messages.html.twig', [
             'medecins' => $medecinsData,
+            'userId' => $user->getId(),
+            'mercure_public_url' => $this->getParameter('mercure_public_url')
+
         ]);
     }
     #[Route('/deconnexion', name: 'app_medecin_deconnexion')]

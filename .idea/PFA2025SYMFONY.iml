@@ -150,5 +150,6 @@
     <orderEntry type="library" name="three.js" level="application" />
     <orderEntry type="library" name="boxicons" level="application" />
     <orderEntry type="library" name="alpinejs" level="application" />
+    <orderEntry type="library" name="theme-change" level="application" />
   </component>
 </module>

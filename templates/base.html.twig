@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="light"
+>
 <head>
     <meta charset="UTF-8">
     <title>E-MEDICAL TUNISE - Plateforme médicale</title>
@@ -106,8 +107,17 @@
 {% block body %}{% endblock %}
 
 
+<script src="https://cdn.jsdelivr.net/npm/theme-change@2.0.2/index.js"></script>
+<script>
+    // Initialize after DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        themeChange();
+    });
+</script>
 
 <script>
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const navigationLoader = document.getElementById('navigation-loader');
 

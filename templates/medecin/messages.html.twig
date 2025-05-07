@@ -409,9 +409,173 @@
 
         // Charger les conversations au chargement de la page
         document.addEventListener('DOMContentLoaded', loadConversations);
+        function setupMercureSubscription() {if (!selectedUserId) return;
+
+        // Create EventSource pointed at the Mercure hub with a topic for this user
+        const currentUserId = {{ app.user.id }};
+        const url = new URL('http://localhost:3000/.well-known/mercure');
+        url.searchParams.append('topic', `chat/messages/${currentUserId}`);
+
+        // Close any existing EventSource
+        if (window.messageEventSource) {
+            window.messageEventSource.close();
+        }
+
+        // Create new EventSource
+        window.messageEventSource = new EventSource(url);
+
+        // Handle incoming messages
+        window.messageEventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            // Only process if this is from the currently selected conversation
+            if (data.senderId == selectedUserId) {
+                // Create and append the new message
+                const messageItem = document.createElement('div');
+                messageItem.className = 'message-item received';
+                messageItem.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${data.content}</div>
+                    <small class="message-time">${formatDateTime(data.sentAt)}</small>
+                </div>
+            `;
+
+                const messagesList = document.getElementById('messagesList');
+                messagesList.appendChild(messageItem);
+
+                // Scroll to the bottom
+                messagesList.scrollTop = messagesList.scrollHeight;
+
+                // Play notification sound or show notification if needed
+                playNotificationSound();
+            } else {
+                // This is a message from another conversation - update the conversations list
+                showNewMessageNotification(data.senderId);
+                refreshConversations();
+            }
+        };
+
+        window.messageEventSource.onerror = (error) => {
+            console.error('Mercure EventSource error:', error);
+            // Try to reconnect after a delay
+            setTimeout(setupMercureSubscription, 5000);
+        };
+        }
+        function playNotificationSound() {
+            // Create a simple notification sound
+            const audio = new Audio('/sounds/notification.mp3'); // Add a sound file to your public directory
+            audio.play().catch(error => console.log('Audio play failed:', error));
+        }
+        function showNewMessageNotification(userId) {
+            // Find the conversation element by user ID
+            const conversationEl = document.querySelector(`.conversation-item[data-user-id="${userId}"]`);
+            if (conversationEl) {
+                conversationEl.classList.add('has-new-message');
+            }
+        }
+        function refreshConversations() {
+            fetchConversations();
+        }
+        function onUserSelect(userId) {
+            selectedUserId = userId;
+            // Your existing code for selecting a user...
+
+            // Set up Mercure subscription
+            setupMercureSubscription();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // Your existing initialization code...
+
+            // Set up the Mercure subscription when the page loads
+            setupMercureSubscription();
+        });
+        // Subscribe to real-time updates with Mercure
+        function subscribeToMessages() {
+            // Get the current user ID (you'll need to pass this from the controller)
+            const currentUserId = {{ app.user.id|json_encode|raw }};
+
+            // Create Mercure EventSource
+            const url = new URL('{{ mercure_public_url }}');
+            url.searchParams.append('topic', 'chat/messages/' + currentUserId);
+
+            const eventSource = new EventSource(url.toString());
+
+            eventSource.onmessage = event => {
+                const data = JSON.parse(event.data);
+                console.log('Received message via Mercure:', data);
+
+                // If we're currently viewing a conversation with this sender, add the message
+                if (selectedUserId && selectedUserId == data.senderId) {
+                    // Create message element
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'message received';
+                    messageElement.innerHTML = `
+                <div class="message-content">
+                    <p>${data.content}</p>
+                    <small class="text-muted">${formatMessageTime(data.sentAt)}</small>
+                </div>
+            `;
+
+                    // Add to message list
+                    document.getElementById('messagesList').appendChild(messageElement);
+
+                    // Scroll to bottom
+                    const messagesContainer = document.getElementById('messagesList');
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                } else {
+                    // Update the conversation list to show new message
+                    refreshConversationsList();
+                }
+            };
+
+            eventSource.onerror = event => {
+                console.error('Mercure EventSource error:', event);
+                // Attempt to reconnect after a delay
+                setTimeout(() => {
+                    subscribeToMessages();
+                }, 5000);
+            };
+        }
+
+        // Add helper function to format time
+        function formatMessageTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Call the subscription function when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            subscribeToMessages();
+        });
+
+
+
+
+
+
+
+
     </script>
 
     <style>
+        /* Add this to your CSS file or in a <style> tag in your template */
+        .conversation-item.has-new-message {
+            background-color: rgba(13, 110, 253, 0.1);
+            font-weight: bold;
+        }
+
+        .conversation-item.has-new-message::after {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
         /* Styles pour la page de messages */
         .search-container {
             position: relative;

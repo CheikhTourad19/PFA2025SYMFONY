@@ -36,28 +36,64 @@
 
                     <form action="{{ path('app_pharma_add_medicament') }}" method="POST" class="space-y-5">
 
-                            <div class="space-y-1">
-                                <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
-                                    <i class="fas fa-tag mr-2 text-blue-500"></i> Medicament
-                                </label>
+                        <div class="space-y-1">
+                            <label for="nom" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+                                <i class="fas fa-tag mr-2 text-blue-500"></i> Medicament
+                            </label>
+                            <div class="relative" x-data="{ open: false, search: '', selected: null, filteredMedicaments: [] }">
+                                <!-- Search input -->
                                 <div class="relative">
-                                    <select
+                                    <input
                                             type="text"
-                                            id="nom"
-                                            name="nom"
-                                            required
+                                            x-model="search"
+                                            @focus="open = true"
+                                            @click.away="open = false"
+                                            placeholder="Chercher un medicament par son nom..."
                                             class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm"
-
                                     >
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-search text-gray-400"></i>
+                                    </div>
+                                </div>
 
-                                        {% for medicament in medicaments %}
-                                            <option value="{{ medicament.id }}">{{ medicament.nom }}</option>
+                                <!-- Hidden actual select - this will submit with the form -->
+                                <select
+                                        id="nom"
+                                        name="nom"
+                                        required
+                                        class="hidden"
+                                        x-bind:value="selected"
+                                >
+                                    {% for medicament in medicaments %}
+                                        <option value="{{ medicament.id }}">{{ medicament.nom }}</option>
+                                    {% endfor %}
+                                </select>
 
-                                        {% endfor %}
-                                    </select>
-
+                                <!-- Dropdown list -->
+                                <div
+                                        x-show="open"
+                                        x-init="filteredMedicaments = [
+                {% for medicament in medicaments %}
+                    { id: '{{ medicament.id }}', nom: '{{ medicament.nom }}' },
+                {% endfor %}
+            ]"
+                                        class="absolute z-50 mt-1 w-full bg-white dark:bg-gray-800 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                                >
+                                    <ul class="py-1">
+                                        <template x-for="medicament in filteredMedicaments.filter(item => item.nom.toLowerCase().includes(search.toLowerCase()))" :key="medicament.id">
+                                            <li
+                                                    @click="selected = medicament.id; open = false; search = medicament.nom"
+                                                    class="px-4 py-2 text-gray-900 dark:text-white hover:bg-blue-100 dark:hover:bg-blue-800 cursor-pointer"
+                                                    x-text="medicament.nom"
+                                            ></li>
+                                        </template>
+                                        <li x-show="filteredMedicaments.filter(item => item.nom.toLowerCase().includes(search.toLowerCase())).length === 0" class="px-4 py-2 text-gray-500 dark:text-gray-400">
+                                            Pas dans notre arsenal <a href="{{ path('app_pharma_contact') }}"> vous pouvez contacter notre service pour ajouter un nouveau medicament </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
+                        </div>
 
 
 

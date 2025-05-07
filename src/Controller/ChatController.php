@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use App\Service\ChatService;
+use App\Service\MercurePublisherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,7 +68,10 @@ class ChatController extends AbstractController
         int $userId,
         Request $request,
         UserRepository $userRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        LoggerInterface $logger,
+        MercurePublisherService $mercurePublisher
+
     ): JsonResponse {
         $currentUser = $this->getUser();
         $receiver = $userRepository->find($userId);
@@ -91,6 +95,9 @@ class ChatController extends AbstractController
         $entityManager->persist($message);
         $entityManager->flush();
 
+        // Skip Mercure temporarily
+        $mercurePublisher->publishMessage($message);
+
         return $this->json([
             'message' => [
                 'id' => $message->getId(),
@@ -100,4 +107,5 @@ class ChatController extends AbstractController
             ]
         ]);
     }
+
 }
