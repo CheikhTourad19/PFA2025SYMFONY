@@ -222,7 +222,7 @@
                             <path d="M4 14H5M5 14H6M5 14V13M5 14V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M4 10H5M5 10H6M5 10V9M5 10V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        <p class="text-sm text-gray-600">&copy; {{ "now"|date("Y") }} E-Medical. All rights reserved.</p>
+                        <p class="text-sm text-gray-600">&copy; {{ "now"|date("Y") }} E-Medical. tous droits reservés</p>
                     </div>
                     <div class="flex space-x-6">
                         <a href="#" class="text-gray-500 hover:text-blue-600 smooth-transition">
@@ -260,25 +260,25 @@
 
                 <div class="p-6">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-xl font-bold text-gray-900">Confirm Logout</h3>
+                        <h3 class="text-xl font-bold text-gray-900">Confirmer deconnexion</h3>
                         <button @click="isModalOpen = false" class="text-gray-400 hover:text-gray-500">
                             <i class="bx bx-x text-2xl"></i>
                         </button>
                     </div>
 
                     <div class="mt-4">
-                        <p class="text-gray-600">Are you sure you want to log out of your account?</p>
+                        <p class="text-gray-600">Etes vous sur de vouloir vous deconnecter?</p>
                     </div>
 
                     <div class="mt-6 flex justify-end space-x-3">
                         <button @click="isModalOpen = false"
                                 class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 smooth-transition">
-                            Cancel
+                            annuler
                         </button>
                         <form action="{{ path('app_logout') }}" method="POST">
                             <button type="submit"
                                     class="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-400 text-white shadow-sm hover:shadow-md smooth-transition">
-                                Logout
+                                Se desconnecter
                             </button>
                         </form>
                     </div>
