@@ -347,7 +347,7 @@
         `;
 
                 // Recharger la liste des conversations, mais pas les messages
-                loadConversations();
+                updateConversationItem(selectedUserId, content);
             } catch (error) {
                 console.error('Erreur lors de l\'envoi du message:', error);
 
@@ -369,6 +369,43 @@
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd" />
             </svg>
         `;
+            }
+        }
+        // Ajoutez cette fonction pour mettre à jour une conversation existante
+        function updateConversationItem(userId, messageContent) {
+            // Trouver l'élément de conversation existant
+            const conversationItem = document.querySelector(`.conversation-item[data-user-id="${userId}"]`);
+
+            if (conversationItem) {
+                // Mettre à jour le contenu du message
+                const messageElement = conversationItem.querySelector('.text-sm.text-gray-500.truncate');
+                if (messageElement) {
+                    messageElement.textContent = messageContent;
+                }
+
+                // Mettre à jour l'horodatage
+                const dateElement = conversationItem.querySelector('.text-xs.text-gray-400');
+                if (dateElement) {
+                    const now = new Date();
+                    const formattedDate = now.toLocaleString('fr-FR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    dateElement.textContent = formattedDate;
+                }
+
+                // Si cet élément n'est pas le premier, le déplacer en haut de la liste
+                const conversationsList = document.getElementById('conversationsList');
+                const firstChild = conversationsList.firstElementChild;
+
+                if (firstChild && firstChild !== conversationItem) {
+                    conversationsList.insertBefore(conversationItem, firstChild);
+                }
+            } else {
+                // Si la conversation n'existe pas encore, recharger toutes les conversations
+                loadConversations();
             }
         }
 
