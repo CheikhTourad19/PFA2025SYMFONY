@@ -81,9 +81,29 @@
             </div>
 
             <div class="mt-6">
-                <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                    Enregistrer
-                </button>
+                <button type="button" class="w-full px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors" aria-haspopup="dialog" aria-expanded="false" aria-controls="slide-up-animated-modal" data-overlay="#slide-up-animated-modal">Changer</button>
+
+                <div id="slide-up-animated-modal" class="overlay modal overlay-open:opacity-100 overlay-open:duration-300 hidden" role="dialog" tabindex="-1">
+                    <div class="overlay-animation-target modal-dialog overlay-open:mt-4 overlay-open:opacity-100 overlay-open:duration-300 mt-12 transition-all ease-out" >
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title">Modifier Profil</h3>
+                                <button type="button" class="btn btn-text btn-circle btn-sm absolute end-3 top-3" aria-label="Close" data-overlay="#slide-up-animated-modal">
+                                    <span class="icon-[tabler--x] size-4">X</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Etes vous sur de vouloir chnager vos informations ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-soft btn-secondary" data-overlay="#slide-up-animated-modal">
+                                    Fermer
+                                </button>
+                                <button type="submit" class=" px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors">Sauvgarder changements</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             {{ form_end(profileForm) }}
         </div>

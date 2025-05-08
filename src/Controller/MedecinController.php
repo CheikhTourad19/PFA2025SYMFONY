@@ -42,7 +42,7 @@ final class MedecinController extends AbstractController
     #[Route('/ordonnance', name: 'app_medecin_ordonnace', methods: ['GET'])]
     public function ordonnanceMedecin(MedicamentRepository $medicamentRepository,UserRepository $userRepository): Response
     {
-        $medicaments=$medicamentRepository->findAll();
+        $medicaments=$medicamentRepository->findBy([], ['nom' => 'ASC']);
         $patients=$userRepository->findBy(['role'=>'patient']);
         return $this->render('medecin/ordonnance.html.twig',['medicaments'=>$medicaments,'patients'=>$patients]);
     }

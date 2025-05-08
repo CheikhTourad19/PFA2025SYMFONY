@@ -61,6 +61,7 @@ final class PharmaController extends AbstractController
             ->select('s.id', 's.quantite', 'm.nom', 'm.description', 'm.prix')
             ->join('s.medicament', 'm')
             ->where('s.pharmacie = :user')
+            ->orderBy('m.nom', 'ASC')
             ->setParameter('user', $user)
             ->getQuery()
             ->getArrayResult();
