@@ -1,0 +1,93 @@
+{% extends 'medecin/index.html.twig' %}
+
+{% block title %}Mon Calendrier{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <style>
+        .fc-event {
+            cursor: pointer;
+        }
+        #calendar {
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="my-4">Mon Calendrier de Rendez-vous</h1>
+
+        <div id="calendar"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+
+            // Format the events from Symfony to FullCalendar format
+            const events = [
+                {% for appointment in rdv %}
+                {
+                    id: '{{ appointment.id }}',
+                    title: 'RDV avec {{ appointment.patient.prenom }} {{ appointment.patient.nom }}',
+                    start: '{{ appointment.date|date('Y-m-d\\TH:i:s') }}',
+                    extendedProps: {
+                        status: '{{ appointment.statut }}',
+                        patient: '{{ appointment.patient.prenom }} {{ appointment.patient.nom }}',
+                        patientId: {{ appointment.patient.id }},
+                        medecin: '{{ appointment.medecin.user.prenom }} {{ appointment.medecin.user.nom }}'
+                    }
+                },
+                {% endfor %}
+            ];
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Aujourd\'hui',
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour'
+                },
+                events: events,
+                eventClick: function(info) {
+                    // You can customize what happens when an event is clicked
+                    const eventObj = info.event;
+                    alert(
+                        'Rendez-vous avec: ' + eventObj.extendedProps.patient + '\n' +
+                        'Date: ' + eventObj.start.toLocaleString() + '\n' +
+                        'Statut: ' + eventObj.extendedProps.status
+                    );
+
+                    // Alternatively, you could open a modal or redirect to an edit page
+                    // window.location.href = '/rdv/' + eventObj.id + '/edit';
+                },
+                eventColor: '#378006', // Default color
+                eventBackgroundColor: '#378006',
+                eventTextColor: '#ffffff',
+                eventDisplay: 'block',
+                nowIndicator: true,
+                navLinks: true,
+                editable: false, // Set to true if you want to allow drag-and-drop
+                selectable: false // Set to true if you want to allow creating new events by selecting time slots
+            });
+
+            calendar.render();
+        });
+    </script>
+{% endblock %}

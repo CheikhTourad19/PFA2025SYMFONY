@@ -149,21 +149,20 @@
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
 
-            // Rendez-vous existants
+            // Rendez-vous existants - format corrigé
             const existingAppointments = [
                 {% for appointment in rdv %}
                 {
-                    date: new Date("{{ appointment.date|date('Y-m-d H:i:s') }}"),
+                    date: new Date("{{ appointment.date|date('Y-m-d\\TH:i:s') }}"),  // Format ISO
                     status: "{{ appointment.statut }}"
                 },
                 {% endfor %}
             ];
 
-            // Jours fériés en France pour 2025 (à adapter selon les besoins)
+            // Jours fériés en France pour 2025
             const holidays = [
-                new Date(2025, 0, 1),  // Jour de l'An
-                new Date(2025, 3, 21), // Lundi de Pâques (approximatif)
-                new Date(2025, 4, 1),  // Fête du Travail
+                new Date(2025, 0, 1),   // Jour de l'An
+                new Date(2025, 4, 1),   // Fête du Travail
 
             ];
 
@@ -176,18 +175,14 @@
                 );
             }
 
-            // Jours de travail (tous les jours sauf dimanche)
-            // 0 = Dimanche, 1 = Lundi, ..., 6 = Samedi
-            const workingDays = [1, 2, 3, 4, 5, 6]; // Lundi au Samedi
+            // Jours de travail (0 = Dimanche, 1 = Lundi, etc.)
+            const workingDays = [1, 2, 3, 4, 5]; // Lundi à Vendredi
 
             // Fonction pour générer le calendrier
             function generateCalendar(month, year) {
                 const calendarElement = document.querySelector('.calendar');
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const firstDay = new Date(year, month, 1).getDay();
-
-                // Ajuster pour que la semaine commence par lundi (0 = lundi)
-                const adjustedFirstDay = firstDay === 0 ? 6 : firstDay - 1;
+                const firstDay = new Date(year, month, 1).getDay(); // 0 = Dimanche
 
                 // Nettoyer le calendrier précédent (sauf les en-têtes)
                 while (calendarElement.children.length > 7) {
@@ -195,7 +190,7 @@
                 }
 
                 // Ajouter les jours vides avant le premier jour du mois
-                for (let i = 0; i < adjustedFirstDay; i++) {
+                for (let i = 0; i < firstDay; i++) {
                     const emptyDay = document.createElement('div');
                     emptyDay.className = 'calendar-day empty';
                     calendarElement.appendChild(emptyDay);
@@ -213,56 +208,23 @@
 
                     const currentDayDate = new Date(year, month, day);
                     const dayOfWeek = currentDayDate.getDay();
-                    const adjustedDayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
                     // Vérifier si c'est un jour de travail et pas un jour férié
-                    if (workingDays.includes(adjustedDayOfWeek) && !isHoliday(currentDayDate)) {
-                        // Déterminer les heures de travail en fonction du jour
-                        let workEndHour = 17; // Par défaut jusqu'à 17h
+                    if (workingDays.includes(dayOfWeek) && !isHoliday(currentDayDate)) {
+                        // Heures de travail : 9h-12h et 14h-17h
+                        const morningSlots = generateTimeSlots(currentDayDate, 9, 12);
+                        const afternoonSlots = generateTimeSlots(currentDayDate, 14, 17);
 
-                        // Vendredi et Samedi: jusqu'à 14h seulement
-                        if (adjustedDayOfWeek === 5 || adjustedDayOfWeek === 6) { // Vendredi (4) ou Samedi (5)
-                            workEndHour = 14;
-                        }
+                        morningSlots.forEach(slot => dayElement.appendChild(slot));
 
-                        // Afficher les créneaux horaires pour ce jour
-                        for (let hour = 9; hour < workEndHour; hour++) {
-                            for (let min = 0; min < 60; min += 60) { // Créneau de 60 minutes
-                                const slotDate = new Date(year, month, day, hour, min);
+                        // Ajouter une séparation entre matin et après-midi
+                        const separator = document.createElement('div');
+                        separator.style.height = '5px';
+                        dayElement.appendChild(separator);
 
-                                // Ne pas afficher les créneaux passés
-                                if (slotDate < new Date()) continue;
-
-                                // Vérifier si le créneau est déjà réservé
-                                const isBooked = existingAppointments.some(appointment => {
-                                    const appointmentDate = appointment.date;
-                                    return appointmentDate.getFullYear() === slotDate.getFullYear() &&
-                                        appointmentDate.getMonth() === slotDate.getMonth() &&
-                                        appointmentDate.getDate() === slotDate.getDate() &&
-                                        appointmentDate.getHours() === slotDate.getHours() &&
-                                        appointmentDate.getMinutes() === slotDate.getMinutes();
-                                });
-
-                                const timeSlot = document.createElement('div');
-                                const formattedHours = hour.toString().padStart(2, '0');
-                                const formattedMinutes = min.toString().padStart(2, '0');
-                                timeSlot.textContent = `${formattedHours}:${formattedMinutes}`;
-
-                                if (isBooked) {
-                                    timeSlot.className = 'time-slot booked';
-                                } else {
-                                    timeSlot.className = 'time-slot available';
-                                    timeSlot.dataset.date = slotDate.toISOString();
-                                    timeSlot.addEventListener('click', function() {
-                                        selectTimeSlot(slotDate);
-                                    });
-                                }
-
-                                dayElement.appendChild(timeSlot);
-                            }
-                        }
+                        afternoonSlots.forEach(slot => dayElement.appendChild(slot));
                     } else {
-                        // Jour non travaillé (dimanche ou jour férié)
+                        // Jour non travaillé
                         const nonWorkingMessage = document.createElement('div');
                         nonWorkingMessage.textContent = isHoliday(currentDayDate) ? 'Jour férié' : 'Fermé';
                         nonWorkingMessage.style.marginTop = '20px';
@@ -274,23 +236,67 @@
                 }
 
                 // Mettre à jour l'affichage du mois et de l'année
-                const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                updateMonthYearDisplay(month, year);
+            }
+
+            // Génère les créneaux horaires pour une plage donnée
+            function generateTimeSlots(date, startHour, endHour) {
+                const slots = [];
+
+                for (let hour = startHour; hour < endHour; hour++) {
+                    const slotDate = new Date(date);
+                    slotDate.setHours(hour, 0, 0, 0);
+
+                    // Ne pas afficher les créneaux passés
+                    if (slotDate < new Date()) continue;
+
+                    const isBooked = existingAppointments.some(appointment => {
+                        return appointment.date.getTime() === slotDate.getTime();
+                    });
+
+                    const timeSlot = document.createElement('div');
+                    timeSlot.textContent = `${hour.toString().padStart(2, '0')}:00`;
+
+                    if (isBooked) {
+                        timeSlot.className = 'time-slot booked';
+                    } else {
+                        timeSlot.className = 'time-slot available';
+                        timeSlot.dataset.date = slotDate.toISOString();
+                        timeSlot.addEventListener('click', function() {
+                            selectTimeSlot(slotDate);
+                        });
+                    }
+
+                    slots.push(timeSlot);
+                }
+
+                return slots;
+            }
+
+            // Met à jour l'affichage du mois et de l'année
+            function updateMonthYearDisplay(month, year) {
+                const months = [
+                    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
                 document.getElementById('current-month').textContent = `${months[month]} ${year}`;
             }
 
             // Fonction pour sélectionner un créneau horaire
             function selectTimeSlot(date) {
-                const formattedDate = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} à ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                const formattedDate = date.toLocaleString('fr-FR', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
 
-                // Format de date pour l'URL: YYYY-MM-DD HH:MM:SS
-                const urlDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:00`;
-                // Encoder la date pour l'URL
-                const encodedDate = encodeURIComponent(urlDate);
+                const urlDate = date.toISOString().replace(/[-:]/g, '').replace('T', ' ').split('.')[0];
 
-                // Utiliser confirm au lieu d'une modal
                 if (confirm(`Souhaitez-vous prendre rendez-vous le ${formattedDate} ?`)) {
-                    // Rediriger vers la route de prise de rendez-vous
-                    window.location.href = `/patient/prendre-rdv/${medecinId}/${encodedDate}`;
+                    window.location.href = `/patient/prendre-rdv/${medecinId}/${encodeURIComponent(urlDate)}`;
                 }
             }
 

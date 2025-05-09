@@ -7,6 +7,10 @@ import './bootstrap.js';
  */
 import "flyonui/flyonui"
 import './styles/app.css';
+// Import CSS
+
+
+// Import les modules nécessaires de FullCalendar
 
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
