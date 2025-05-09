@@ -379,7 +379,7 @@ final class AdminController extends AbstractController
                 $user->getNumero(),
                 "Bonjour, votre nouveau mot de passe est: changeme"
             );
-            $entityManager->flush();
+
             $this->addFlash('success', "Mot de passe réinitialisé et message envoyé.");
             return $this->redirectToRoute('app_admin_users');
 

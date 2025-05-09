@@ -95,11 +95,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
                         <div class="space-y-1">
                             <label for="quantite" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center">
                                 <i class="fas fa-boxes mr-2 text-blue-500"></i>  Quantité Initiale
@@ -132,22 +127,45 @@
                     </form>
                 </div>
 
-                {# Search Bar with Icon #}
-                <div class="mb-8 relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
+                {# Search and Filter Bar with Icon #}
+                <div class="mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {# Search Input #}
+                        <div class="md:col-span-3 relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input
+                                    type="text"
+                                    id="searchInput"
+                                    placeholder="Chercher un medicament par son nom..."
+                                    class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm transition-all duration-300"
+                            />
+                        </div>
+
+                        {# Filter Dropdown #}
+                        <div class="relative">
+                            <select
+                                    id="stockFilter"
+                                    class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm transition-all duration-300 appearance-none cursor-pointer"
+                            >
+                                <option value="all">Tous les produits</option>
+                                <option value="inStock">En stock (>10)</option>
+                                <option value="lowStock">En rupture (≤10)</option>
+                            </select>
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-filter text-gray-400"></i>
+                            </div>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
                     </div>
-                    <input
-                            type="text"
-                            id="searchInput"
-                            placeholder="Chercher un medicament par son nom..."
-                            class="w-full pl-10 pr-4 py-3 border-0 bg-white/70 dark:bg-gray-700/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent text-gray-900 dark:text-white shadow-sm transition-all duration-300"
-                    />
                 </div>
 
                 {# Stock Summary Cards #}
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
-                    <div class="bg-blue-50/70 dark:bg-blue-900/30 rounded-xl p-4 border border-blue-200/50 dark:border-blue-800/50 shadow-sm">
+                    <div class="bg-blue-50/70 dark:bg-blue-900/30 rounded-xl p-4 border border-blue-200/50 dark:border-blue-800/50 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md hover:bg-blue-100/70 dark:hover:bg-blue-900/50" id="filterAll">
                         <div class="flex items-center">
                             <div class="p-3 rounded-lg bg-blue-100 dark:bg-blue-800/50 mr-4">
                                 <i class="fas fa-pills text-blue-600 dark:text-blue-300 text-xl"></i>
@@ -159,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-green-50/70 dark:bg-green-900/30 rounded-xl p-4 border border-green-200/50 dark:border-green-800/50 shadow-sm">
+                    <div class="bg-green-50/70 dark:bg-green-900/30 rounded-xl p-4 border border-green-200/50 dark:border-green-800/50 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md hover:bg-green-100/70 dark:hover:bg-green-900/50" id="filterInStock">
                         <div class="flex items-center">
                             <div class="p-3 rounded-lg bg-green-100 dark:bg-green-800/50 mr-4">
                                 <i class="fas fa-box-open text-green-600 dark:text-green-300 text-xl"></i>
@@ -173,7 +191,7 @@
                         </div>
                     </div>
 
-                    <div class="bg-amber-50/70 dark:bg-amber-900/30 rounded-xl p-4 border border-amber-200/50 dark:border-amber-800/50 shadow-sm">
+                    <div class="bg-amber-50/70 dark:bg-amber-900/30 rounded-xl p-4 border border-amber-200/50 dark:border-amber-800/50 shadow-sm cursor-pointer transition-all duration-300 hover:shadow-md hover:bg-amber-100/70 dark:hover:bg-amber-900/50" id="filterLowStock">
                         <div class="flex items-center">
                             <div class="p-3 rounded-lg bg-amber-100 dark:bg-amber-800/50 mr-4">
                                 <i class="fas fa-exclamation-triangle text-amber-600 dark:text-amber-300 text-xl"></i>
@@ -192,7 +210,7 @@
                 <div class="h-[500px] overflow-y-auto pr-2">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="stockContainer">
                         {% for stock in stocks %}
-                            <div class="bg-white/70 dark:bg-gray-700/70 rounded-xl shadow-md overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg stock-item border border-gray-200/50 dark:border-gray-600/50 group">
+                            <div class="bg-white/70 dark:bg-gray-700/70 rounded-xl shadow-md overflow-hidden transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg stock-item border border-gray-200/50 dark:border-gray-600/50 group" data-quantity="{{ stock['quantite'] }}">
                                 {# Medication Header with Gradient #}
                                 <div class="p-5 bg-gradient-to-r from-blue-500/10 to-indigo-600/10 dark:from-blue-600/20 dark:to-indigo-700/20 border-b border-gray-200/50 dark:border-gray-600/50">
                                     <div class="flex justify-between items-start">
@@ -275,11 +293,12 @@
         </div>
     </div>
 
-    {# Enhanced JavaScript with Animations #}
+    {# Enhanced JavaScript with Animations and Filter Functionality #}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Elements
             const searchInput = document.getElementById('searchInput');
+            const stockFilter = document.getElementById('stockFilter');
             const stockContainer = document.getElementById('stockContainer');
             const stockItems = document.querySelectorAll('.stock-item');
             const toggleFormBtn = document.getElementById('toggleFormBtn');
@@ -288,28 +307,68 @@
             const cancelAddBtn = document.getElementById('cancelAddBtn');
             const emptyStateToggleBtn = document.getElementById('emptyStateToggleBtn');
 
+            // Filter card elements
+            const filterAll = document.getElementById('filterAll');
+            const filterInStock = document.getElementById('filterInStock');
+            const filterLowStock = document.getElementById('filterLowStock');
+
+            // Filter function
+            function filterStockItems() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                const filterValue = stockFilter.value;
+
+                stockItems.forEach(item => {
+                    const medicamentName = item.querySelector('h2').textContent.toLowerCase();
+                    const quantity = parseInt(item.dataset.quantity);
+
+                    // Apply both search and filter conditions
+                    const matchesSearch = medicamentName.includes(searchTerm);
+                    let matchesFilter = true;
+
+                    if (filterValue === 'inStock') {
+                        matchesFilter = quantity > 10;
+                    } else if (filterValue === 'lowStock') {
+                        matchesFilter = quantity <= 10;
+                    }
+
+                    if (matchesSearch && matchesFilter) {
+                        item.style.display = 'block';
+                        item.classList.add('animate-fadeIn');
+                        item.classList.remove('animate-fadeOut');
+                    } else {
+                        item.classList.add('animate-fadeOut');
+                        item.classList.remove('animate-fadeIn');
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                        }, 300);
+                    }
+                });
+            }
+
             // Search functionality with debounce
             let searchTimeout;
             searchInput.addEventListener('input', function () {
                 clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    const searchTerm = searchInput.value.trim().toLowerCase();
+                searchTimeout = setTimeout(filterStockItems, 300);
+            });
 
-                    stockItems.forEach(item => {
-                        const medicamentName = item.querySelector('h2').textContent.toLowerCase();
-                        if (medicamentName.includes(searchTerm)) {
-                            item.style.display = 'block';
-                            item.classList.add('animate-fadeIn');
-                            item.classList.remove('animate-fadeOut');
-                        } else {
-                            item.classList.add('animate-fadeOut');
-                            item.classList.remove('animate-fadeIn');
-                            setTimeout(() => {
-                                item.style.display = 'none';
-                            }, 300);
-                        }
-                    });
-                }, 300);
+            // Filter dropdown change
+            stockFilter.addEventListener('change', filterStockItems);
+
+            // Summary cards click handlers
+            filterAll.addEventListener('click', function() {
+                stockFilter.value = 'all';
+                filterStockItems();
+            });
+
+            filterInStock.addEventListener('click', function() {
+                stockFilter.value = 'inStock';
+                filterStockItems();
+            });
+
+            filterLowStock.addEventListener('click', function() {
+                stockFilter.value = 'lowStock';
+                filterStockItems();
             });
 
             // Form toggle with animations
