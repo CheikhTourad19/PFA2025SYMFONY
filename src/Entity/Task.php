@@ -88,11 +88,6 @@ class Task
         return $this->assignedTo;
     }
 
-    public function setAssignedTo(User $assignedTo): self
-    {
-        $this->assignedTo = $assignedTo;
-        return $this;
-    }
 
     public function getCreatedBy(): Medecin
     {
@@ -128,4 +123,10 @@ class Task
         $this->deadline = $deadline;
         return $this;
     }
+    public function setAssignedTo(Medecin $assignedTo): self
+    {
+        $this->assignedTo = $assignedTo;
+        return $this;
+    }
+
 }

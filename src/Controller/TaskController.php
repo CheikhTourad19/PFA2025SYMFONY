@@ -24,9 +24,8 @@ class TaskController extends AbstractController
         $medecin = $this->getUser()->getMedecin();
         $tasks = $taskRepository->findTasksForMedecin($medecin);;
 
-        return $this->render('medecin/my-tasks.html.twig', [
-            'tasks' => $tasks
-        ]);
+        return $this->redirectToRoute('app_my_tasks');
+
     }
 
     #[Route('/create', name: 'app_task_new')]
@@ -75,7 +74,6 @@ class TaskController extends AbstractController
     #[Route('/mes-tâches', name: 'app_my_tasks')]
     public function myTasks(TaskRepository $taskRepository): Response
     {
-        /** @var User $user */
         $user = $this->getUser();
         $medecin = $user->getMedecin();
 
@@ -88,6 +86,7 @@ class TaskController extends AbstractController
         return $this->render('medecin/my-tasks.html.twig', [
             'tasks' => $tasks
         ]);
+
     }
 
     #[Route('/followed', name: 'app_task_followed', methods: ['GET'])]

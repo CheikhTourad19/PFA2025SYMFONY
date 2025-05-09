@@ -20,15 +20,7 @@ class TaskRepository extends ServiceEntityRepository
      * Trouve les tâches assignées à un médecin
      */
 
-    public function findCreatedByMedecin(Medecin $medecin)
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.createdBy = :medecin')
-            ->setParameter('medecin', $medecin)
-            ->orderBy('t.createdAt', 'DESC') // Tri par date de création
-            ->getQuery()
-            ->getResult();
-    }
+
     public function findTasksForMedecin(Medecin $medecin): array
     {
         return $this->createQueryBuilder('t')
@@ -37,6 +29,8 @@ class TaskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
     public function findByAssignedMedecin(Medecin $medecin): array
     {
         return $this->createQueryBuilder('t')
@@ -45,26 +39,17 @@ class TaskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    public function findTasksCreatedByMedecin(Medecin $medecin): array
+    public function findByAssignedMedecinAndCreator(Medecin $assignedTo, Medecin $createdBy): array
     {
         return $this->createQueryBuilder('t')
-            ->andWhere('t.createdBy = :user')
-            ->setParameter('user', $medecin->getUser())
+            ->andWhere('t.assignedTo = :assignedTo')
+            ->andWhere('t.createdBy = :createdBy')
+            ->setParameter('assignedTo', $assignedTo)
+            ->setParameter('createdBy', $createdBy)
             ->getQuery()
             ->getResult();
     }
 
-    public function findByCreator(User $user)
-    {
-        $medecin = $user->getMedecin();
-
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.createdBy = :medecin')
-            ->setParameter('medecin', $medecin)
-            ->orderBy('t.deadline', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
 
 
 
