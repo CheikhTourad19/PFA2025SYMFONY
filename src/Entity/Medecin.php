@@ -23,10 +23,7 @@ class Medecin
 
 
 
-    public function __construct()
-    {
 
-    }
     public function getService(): ?string
     {
         return $this->service;
