@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div style="width: 100%; height: 100vh; margin: 0; padding: 0;">
+        <iframe 
+            width="100%" 
+            height="100%" 
+            allow="microphone *" 
+            src="https://www.gptbots.ai/widget/eejnzwdmqdcffkslajxnv4n/chat.html"
+            style="border: none;">
+        </iframe>
+    </div>
+{% endblock %}
+{% block title %}Chatbot{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/chatbot.js') }}"></script>
+{% endblock %}
