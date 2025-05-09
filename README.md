@@ -1,6 +1,4 @@
-# Project Title
 
-A brief description of what this project does and who it's for
 
 # E-Medical - Plateforme Intégrée de Santé
 
