@@ -4,28 +4,108 @@
     <meta charset="UTF-8">
     <title>Nouveau Rendez-vous</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; }
-        #date{
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #0d47a1;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #0d47a1;
+        }
+        #date {
             color: #0d47a1;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
+            background-color: #e3f2fd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .patient-info {
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo img {
+            max-height: 50px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h2>Nouveau Rendez vous</h2>
+        <h2>Nouveau Rendez-vous</h2>
     </div>
 
     <div class="content">
-        <p>Bonjour dr {{ medecin.user.nom }} {{ medecin.user.prenom  }} </p>
-        <p>Vous avez un nouveau rendez vous avec le patient : {{ patient.nom }} {{ patient.prenom }} pour la date : <sapn id="date">{{ date|date }}</sapn></p>
+        <div class="logo">
+            <!-- Vous pouvez ajouter un logo ici -->
+            <!-- <img src="logo.png" alt="E-Medical Plateforme"> -->
+        </div>
+
+        <p>Bonjour Dr <span class="patient-info">{{ medecin.user.nom }} {{ medecin.user.prenom }}</span>,</p>
+
+        <div class="highlight">
+            <p>Vous avez un nouveau rendez-vous avec le patient :</p>
+            <p><strong class="patient-info">{{ patient.nom }} {{ patient.prenom }}</strong></p>
+            <p>pour la date : <span id="date">{{ date|date }}</span></p>
+        </div>
+
+        <p>Merci de confirmer ce rendez-vous dans votre agenda.</p>
+        <p>Cordialement,</p>
+        <p>L'équipe E-Medical Plateforme</p>
     </div>
 
     <div class="footer">
-        <p>Ce message a été envoyé via la platforme de prise de rendez vous</p>
-        <p>© {{ "now"|date("Y") }} E-Medical Plateforme</p>
+        <p>Ce message a été envoyé automatiquement via la plateforme de prise de rendez-vous</p>
+        <p>© {{ "now"|date("Y") }} E-Medical Plateforme. Tous droits réservés.</p>
     </div>
 </div>
 </body>
