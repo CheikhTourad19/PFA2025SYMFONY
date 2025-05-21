@@ -57,7 +57,7 @@ services:
       retries: 3
 
   node:
-    image: node:18
+    image: node:alpine
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html:cached
