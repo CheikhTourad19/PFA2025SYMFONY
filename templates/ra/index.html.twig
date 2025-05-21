@@ -1,20 +1,93 @@
-{% extends 'base.html.twig' %}
+{% extends 'patient/index.html.twig' %}
 
-{% block title %}Hello RaController!{% endblock %}
+{% block title %}RA - Espace Patient{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Header Section -->
+        <div class="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4">
+            <h1 class="text-2xl font-bold text-white">Réalité Augmentée - Modèles 3D d'Organes</h1>
+            <p class="text-blue-100">Explorez les modèles anatomiques en 3D et téléchargez notre application mobile</p>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <!-- 3D Viewer Section -->
+        <div class="p-6">
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Visualiseur 3D</h2>
+                <div class="bg-gray-100 rounded-lg p-4" style="height: 500px;">
+                    <model-viewer 
+                        id="organViewer"
+                        src="/models/heart.glb"
+                        alt="Modèle 3D d'un organe humain"
+                        auto-rotate 
+                        camera-controls 
+                        ar 
+                        ar-modes="webxr scene-viewer quick-look" 
+                        style="width: 100%; height: 100%;">
+                    </model-viewer>
+                </div>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/khali/OneDrive/Desktop/cyc 1/SEM2/pfa_symfony/PFA2025SYMFONY/src/Controller/RaController.php</code></li>
-        <li>Your template at <code>C:/Users/khali/OneDrive/Desktop/cyc 1/SEM2/pfa_symfony/PFA2025SYMFONY/templates/ra/index.html.twig</code></li>
-    </ul>
+            <!-- Organ Selection -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-4">Sélectionnez un organe</h2>
+                {% set organs = {
+                    'Cœur': 'heart.glb',
+                    'Poumon': 'lung.glb',
+                    'Foie': 'liver.glb',
+                    'Rein': 'kidney.glb',
+                    'Cerveau': 'brain.glb',
+                    'Estomac': 'stomach.glb',
+                    'Intestin': 'intestine.glb',
+                    'Œil': 'eye.glb'
+                } %}
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {% for name, file in organs %}
+                    <button 
+                        class="bg-blue-50 hover:bg-blue-100 text-blue-800 font-medium py-3 px-4 rounded-lg transition-colors"
+                        onclick="document.getElementById('organViewer').setAttribute('src', '/models/{{ file }}')"
+                    >
+                        {{ name }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Mobile App Download -->
+            <div class="bg-blue-50 rounded-lg p-6">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-6 md:mb-0 md:pr-6">
+                        <h2 class="text-xl font-semibold mb-2">Application Mobile RA</h2>
+                        <p class="text-gray-700 mb-4">Téléchargez notre application Unity pour une expérience de réalité augmentée complète sur votre mobile.</p>
+                        <div class="flex space-x-4">
+                            <a href="/downloads/unity-ra-app.apk" class="bg-black text-white px-4 py-2 rounded-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                                </svg>
+                                Android
+                            </a>
+                            <a href="https://testflight.apple.com/join/YOUR_APP_ID" class="bg-black text-white px-4 py-2 rounded-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-.92 3.09-.58.73-1.83 1.66-2.77 1.49-.15-1.15.41-2.35.75-3.08z"/>
+                                </svg>
+                                iOS
+                            </a>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+    <img src="https://source.unsplash.com/featured/500x300?medical,technology" 
+         alt="Aperçu de l'application RA" 
+         class="rounded-lg shadow-md">
 </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load the model-viewer component -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 {% endblock %}
