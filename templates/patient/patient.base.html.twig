@@ -178,6 +178,15 @@
                             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-500"></span>
                         </a>
                     </div>
+                    <a href="{{ path('app_patient_ra') }}" class="group relative px-4 py-2 rounded-lg transition-all duration-500 {{ currentRoute == 'app_patient_ra' ? 'bg-white text-blue-700 shadow-md' : 'hover:bg-blue-700/30' }}">
+    <div class="flex items-center space-x-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+        </svg>
+        <span class="font-medium">RA</span>
+    </div>
+    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-500"></span>
+</a>
 
                     <!-- User profile and mobile menu button -->
                     <div class="flex items-center space-x-2">
@@ -347,9 +356,20 @@
                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                         </svg>
                         Contact
-                    </a>
+                    </a>               <a href="{{ path('app_patient_chatbot') }}" class="flex items-center px-3 py-3 rounded-md text-base font-medium {{ currentRoute == 'app_patient_chatbot' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }}">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4.804 21.644A6.707 6.707 0 0 0 6 21.75a6.721 6.721 0 0 0 3.583-1.029c.774.182 1.584.279 2.417.279 5.322 0 9.75-3.97 9.75-9 0-5.03-4.428-9-9.75-9s-9.75 3.97-9.75 9c0 2.409 1.025 4.587 2.674 6.192.232.226.277.428.254.543a3.73 3.73 0 0 1-.814 1.686.75.75 0 0 0 .44 1.223ZM8.25 10.875a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25ZM10.875 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875-1.125a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" clip-rule="evenodd" />
+    </svg>
+    Chatbot
+</a>
+<a href="{{ path('app_patient_ra') }}" class="flex items-center px-3 py-3 rounded-md text-base font-medium {{ currentRoute == 'app_patient_ra' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-blue-50' }}">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+    </svg>
+    RA
+</a>
                 </div>
-
+ 
                 <!-- Mobile user info -->
                 <div class="pt-4 pb-3 border-t border-gray-200">
                     <div class="flex items-center px-5">
