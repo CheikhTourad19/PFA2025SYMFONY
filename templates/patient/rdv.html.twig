@@ -9,7 +9,96 @@
             <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Mes Rendez-vous</h1>
             <p class="mt-2 text-base sm:text-lg text-gray-600 dark:text-gray-300">Consultez et gérez vos rendez-vous médicaux.</p>
         </div>
+        {# Statistics Section - New section for statistics #}
+        <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 mb-8">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Statistiques des Rendez-vous</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {# Calculate counts for each status #}
+                {% set counts = {
+                    'all': rdv|length,
+                    'confirme': rdv|filter(r => r.statut == 'confirme')|length,
+                    'attente': rdv|filter(r => r.statut == 'attente')|length,
+                    'refuse': rdv|filter(r => r.statut == 'refuse')|length,
+                    'annule': rdv|filter(r => r.statut == 'annule')|length,
+                    'termine': rdv|filter(r => r.statut == 'termine')|length
+                } %}
 
+                {# Total Appointments Card #}
+                <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-500 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-blue-800 dark:text-blue-200">Total RDV</p>
+                            <p class="text-2xl font-bold text-blue-600 dark:text-blue-300">{{ counts.all }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Confirmed Appointments Card #}
+                <div class="bg-green-50 dark:bg-green-900/30 border-l-4 border-green-400 dark:border-green-500 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-green-800 dark:text-green-200">Confirmés</p>
+                            <p class="text-2xl font-bold text-green-600 dark:text-green-300">{{ counts.confirme }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Pending Appointments Card #}
+                <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-500 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">En attente</p>
+                            <p class="text-2xl font-bold text-yellow-600 dark:text-yellow-300">{{ counts.attente }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Refused/Canceled Appointments Card #}
+                <div class="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 dark:border-red-500 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800 dark:text-red-200">Refusés/Annulés</p>
+                            <p class="text-2xl font-bold text-red-600 dark:text-red-300">{{ counts.refuse + counts.annule }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {# Completed Appointments Card #}
+                <div class="bg-purple-50 dark:bg-purple-900/30 border-l-4 border-purple-400 dark:border-purple-500 p-4 rounded-md">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="h-6 w-6 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-purple-800 dark:text-purple-200">Terminés</p>
+                            <p class="text-2xl font-bold text-purple-600 dark:text-purple-300">{{ counts.termine }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {# Search Form - Même structure que la page Ordonnance mais adaptée aux RDV #}
         <div class="bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-900 rounded-lg p-4 sm:p-6 mb-8">
             <div class="space-y-4">

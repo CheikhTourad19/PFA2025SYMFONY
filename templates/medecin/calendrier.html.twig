@@ -1,50 +1,419 @@
 {% extends 'medecin/index.html.twig' %}
 
-{% block title %}Mon Calendrier{% endblock %}
+{% block title %}Mon Calendrier de Rendez-vous{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #e6f0ff;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --light-bg: #f8f9fa;
+            --dark-color: #2b2d42;
+            --text-color: #495057;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2.5rem 0;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2.2rem;
+        }
+
+        .page-header i {
+            margin-right: 12px;
+        }
+
+        .calendar-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 3rem;
+        }
+
+        #calendar {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* FullCalendar Customization */
+        .fc-header-toolbar {
+            margin-bottom: 1.5rem !important;
+            padding: 1rem;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .fc-toolbar-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.5rem;
+        }
+
+        .fc-button {
+            border: none !important;
+            border-radius: 8px !important;
+            text-transform: capitalize;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem !important;
+            transition: var(--transition) !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .fc-button-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .fc-button-primary:hover {
+            background-color: var(--secondary-color) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .fc-button-active {
+            background-color: var(--secondary-color) !important;
+        }
+
+        .fc-daygrid-day-number {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .fc-col-header-cell {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 0.8rem 0;
+        }
+
+        .fc-col-header-cell-cushion {
+            color: white;
+            font-weight: 500;
+            padding: 0.5rem;
+        }
+
+        .fc-daygrid-day.fc-day-today,
+        .fc-timegrid-col.fc-day-today {
+            background-color: var(--primary-light) !important;
+        }
+
         .fc-event {
             cursor: pointer;
+            border-radius: 8px !important;
+            border: none !important;
+            padding: 8px 12px !important;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition) !important;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-left: 4px solid rgba(0,0,0,0.2) !important;
+            background-color: var(--success-color) !important;
+            border-color: var(--success-color) !important;
         }
-        #calendar {
-            max-width: 1100px;
-            margin: 40px auto;
+
+        .fc-event:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .fc-event-main {
+            display: flex;
+            align-items: center;
+        }
+
+        .fc-event-time {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        /* Modal Styles */
+        .event-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+        }
+
+        .modal-content {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 500px;
+            background-color: white;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--success-color), var(--success-color));
+            color: white;
+            border-bottom: none;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+
+        .modal-body i {
+            margin-right: 12px;
+            color: var(--success-color);
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234361ee' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px 12px;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: none;
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-modal {
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-in-out;
+            max-width: 350px;
+            z-index: 1060;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .notification i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .notification.success i {
+            color: #06d6a0;
+        }
+
+        .notification.error i {
+            color: #ef476f;
+        }
+
+        /* Event Status Colors */
+        .status-attente {
+            background-color: #4cc9f0 !important;
+        }
+
+        .status-confirme {
+            background-color: #06d6a0 !important;
+        }
+
+        .status-refuse {
+            background-color: #ef476f !important;
+        }
+
+        .status-termine {
+            background-color: #118ab2 !important;
+        }
+
+        .status-annule {
+            background-color: #ef476f !important;
+            text-decoration: line-through;
+        }
+        @media (max-width: 992px) {
+            .fc-header-toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .fc-toolbar-chunk {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .fc-toolbar-title {
+                margin: 1rem 0;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .calendar-container {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                max-width: 90%;
+            }
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1 class="my-4">Mon Calendrier de Rendez-vous</h1>
-
-        <div id="calendar"></div>
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-calendar-alt"></i>Mon Calendrier de Rendez-vous</h1>
+        </div>
     </div>
+
+    <div class="container">
+        <div class="calendar-container">
+            <div id="calendar"></div>
+        </div>
+    </div>
+    <div id="eventModalContainer"></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('calendar');
+            const eventModalContainer = document.getElementById('eventModalContainer');
 
             // Format the events from Symfony to FullCalendar format
             const events = [
                 {% for appointment in rdv %}
                 {
                     id: '{{ appointment.id }}',
-                    title: 'RDV avec {{ appointment.patient.prenom }} {{ appointment.patient.nom }}',
+                    title: '{{ appointment.patient.prenom }} {{ appointment.patient.nom }}',
                     start: '{{ appointment.date|date('Y-m-d\\TH:i:s') }}',
                     extendedProps: {
-                        status: '{{ appointment.statut }}',
                         patient: '{{ appointment.patient.prenom }} {{ appointment.patient.nom }}',
                         patientId: {{ appointment.patient.id }},
-                        medecin: '{{ appointment.medecin.user.prenom }} {{ appointment.medecin.user.nom }}'
+                        medecin: '{{ appointment.medecin.user.prenom }} {{ appointment.medecin.user.nom }}',
+                        status: '{{ appointment.statut|default('attente') }}'
                     }
                 },
                 {% endfor %}
@@ -56,38 +425,288 @@
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay listWeek'
                 },
                 buttonText: {
                     today: 'Aujourd\'hui',
                     month: 'Mois',
                     week: 'Semaine',
-                    day: 'Jour'
+                    day: 'Jour',
+                    list: 'Liste'
                 },
                 events: events,
-                eventClick: function(info) {
-                    // You can customize what happens when an event is clicked
-                    const eventObj = info.event;
-                    alert(
-                        'Rendez-vous avec: ' + eventObj.extendedProps.patient + '\n' +
-                        'Date: ' + eventObj.start.toLocaleString() + '\n' +
-                        'Statut: ' + eventObj.extendedProps.status
-                    );
+                eventContent: function(arg) {
+                    // Get status for styling
+                    const status = arg.event.extendedProps.status || 'attente';
 
-                    // Alternatively, you could open a modal or redirect to an edit page
-                    // window.location.href = '/rdv/' + eventObj.id + '/edit';
+                    // Define status colors
+                    const statusColors = {
+                        'attente': '#4cc9f0',  // Blue - En attente
+                        'confirme': '#06d6a0', // Green - Confirmé
+                        'refuse': '#ef476f',   // Red - Refusé
+                        'annule': '#ef476f',   // Red - Annulé
+                        'termine': '#118ab2'   // Dark blue - Terminé
+                    };
+
+                    // Get color based on status
+                    const bgColor = statusColors[status] || statusColors.attente;
+
+                    // Get status text
+                    const statusText = {
+                        'attente': 'En attente',
+                        'confirme': 'Confirmé',
+                        'refuse': 'Refusé',
+                        'annule': 'Annulé',
+                        'termine': 'Terminé'
+                    }[status] || 'En attente';
+
+                    // Custom event content with icon and status
+                    return {
+                        html: `<div class="d-flex align-items-center">
+            <i class="fas fa-check-circle me-2"></i>
+            <div>
+                <div class="fc-event-time">${arg.timeText}</div>
+                <div class="fc-event-title">${arg.event.title}</div>
+                <div class="fc-event-status" style="font-size: 0.75rem; opacity: 0.9;">${statusText}</div>
+            </div>
+        </div>`,
+                        backgroundColor: bgColor
+                    };
                 },
-                eventColor: '#378006', // Default color
-                eventBackgroundColor: '#378006',
-                eventTextColor: '#ffffff',
-                eventDisplay: 'block',
+                eventClick: function(info) {
+                    // Get event details
+                    const eventObj = info.event;
+
+                    // Format the date
+                    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    const formattedDate = eventObj.start.toLocaleDateString('fr-FR', dateOptions);
+
+                    // Generate the route URL in advance
+                    const updateUrl = '{{ path('app_medecin_rdv_update', {'id': 'EVENT_ID'}) }}'.replace('EVENT_ID', eventObj.id);
+
+                    // Create modal HTML
+                    const modalHTML = `
+                        <div class="event-modal" id="eventModal">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title"><i class="fas fa-calendar-check me-2"></i>Détails du rendez-vous</h5>
+                                    <button type="button" class="btn-close" onclick="closeModal()">×</button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="editEventForm" method="POST" action="${updateUrl}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('edit-event') }}">
+                                        <input type="hidden" name="event_id" value="${eventObj.id}">
+
+                                        <div class="mb-3">
+                                            <p><i class="fas fa-user"></i><strong>Patient:</strong> ${eventObj.extendedProps.patient}</p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="eventDate" class="form-label"><i class="fas fa-calendar-day"></i><strong>Date et heure:</strong></label>
+                                            <input type="datetime-local" class="form-control" id="eventDate" name="event_date"
+                                                value="${getDateTimeLocalString(eventObj.start)}" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <p><i class="fas fa-user-md"></i><strong>Médecin:</strong> ${eventObj.extendedProps.medecin}</p>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="eventStatus" class="form-label"><i class="fas fa-tasks"></i><strong>Statut:</strong></label>
+                                            <select class="form-select" id="eventStatus" name="event_status" required>
+    <option value="attente" ${eventObj.extendedProps.status === 'attente' ? 'selected' : ''}>En Attente</option>
+    <option value="confirme" ${eventObj.extendedProps.status === 'confirme' ? 'selected' : ''}>Confirmé</option>
+    <option value="refuse" ${eventObj.extendedProps.status === 'refuse' ? 'selected' : ''}>Refusé</option>
+    <option value="annule" ${eventObj.extendedProps.status === 'annule' ? 'selected' : ''}>Annulé</option>
+    <option value="termine" ${eventObj.extendedProps.status === 'termine' ? 'selected' : ''}>Terminé</option>
+</select>
+                                        </div>
+
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn-modal btn-primary" onclick="submitEventForm()" id="eventUpdateBtn">
+                                        <i class="fas fa-save me-1"></i>Enregistrer
+                                    </button>
+                                    <button type="button" class="btn-modal btn-secondary" onclick="closeModal()">
+                                        <i class="fas fa-times me-1"></i>Annuler
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // Insert modal into DOM
+                    eventModalContainer.innerHTML = modalHTML;
+
+                    // Add event listener to close modal when clicking outside
+                    document.getElementById('eventModal').addEventListener('click', function(e) {
+                        if (e.target === this) {
+                            closeModal();
+                        }
+                    });
+                },
                 nowIndicator: true,
                 navLinks: true,
-                editable: false, // Set to true if you want to allow drag-and-drop
-                selectable: false // Set to true if you want to allow creating new events by selecting time slots
+                editable: false,
+                selectable: false,
+                dayMaxEventRows: true,
+                height: 'auto',
+                slotMinTime: '07:00:00',
+                slotMaxTime: '20:00:00',
+                businessHours: {
+                    daysOfWeek: [1, 2, 3, 4, 5], // Lundi au vendredi
+                    startTime: '08:00',
+                    endTime: '19:00'
+                },
+                slotDuration: '00:30:00',
+                slotLabelInterval: '01:00',
+                allDaySlot: false,
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    meridiem: false
+                },
+                eventDisplay: 'block',
+                eventBorderColor: '#fff',
+                eventTextColor: '#fff',
+                views: {
+                    timeGrid: {
+                        dayHeaderFormat: { weekday: 'long', day: 'numeric', month: 'short' }
+                    },
+                    dayGridMonth: {
+                        dayHeaderFormat: { weekday: 'short' }
+                    }
+                }
             });
 
             calendar.render();
+
+            // Define closeModal function in global scope
+            window.closeModal = function() {
+                const modal = document.getElementById('eventModal');
+                if (modal) {
+                    modal.remove();
+                }
+            };
+
+            // Convert Date to datetime-local input format
+            window.getDateTimeLocalString = function(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+
+            // Submit the event form via AJAX
+            window.submitEventForm = function() {
+                const form = document.getElementById('editEventForm');
+                const formData = new FormData(form);
+                const eventId = formData.get('event_id');
+                const eventObj = calendar.getEventById(eventId);
+                const submitBtn = document.getElementById('eventUpdateBtn');
+                const originalBtnText = submitBtn.innerHTML;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+
+                // Send AJAX request
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => Promise.reject(err));
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success && data.updatedEvent) {
+                            // Update the event in FullCalendar's memory
+                            if (eventObj) {
+                                // Convert the date string to a Date object
+                                const newDate = new Date(data.updatedEvent.date);
+
+                                // Update all properties at once
+                                eventObj.setProp({
+                                    title: data.updatedEvent.patientName,
+                                    start: newDate,
+                                    backgroundColor: getStatusColor(data.updatedEvent.status),
+                                    extendedProps: {
+                                        status: data.updatedEvent.status,
+                                    }
+                                });
+
+                                // Refresh the event display
+                                eventObj.setProp('backgroundColor', getStatusColor(data.updatedEvent.status));
+                            }
+
+                            showNotification(data.message || 'Rendez-vous mis à jour avec succès', 'success');
+                            closeModal();
+                        } else {
+                            showNotification(data.message || 'Erreur lors de la mise à jour', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification(error.message || 'Une erreur est survenue', 'error');
+                    })
+                    .finally(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
+            };
+
+// Helper function to get color based on status
+            function getStatusColor(status) {
+                const statusColors = {
+                    'attente': '#4cc9f0',  // Blue - En attente
+                    'confirme': '#06d6a0', // Green - Confirmé
+                    'refuse': '#ef476f',   // Red - Refusé
+                    'annule': '#ef476f',   // Red - Annulé
+                    'termine': '#118ab2'   // Dark blue - Terminé
+                };
+                return statusColors[status] || statusColors.attente;
+            }
+
+            // Show notification
+            window.showNotification = function(message, type) {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+
+                // Add to document
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            };
         });
     </script>
 {% endblock %}
