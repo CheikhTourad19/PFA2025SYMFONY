@@ -1,0 +1,17 @@
+{% extends 'admin/admin.base.html.twig' %}
+
+{% block title %}Chatbot{% endblock %}
+
+
+{% block content %}
+    <div style="height: calc(100vh - 64px);"> {# Adjust 64px if your navbar is a different height #}
+        <iframe 
+            src="https://www.gptbots.ai/ai-search/sejs3osotm3dtl4qpnnmjt2/chat.html" 
+            width="100%" 
+            height="100%" 
+            allow="microphone *" 
+            style="border: none;">
+        </iframe>
+    </div>
+{% endblock %}
+

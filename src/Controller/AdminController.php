@@ -112,7 +112,7 @@ final class AdminController extends AbstractController
     #[Route('/chatbot', name: '_chatbot')]
     public function chatbot():Response
     {
-        return $this->render('admin/chatbot.html.twig');
+        return $this->render('admin_chat/index.html.twig');
     }
     #[Route('/supports', name: '_supports')]
     public function supports():Response
