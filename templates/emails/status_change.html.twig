@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Mise à jour de votre rendez-vous</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #4361ee; color: white; padding: 10px; text-align: center; }
+        .content { padding: 20px; }
+        .footer { margin-top: 20px; font-size: 0.8em; text-align: center; color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Mise à jour de votre rendez-vous</h1>
+    </div>
+
+    <div class="content">
+        <p>Bonjour {{ patient.prenom }},</p>
+
+        <p>Le statut de votre rendez-vous avec le Dr. {{ medecin.user.prenom }} {{ medecin.user.nom }}
+            prévu le {{ date|date('d/m/Y à H:i') }} a été modifié.</p>
+
+        <p>Ancien statut: <strong>{{ oldStatus }}</strong></p>
+        <p>Nouveau statut: <strong>{{ newStatus }}</strong></p>
+
+        {% if newStatus == 'confirmé' %}
+            <p>Votre rendez-vous a été confirmé. Nous vous attendons à la date prévue.</p>
+        {% elseif newStatus == 'annulé' or newStatus == 'refusé' %}
+            <p>Nous sommes désolés pour cette annulation. Vous pouvez prendre un nouveau rendez-vous sur notre plateforme.</p>
+        {% elseif newStatus == 'terminé' %}
+            <p>Nous espérons que votre consultation s'est bien passée. N'hésitez pas à nous faire part de vos retours.</p>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+        <p>© {{ "now"|date('Y') }} E-Medical. Tous droits réservés.</p>
+    </div>
+</div>
+</body>
+</html>

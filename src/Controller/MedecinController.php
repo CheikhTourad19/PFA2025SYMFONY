@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\FirstTime;
 use App\Entity\Ordonnance;
 use App\Entity\OrdonnanceMedicament;
+use App\Entity\Rdv;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\MedecinRepository;
@@ -15,11 +16,17 @@ use App\Repository\RdvRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/medecin')]
 final class MedecinController extends AbstractController
@@ -158,9 +165,132 @@ final class MedecinController extends AbstractController
     #[Route('/calendrier', name: 'app_medecin_calendrier')]
     public function calendrier(RdvRepository $rdvRepository): Response
     {
-        $rdv = $rdvRepository->findBy(['medecin'=>$this->getUser()]);
+        $rdv = $rdvRepository->findBy(['medecin'=>$this->getUser()->getMedecin()]);
         return $this->render('medecin/calendrier.html.twig',['rdv'=>$rdv]);
     }
+
+    /**
+     * Update a rendez-vous (appointment) from the calendar
+     */
+    #[Route('/rdv/{id}/update', name: 'app_medecin_rdv_update', methods: ['POST'])]
+    public function updateRdv(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        RdvRepository $rdvRepository,
+        int $id,
+        CsrfTokenManagerInterface $csrfTokenManager,
+        MailerInterface $mailer
+    ): JsonResponse {
+        // Verify CSRF token
+        $submittedToken = $request->request->get('_token');
+        if (!$csrfTokenManager->isTokenValid(new CsrfToken('edit-event', $submittedToken))) {
+            return new JsonResponse(['success' => false, 'message' => 'Token CSRF invalide'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Find the rendez-vous
+        $rdv = $rdvRepository->find($id);
+
+        // Check if the rendez-vous exists
+        if (!$rdv) {
+            return new JsonResponse(['success' => false, 'message' => 'Rendez-vous non trouvé'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Check if the connected user is the medecin of this rendez-vous
+        if ($rdv->getMedecin()->getUser() !== $this->getUser()) {
+            return new JsonResponse(['success' => false, 'message' => 'Vous n\'êtes pas autorisé à modifier ce rendez-vous'], Response::HTTP_FORBIDDEN);
+        }
+
+        try {
+            // Store old status for comparison
+            $oldStatus = $rdv->getStatut();
+
+            // Update rdv data
+            $newDate = new \DateTime($request->request->get('event_date'));
+            $newStatus = $request->request->get('event_status');
+            $newNotes = $request->request->get('event_notes', '');
+
+            // Validate status
+            $validStatuses = ['attente', 'confirme', 'refuse', 'annule', 'termine'];
+            if (!in_array($newStatus, $validStatuses)) {
+                return new JsonResponse(['success' => false, 'message' => 'Statut invalide'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Update the rdv entity
+            $rdv->setDate($newDate);
+            $rdv->setStatut($newStatus);
+
+            if (method_exists($rdv, 'setNotes')) {
+                $rdv->setNotes($newNotes);
+            }
+
+            // Save changes
+            $entityManager->flush();
+
+            // Send email notification if status changed
+            if ($oldStatus !== $newStatus) {
+                $this->sendStatusChangeEmail($rdv, $mailer, $oldStatus, $newStatus);
+            }
+
+            // Return the updated event data for real-time calendar update
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Rendez-vous mis à jour avec succès',
+                'updatedEvent' => [
+                    'id' => $rdv->getId(),
+                    'patientName' => $rdv->getPatient()->getPrenom() . ' ' . $rdv->getPatient()->getNom(),
+                    'date' => $rdv->getDate()->format('Y-m-d\TH:i:s'),
+                    'status' => $newStatus,
+                    'notes' => $newNotes
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private function sendStatusChangeEmail(Rdv $rdv, MailerInterface $mailer, string $oldStatus, string $newStatus): void
+    {
+        $patient = $rdv->getPatient();
+        $medecin = $rdv->getMedecin();
+
+        // Map status to human-readable text
+        $statusText = [
+            'attente' => 'en attente',
+            'confirme' => 'confirmé',
+            'refuse' => 'refusé',
+            'annule' => 'annulé',
+            'termine' => 'terminé'
+        ];
+
+        $subject = 'Mise à jour de votre rendez-vous';
+
+        try {
+            $email = (new Email())
+                ->from('noreply@e-medical.com')
+                ->to($patient->getEmail())
+                ->subject($subject)
+                ->html($this->renderView(
+                    'emails/status_change.html.twig',
+                    [
+                        'patient' => $patient,
+                        'medecin' => $medecin,
+                        'date' => $rdv->getDate(),
+                        'oldStatus' => $statusText[$oldStatus] ?? $oldStatus,
+                        'newStatus' => $statusText[$newStatus] ?? $newStatus
+                    ]
+                ));
+
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            // Log the error or handle it as needed
+            error_log('Failed to send email: ' . $e->getMessage());
+        }
+    }
+
+
     #[Route('/messages', name: 'app_medecin_messages')]
     public function messages(
         MedecinRepository $medecinRepository
