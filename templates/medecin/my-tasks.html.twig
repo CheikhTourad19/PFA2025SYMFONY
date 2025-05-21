@@ -1,5 +1,7 @@
 {% extends 'medecin/task.html.twig' %}
 
+{% block title %}Mes tâches assignées{% endblock %}
+
 {% block task_content %}
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">{{ block('title') }}</h1>
@@ -11,8 +13,8 @@
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold text-blue-800">{{ task.title }}</h3>
                             <div class="text-right text-sm text-gray-600">
-                                <span class="block">Créée par:</span>
-                                <span class="font-medium">{{ task.createdBy.user.prenom }} {{ task.createdBy.user.nom }}</span>
+                                <span class="block">Assignée à:</span>
+                                <span class="font-medium">{{ task.assignedTo.user.prenom }} {{ task.assignedTo.user.nom }}</span>
                             </div>
                         </div>
 
@@ -27,18 +29,15 @@
                             </div>
 
                             {% if task.status.value == 'pending' %}
-                                <form action="{{ path('task_complete', {'id': task.id}) }}" method="POST">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('complete' ~ task.id) }}">
-                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-all flex items-center">
-                                        <i class="fas fa-check-circle mr-2"></i>
-                                        Terminer
-                                    </button>
-                                </form>
+                                <span class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                                    <i class="fas fa-clock mr-2"></i>
+                                    En attente
+                                </span>
                             {% else %}
                                 <span class="bg-green-100 text-green-800 px-4 py-2 rounded-lg text-sm font-medium flex items-center">
-                                <i class="fas fa-check mr-2"></i>
-                                Terminée
-                            </span>
+                                    <i class="fas fa-check mr-2"></i>
+                                    Terminée
+                                </span>
                             {% endif %}
                         </div>
                     </div>

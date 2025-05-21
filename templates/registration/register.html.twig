@@ -243,11 +243,11 @@
                             aria-label="password toggle"
                     >
             <span
-                    class="icon-[tabler--eye] text-base-content/80 size-5 shrink-0"
+                    class="icon-[tabler--eye-off] text-base-content/80 size-5 shrink-0"
                     x-show="!passwordVisible"
             ></span>
                         <span
-                                class="icon-[tabler--eye-off] text-base-content/80 size-5 shrink-0"
+                                class="icon-[tabler--eye] text-base-content/80 size-5 shrink-0"
                                 x-show="passwordVisible"
                         ></span>
                     </button>
@@ -346,6 +346,8 @@
     </div>
 
     <script>
+        document.getElementById('submit-button').disabled = true;
+        document.getElementById('submit-button').classList.add('opacity-50', 'cursor-not-allowed');
         document.querySelector('form').addEventListener('submit', function() {
             document.getElementById('submit-button').innerHTML = `
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" fill="none" viewBox="0 0 24 24">

@@ -70,7 +70,7 @@ class Rdv
         return $this;
     }
 
-    public function getPatient(): ?Patient
+    public function getPatient(): ?User
     {
         return $this->patient;
     }

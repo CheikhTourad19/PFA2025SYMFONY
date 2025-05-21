@@ -11,6 +11,7 @@ use App\Form\UserType;
 use App\Repository\MedecinRepository;
 use App\Repository\MedicamentRepository;
 use App\Repository\OrdonnanceMedicamentRepository;
+use App\Repository\RdvRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -155,9 +156,10 @@ final class MedecinController extends AbstractController
     }
 
     #[Route('/calendrier', name: 'app_medecin_calendrier')]
-    public function calendrier(): Response
+    public function calendrier(RdvRepository $rdvRepository): Response
     {
-        return $this->render('medecin/calendrier.html.twig');
+        $rdv = $rdvRepository->findBy(['medecin'=>$this->getUser()]);
+        return $this->render('medecin/calendrier.html.twig',['rdv'=>$rdv]);
     }
     #[Route('/messages', name: 'app_medecin_messages')]
     public function messages(

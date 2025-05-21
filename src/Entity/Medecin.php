@@ -10,7 +10,7 @@ class Medecin
 {
 
     #[ORM\Id]
-    #[ORM\OneToOne(targetEntity: User::class)]
+    #[ORM\OneToOne(targetEntity: User::class,inversedBy: "medecin" )]
     #[ORM\JoinColumn(
         name: "medecin_id",
         referencedColumnName: "id",
@@ -23,10 +23,7 @@ class Medecin
 
 
 
-    public function __construct()
-    {
 
-    }
     public function getService(): ?string
     {
         return $this->service;

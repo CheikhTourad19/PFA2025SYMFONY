@@ -355,7 +355,7 @@ final class AdminController extends AbstractController
         $user = $entityManager->getRepository(User::class)->find($id);
 
         if (!$user) {
-            $this->addFlash('danger', 'User not found.');
+            $this->addFlash('error', 'User not found.');
             return $this->redirectToRoute('app_admin_users');
         }
 
@@ -368,9 +368,9 @@ final class AdminController extends AbstractController
             )
         );
 
-        // Save the updated user
 
-        $entityManager->flush();
+
+
 
         // Send SMS using Twilio
         $twilioService=new TwilioService();
@@ -381,8 +381,12 @@ final class AdminController extends AbstractController
             );
 
             $this->addFlash('success', "Mot de passe réinitialisé et message envoyé.");
+            return $this->redirectToRoute('app_admin_users');
+
+
         } catch (\Exception $e) {
-            $this->addFlash('danger', 'Erreur lors de l\'envoi du SMS : ' . $e->getMessage());
+            $this->addFlash('error', 'Erreur lors de l\'envoi du SMS : ' . $e->getMessage());
+
         }
 
         return $this->redirectToRoute('app_admin_users');

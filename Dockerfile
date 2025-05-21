@@ -39,10 +39,10 @@ WORKDIR /var/www/html
 
 
 # Copy composer files first for better layer caching
-COPY composer.json composer.lock ./
+COPY composer.json  ./
 
 # Install dependencies (only)
-RUN composer install
+RUN composer install --no-interaction --prefer-dist --verbose
 
 # Copy the rest of the application code
 COPY . .
