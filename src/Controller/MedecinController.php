@@ -1,8 +1,5 @@
 <?php
-
 namespace App\Controller;
-
-
 use App\Entity\FirstTime;
 use App\Entity\Ordonnance;
 use App\Entity\OrdonnanceMedicament;
@@ -31,7 +28,6 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Email;
-
 #[Route('/medecin')]
 final class MedecinController extends AbstractController
 {
@@ -86,8 +82,6 @@ final class MedecinController extends AbstractController
         $this->addFlash('success','Ordonnance cree avec succes');
         return $this->redirectToRoute('app_medecin_ordonnance');
     }
-
-
 
 
     #[Route('/dossier-medical', name: 'app_medecin_dossier_medical')]
