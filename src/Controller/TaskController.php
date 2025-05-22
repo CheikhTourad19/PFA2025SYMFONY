@@ -46,11 +46,15 @@ class TaskController extends AbstractController
         // Utilisation du Medecin pour l'assignation
         $task->setCreatedBy($medecin);
         $task->setCreatedAt(new \DateTime());
-
+        $date = new \DateTime();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($request->request->get('deadline')<$date){
+                $this->addFlash('error','date invalide');
+                return $this->redirectToRoute('app_task_new');
+            }
             try {
                 $em->persist($task);
                 $em->flush();

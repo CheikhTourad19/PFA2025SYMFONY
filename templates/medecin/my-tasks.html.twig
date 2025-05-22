@@ -13,8 +13,8 @@
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-lg font-semibold text-blue-800">{{ task.title }}</h3>
                             <div class="text-right text-sm text-gray-600">
-                                <span class="block">Assignée à:</span>
-                                <span class="font-medium">{{ task.assignedTo.user.prenom }} {{ task.assignedTo.user.nom }}</span>
+                                <span class="block">Assignée par:</span>
+                                <span class="font-medium">{{ task.createdBy.user.prenom }} {{ task.createdBy.user.nom }}</span>
                             </div>
                         </div>
 
@@ -52,4 +52,6 @@
             {% endfor %}
         </div>
     </div>
+
+
 {% endblock %}

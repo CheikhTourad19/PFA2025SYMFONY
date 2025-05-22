@@ -297,11 +297,16 @@ final class MedecinController extends AbstractController
     ): Response
     {
         $user = $this->getUser();
+        $currentMedecin = $user->getMedecin();
 
         // Récupérer tous les médecins
-        $medecins = $medecinRepository->findAll();
+        $allMedecins = $medecinRepository->findAll();
 
-        // Préparer les données pour le JavaScript
+        // Filtrer pour exclure le médecin actuel
+        $medecins = array_filter($allMedecins, function($medecin) use ($currentMedecin) {
+            return $medecin->getId() !== $currentMedecin->getId();
+        });
+
         $medecinsData = [];
         foreach ($medecins as $medecin) {
             $medecinsData[] = [
