@@ -1,18 +1,19 @@
 <?php
-
 namespace App\Controller;
-
-
 use App\Entity\FirstTime;
 use App\Entity\Ordonnance;
 use App\Entity\OrdonnanceMedicament;
 use App\Entity\Rdv;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Form\DossierMedicaleType;
 use App\Repository\MedecinRepository;
 use App\Repository\MedicamentRepository;
 use App\Repository\OrdonnanceMedicamentRepository;
+use App\Repository\PatientRepository;
 use App\Repository\RdvRepository;
+use App\Repository\DossierMedicaleRepository;
+use App\Entity\DossierMedicale;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,6 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Email;
-
 #[Route('/medecin')]
 final class MedecinController extends AbstractController
 {
@@ -45,6 +45,7 @@ final class MedecinController extends AbstractController
             return $this->redirectToRoute('app_medecin_profil');
 
         }
+
         return $this->render('medecin/home.html.twig');
     }
     #[Route('/ordonnance', name: 'app_medecin_ordonnace', methods: ['GET'])]
@@ -83,14 +84,103 @@ final class MedecinController extends AbstractController
     }
 
 
-
-
     #[Route('/dossier-medical', name: 'app_medecin_dossier_medical')]
-    public function dossierMedical(): Response
+    public function dossierMedical(
+        UserRepository $userRepository,
+        DossierMedicaleRepository $dossierRepo
+    ): Response {
+        $patients = $userRepository->findBy(['role'=>'patient']);
+
+        $dossiers = [];
+        foreach ($patients as $patientUser) {
+            $dossier = $dossierRepo->findOneBy(['patient' => $patientUser]);
+            $dossiers[$patientUser->getId()] = $dossier;
+        }
+
+        return $this->render('medecin/dossier_medical.html.twig', [
+            'patients' => $patients,
+            'dossiers' => $dossiers,
+        ]);
+    }
+    #[Route('/dossier-medical/show/{id}',name:'app_medecin_dossier_medical_show')]
+    public function showDossierMedical(
+        UserRepository $userRepository,
+        DossierMedicaleRepository $dossierRepo,
+        int $id,
+    ):Response
     {
-        return $this->render('medecin/dossier_medical.html.twig');
+        $user = $userRepository->findOneBy(['id'=>$id]);
+        $dossiers = $dossierRepo->findOneBy(['patient'=>$user]);
+        if(!$dossiers){
+            $this->addFlash('warning', 'Ce patient n "a pas de dossier medicale encore');
+            return $this->redirectToRoute('app_medecin_dossier_medical');
+        }
+
+
+        return $this->render('medecin/dossier.html.twig', ['dossier' => $dossiers]);
+    }
+    #[Route('/dossier-medical/new/{id}', name: 'app_medecin_dossier_medical_create')]
+    public function createdossierMedical(
+        int $id,
+        UserRepository $patientRepo,
+        DossierMedicaleRepository $dossierRepo,
+        EntityManagerInterface $em,
+        Request $request
+    ): Response {
+        $patient = $patientRepo->find($id);
+
+        if (!$patient) {
+            throw $this->createNotFoundException("Patient introuvable.");
+        }
+
+        // ❌ Empêcher la création si le dossier existe déjà
+        $existing = $dossierRepo->findOneBy(['patient' => $patient]);
+
+        if ($existing) {
+            $this->addFlash('warning', 'Ce patient a déjà un dossier médical.');
+            return $this->redirectToRoute('app_medecin_dossier_medical_edit', ['id' => $existing->getId()]);
+        }
+
+        $dossier = new DossierMedicale();
+        $dossier->setPatient($patient);
+        $dossier->setDateCreation(new \DateTimeImmutable());
+
+        $form = $this->createForm(DossierMedicaleType::class, $dossier);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($dossier);
+            $em->flush();
+
+            $this->addFlash('success', 'Dossier médical créé.');
+            return $this->redirectToRoute('app_medecin_dossier_medical_edit', ['id' => $dossier->getId()]);
+        }
+
+        return $this->render('medecin/dossier_form.html.twig', [
+            'form' => $form->createView(),
+            'isEdit' => false,
+        ]);
     }
 
+    #[Route('/dossier_medical/edit/{id}', name: 'app_medecin_dossier_medical_edit')]
+    public function editdossierMedical(
+        DossierMedicale $dossier,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $form = $this->createForm(DossierMedicaleType::class, $dossier);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success', 'Dossier mis à jour.');
+        }
+
+        return $this->render('medecin/dossier_form.html.twig', [
+            'form' => $form->createView(),
+            'isEdit' => true,
+        ]);
+    }
 
 
     #[Route('/rendez-vous', name: 'app_medecin_rendez_vous')]

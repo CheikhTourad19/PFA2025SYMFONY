@@ -9,6 +9,7 @@ use App\Entity\Rdv;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Form\UserType;
+use App\Repository\DossierMedicaleRepository;
 use App\Repository\FirstTimeRepository;
 use App\Repository\MedecinRepository;
 use App\Repository\OrdonnanceMedicamentRepository;
@@ -187,7 +188,7 @@ final class PatientController extends AbstractController
 
 
     #[Route('/patient', name: 'app_home_patient')]
-    public function index(EntityManagerInterface $em): Response
+    public function index(EntityManagerInterface $em,): Response
     {
         $user = $this->getUser();
         $showTutorial = false;
@@ -203,6 +204,7 @@ final class PatientController extends AbstractController
             $em->persist($firstTime);
             $em->flush();
         }
+
         return $this->render('patient/index.html.twig', ['showTutorial' => $showTutorial]);
     }
 
@@ -310,5 +312,13 @@ final class PatientController extends AbstractController
         return $this->render('patient/profil.html.twig', [
             'profileForm' => $profileForm->createView()
         ]);
+    }
+    #[Route('/patient/dossierM', name: 'app_patient_dossierM')]
+    public function dossierM(EntityManagerInterface $entityManager,DossierMedicaleRepository $dossierMedicaleRepository):Response{
+        $user = $this->getUser();
+        $dossiers = $dossierMedicaleRepository->findOneBy(['patient'=>$user]);
+
+
+        return $this->render('patient/dossier.html.twig', ['dossier' => $dossiers]);
     }
 }
