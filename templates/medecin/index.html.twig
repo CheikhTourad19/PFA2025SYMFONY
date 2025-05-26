@@ -159,6 +159,20 @@
                                 <div class="flex items-center space-x-2">
                                     <i class="bx {{ icon }} text-lg"></i>
                                     <span>{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
+                                    {% if route == 'app_task_index' %}
+                                        <span x-show="taskCount > 0"
+                                              x-text="taskCount"
+                                              class="absolute -top-2 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                </span>
+                                    {% endif %}
+
+                                    {% if route == 'app_medecin_messages' %}
+                                        <span x-show="messageCount > 0"
+                                              x-text="messageCount"
+                                              class="absolute -top-2 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                </span>
+                                    {% endif %}
+
                                 </div>
                             </a>
                         {% endfor %}
@@ -198,6 +212,7 @@
                            class="flex items-center px-4 py-3 rounded-lg smooth-transition {{ currentRoute == route ? 'bg-blue-100 text-blue-600' : 'text-gray-700 hover:bg-gray-100' }}">
                             <i class="bx {{ icon }} text-lg mr-3"></i>
                             <span>{{ icon|replace({'bx-':'','bx':''})|capitalize }}</span>
+
                         </a>
                     {% endfor %}
                 </div>

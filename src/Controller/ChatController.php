@@ -4,13 +4,17 @@
 namespace App\Controller;
 
 use App\Entity\Message;
-use App\Entity\User;
+
 use App\Repository\MessageRepository;
 use App\Repository\UserRepository;
 use App\Service\ChatService;
 use App\Service\MercurePublisherService;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
+
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
